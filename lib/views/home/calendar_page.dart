@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/todo_model.dart';
 import '../../routes/routes.dart';
+import '../../viewmodels/todo_viewmodel.dart';
 
-class CalendarPage extends StatefulWidget {
+class CalendarPage extends ConsumerWidget {
   @override
-  _CalendarPageState createState() => _CalendarPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todoViewModel = ref.watch(todoProvider.notifier);
+    final tasks = ref.watch(todoProvider); // 📌 Güncellenmiş görevler
+    final selectedDate = todoViewModel.selectedDate ?? DateTime.now(); // 📌 Seçili tarih (Boşsa bugünü al)
 
-class _CalendarPageState extends State<CalendarPage> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  
-  // 📌 Örnek görevler (Bunu backend ile değiştireceğiz!)
-  final Map<DateTime, List<String>> _tasks = {
-    DateTime(2025, 2, 16): ["Finish Report - 9:45PM", "Water the plants - 10:00AM"],
-    DateTime(2025, 2, 17): ["Team Meeting - 2:00PM"],
-  };
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Calendar", style: TextStyle(color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold)),
@@ -43,14 +35,10 @@ class _CalendarPageState extends State<CalendarPage> {
             child: TableCalendar(
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
-              focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              focusedDay: selectedDate,
+              selectedDayPredicate: (day) => isSameDay(selectedDate, day),
               onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
+                todoViewModel.setSelectedDate(selectedDay); // 📌 ViewModel'e seçili günü kaydet
               },
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
@@ -74,7 +62,7 @@ class _CalendarPageState extends State<CalendarPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _buildTaskList(),
+              child: _buildTaskList(tasks, selectedDate),
             ),
           ),
         ],
@@ -83,43 +71,46 @@ class _CalendarPageState extends State<CalendarPage> {
       // 📌 + GÖREV EKLEME BUTONU
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-Navigator.pushNamed(context, AppRoutes.addtask);        },
+          Navigator.pushNamed(
+            context,
+            AppRoutes.addtask,
+            arguments: selectedDate, // 📌 Seçili tarihi ekleme sayfasına gönder
+          );
+        },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
     );
   }
 
-  // 📌 SEÇİLİ GÜNÜN GÖREVLERİNİ GÖSTEREN WIDGET
-  Widget _buildTaskList() {
-    DateTime today = _selectedDay ?? _focusedDay;
-    List<String> tasks = _tasks[today] ?? [];
+  // 📌 SEÇİLİ GÜNÜN GÖREVLERİNİ GETİREN WIDGET
+  Widget _buildTaskList(List<TodoModel> tasks, DateTime selectedDate) {
+    // 📌 Seçili tarihe ait görevleri filtrele
+    final filteredTasks = tasks.where((task) {
+      if (task.dueDate == null) return false;
+      return isSameDay(task.dueDate, selectedDate);
+    }).toList();
 
-    if (tasks.isEmpty) {
+    if (filteredTasks.isEmpty) {
       return Center(
         child: Text(
-          "No tasks for ${DateFormat("dd/MM/yyyy").format(today)}",
+          "No tasks for ${DateFormat("dd/MM/yyyy").format(selectedDate)}",
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
       );
     }
 
     return ListView.builder(
-      itemCount: tasks.length,
+      itemCount: filteredTasks.length,
       itemBuilder: (context, index) {
+        final task = filteredTasks[index];
         return Card(
           margin: EdgeInsets.symmetric(vertical: 8),
           color: Colors.blue[50],
           child: ListTile(
-            title: Text(tasks[index], style: TextStyle(fontWeight: FontWeight.bold)),
-            trailing: TextButton(
-              onPressed: () {
-                setState(() {
-                  _tasks[today]?.removeAt(index);
-                });
-              },
-              child: Text("Delete", style: TextStyle(color: Colors.red)),
-            ),
+            title: Text(task.title, style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text("Saat: ${task.dueDate?.toString()}"),
+            trailing: Icon(Icons.check_circle, color: task.isCompleted ? Colors.green : Colors.grey),
           ),
         );
       },

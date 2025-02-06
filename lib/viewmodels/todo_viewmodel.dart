@@ -6,6 +6,8 @@ import '../services/todo_service.dart';
 
 class TodoViewModel extends StateNotifier<List<TodoModel>> {
   final TodoService _todoService;
+  DateTime selectedDate = DateTime.now();
+
   String? selectedCategory = "Tümü"; // 📌 Varsayılan olarak tüm görevleri getir
   List<TodoModel> allTodos = []; // 📌 Backend'den gelen tüm görevler
 
@@ -39,6 +41,40 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     } catch (e) {
       print("🚨 Görevleri çekerken hata oluştu: $e");
     }
+  }
+
+  //seçili tarihe göre görevleri çek
+  Future<void> fetchTodosByDate(DateTime date)async{
+    final token=await _getToken();
+    if(token==null){
+      state=[];
+      return;
+    }
+    try{
+      final todos=await  _todoService.fetchTodosByDate(token, date);
+      state=todos;
+      selectedDate=date;
+      print("✅ ${date.toIso8601String()} tarihine ait ${state.length} görev var.");
+    }catch(e){
+      print("seçili tarihe göre görevleri çekerken hata oluştu");
+
+    }
+  }
+  /// 📌 Bugünün görevlerini getir
+  List<TodoModel> get todayTasks {
+    DateTime today = DateTime.now();
+    DateTime todayWithoutTime = DateTime(today.year, today.month, today.day);
+
+    return state.where((task) {
+      if (task.dueDate == null) return false;
+      DateTime taskDate = DateTime(task.dueDate!.year, task.dueDate!.month, task.dueDate!.day);
+      return taskDate == todayWithoutTime;
+    }).toList();
+  }
+
+  //takvimde seçili tarihi güncelle ve yeni görevleri getir
+  void setSelectedDate(DateTime date){
+    fetchTodosByDate(date);
   }
   /// 📌 Frontend tarafında kategoriye göre filtreleme yap
   void filterTodos() {

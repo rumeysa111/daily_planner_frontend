@@ -17,6 +17,7 @@ dependencies:
   dio: ^5.8.0+1
   shared_preferences: ^2.5.1
   table_calendar: ^3.2.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

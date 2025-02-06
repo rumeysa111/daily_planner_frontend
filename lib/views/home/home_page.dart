@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mytodo_app/models/todo_model.dart';
 import 'package:mytodo_app/routes/routes.dart';
 import 'package:mytodo_app/viewmodels/todo_viewmodel.dart';
@@ -11,8 +12,11 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todoViewModel = ref.watch(todoProvider.notifier); // 📌 ViewModel
-    final tasks = ref.watch(todoProvider); // 📌 Filtrelenmiş görevler
+    //final allTasks = ref.watch(todoProvider); // 📌 Tüm görevler
+    final todayTasks = todoViewModel.todayTasks; // 📌 ViewModel'den bugünün görevlerini al
+
     final selectedCategory = todoViewModel.selectedCategory; // 📌 Seçilen kategori
+
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -30,7 +34,7 @@ class HomePage extends ConsumerWidget {
               SizedBox(height: 20),
               _buildTaskSection(context),
               SizedBox(height: 10),
-              Expanded(child: _buildTaskList(tasks)), // 📌 Backend'den gelen görevler gösteriliyor
+              Expanded(child: _buildTaskList(todayTasks)), // 📌 Backend'den gelen görevler gösteriliyor
             ],
           ),
         ),
@@ -134,7 +138,13 @@ class HomePage extends ConsumerWidget {
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
-        return TaskItem(title: task.title, time: task.dueDate?.toString() ?? "Belirtilmemiş");
+
+        // 📌 Saat formatlama (HH:mm)
+        String formattedTime = task.dueDate != null
+            ? DateFormat("HH:mm").format(task.dueDate!)
+            : "Belirtilmemiş";
+
+        return TaskItem(title: task.title, time: formattedTime);
       },
     );
   }

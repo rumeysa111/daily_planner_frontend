@@ -24,6 +24,22 @@ class TodoService {
       return [];
     }
   }
+  //seçili güne göre görevleri getir
+  Future<List<TodoModel>> fetchTodosByDate(String token,DateTime selectedDate) async{
+    try{
+      final response=await _dio.get(
+        '/by-date',//yeni endpoint
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+        queryParameters: {"date": selectedDate.toIso8601String().split("T")[0]},
+      );
+      return response.data.map<TodoModel>((json)=>TodoModel.fromJson(json)).toList();
+
+    }catch(e){
+      print("seçili tarig için görevleri çekerken hata oluştur $e");
+      return [];
+
+    }
+  }
 
   Future<bool> addTodo(String token, TodoModel todo) async {
     try {
