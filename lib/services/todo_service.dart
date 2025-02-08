@@ -2,42 +2,53 @@ import 'package:dio/dio.dart';
 import 'package:mytodo_app/models/todo_model.dart';
 
 class TodoService {
-  final Dio _dio = Dio(
-    BaseOptions(baseUrl: "http://192.168.0.105:3000/api/todos") // 📌 Backend URL'ini ekledik
-  );
+  final Dio _dio = Dio(BaseOptions(
+          baseUrl:
+              "http://192.168.0.105:3000/api/todos") // 📌 Backend URL'ini ekledik
+      );
 
-  Future<List<TodoModel>> fetchTodos(String token,{String? category}) async {
+  Future<List<TodoModel>> fetchTodos(String token, {String? category}) async {
     try {
       print("📌 Backend'den görevler çekiliyor...");
 
       final response = await _dio.get(
         '/',
         options: Options(headers: {"Authorization": "Bearer $token"}),
-        queryParameters: category != null && category != "Tümü" ? {"category": category} : {},
-
+        queryParameters: category != null && category != "Tümü"
+            ? {"category": category}
+            : {},
       );
       print("✅ Backend'den Gelen Yanıt: ${response.data}");
 
-      return response.data.map<TodoModel>((json) => TodoModel.fromJson(json)).toList();
+      if (response.data is List) {
+        return (response.data as List)
+            .map<TodoModel>((json) => TodoModel.fromJson(json))
+            .toList();
+      } else {
+        print("🚨 Geçersiz veri formatı: ${response.data}");
+        return [];
+      }
     } catch (e) {
-      print("Hata: $e");
+      print("🚨 Hata: $e");
       return [];
     }
   }
+
   //seçili güne göre görevleri getir
-  Future<List<TodoModel>> fetchTodosByDate(String token,DateTime selectedDate) async{
-    try{
-      final response=await _dio.get(
-        '/by-date',//yeni endpoint
+  Future<List<TodoModel>> fetchTodosByDate(
+      String token, DateTime selectedDate) async {
+    try {
+      final response = await _dio.get(
+        '/by-date', //yeni endpoint
         options: Options(headers: {"Authorization": "Bearer $token"}),
         queryParameters: {"date": selectedDate.toIso8601String().split("T")[0]},
       );
-      return response.data.map<TodoModel>((json)=>TodoModel.fromJson(json)).toList();
-
-    }catch(e){
+      return response.data
+          .map<TodoModel>((json) => TodoModel.fromJson(json))
+          .toList();
+    } catch (e) {
       print("seçili tarig için görevleri çekerken hata oluştur $e");
       return [];
-
     }
   }
 

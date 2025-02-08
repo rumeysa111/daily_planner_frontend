@@ -27,20 +27,37 @@ class AuthService{
     }
     return null;
   }
-Future<bool> register(String name, String surname, String email, String password) async {
-  try {
-    final response = await dio.post('/register', data: {
-      "username": "$name $surname", // 📌 Ad ve soyadı birleştirerek gönderiyoruz
-      "email": email,
-      "password": password
-    });
+  Future<bool> register(String name, String surname, String email, String password) async {
+    try {
+      final body = {
+        "username": "$name $surname",
+        "email": email,
+        "password": password
+      };
 
-    return response.statusCode == 201;
-  } catch (e) {
-    print("Register error $e");
-    return false;
+      print("📢 Flutter Register API İsteği: $body"); // 🔍 İstek öncesinde veriyi logla
+
+      final response = await dio.post('/register', data: body);
+
+      print("✅ Register API Yanıtı: ${response.data}"); // 🔍 Backend’den gelen yanıtı logla
+
+      if (response.statusCode == 201) {
+        final userId = response.data["userId"];
+        final categories = response.data["categories"];
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("userId", userId);
+        await prefs.setString("categories", categories.toString());
+
+        return true; // ✅ Başarılı kayıt döndür
+      }
+    } catch (e) {
+      print("❌ Register error: $e");
+    }
+    return false; // ❌ Kayıt başarısızsa false döndür
   }
-}
+
+
   // 📌 Token ile kullanıcı bilgilerini çekme fonksiyonu (Eksik olan metod!)
   Future<UserModel?> getUser(String token) async {
     try {

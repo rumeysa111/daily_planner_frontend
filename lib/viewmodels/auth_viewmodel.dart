@@ -8,27 +8,36 @@ import 'package:mytodo_app/models/user_model.dart';
 import 'package:mytodo_app/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'category_viewmodel.dart';
+
 // 📌 AuthViewModel, kullanıcı giriş-çıkış durumunu yönetir ve UI ile AuthService arasında köprü kurar
 class AuthViewModel extends StateNotifier<UserModel?> {
   // 📌 AuthService örneğini tanımlıyoruz (API isteklerini yönetecek)
   final AuthService _authService;
+  final Ref ref; // **✅ Riverpod ref ekledik**
 
   // 📌 Constructor (Başlatıcı), AuthService'i alır ve başlangıç state'ini null yapar
-  AuthViewModel(this._authService) : super(null) {
+  AuthViewModel(this._authService,this.ref) : super(null) {
     _loadUser();
   }
-  //kullanıcı giriş yaptısaa bilgileri local storaden al
-
+  /// **📌 Kullanıcı giriş yaptıysa bilgileri local storage'dan al**
   Future<void> _loadUser() async {
-    final prefs=await SharedPreferences.getInstance();
-    final String? token= prefs.getString("token");
-    if(token !=null){
-      //backednden token ile kullanıcı bilgileirni çek
-      final user=await _authService.getUser(token);
-      state=user;
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString("token");
+
+    if (token != null) {
+      // **✅ Backend'den token ile kullanıcı bilgilerini çek**
+      final user = await _authService.getUser(token);
+
+      if (user != null) {
+        state = user;
+        print("✅ Kullanıcı başarıyla yüklendi: ${user.toJson()}");
+
+        // **✅ Kullanıcı giriş yaptıysa kategorileri getir**
+        ref.read(categoryProvider.notifier).reloadCategories();
+      }
     }
   }
-
   // 📌 Kullanıcı giriş yapma fonksiyonu
   Future<bool> login(String email, String password) async {
     // 📌 AuthService ile giriş API isteğini yapıyoruz
@@ -45,6 +54,8 @@ class AuthViewModel extends StateNotifier<UserModel?> {
       await prefs.setString("userId", user.id);
       print("✅ Kullanıcı ID Kaydedildi: ${user.id}");
 
+      // **✅ Kullanıcı giriş yaptıktan sonra kategorileri getir**
+      ref.read(categoryProvider.notifier).reloadCategories();
       return true;
     }
 
@@ -62,12 +73,14 @@ class AuthViewModel extends StateNotifier<UserModel?> {
     state=null;
     final prefs= await SharedPreferences.getInstance();
     await prefs.remove("token");
-
+    await prefs.remove("userId");
+    // **✅ Çıkış yapınca kategori listesini temizle**
+    ref.read(categoryProvider.notifier).clearCategories();
   }
 }
 
 // 📌 Riverpod Provider tanımlaması
 // 📌 StateNotifierProvider, AuthViewModel'in durumunu yönetir ve UI ile bağlantıyı sağlar
 final authProvider = StateNotifierProvider<AuthViewModel, UserModel?>((ref) {
-  return AuthViewModel(AuthService()); // 📌 AuthViewModel'in bir örneğini oluşturuyoruz
+  return AuthViewModel(AuthService(),ref); // 📌 AuthViewModel'in bir örneğini oluşturuyoruz
 });

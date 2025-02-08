@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:mytodo_app/models/category_model.dart';
 
 class TodoModel {
-  final String id;
+  final String id; // MongoDB ObjectId
   final String title;
-  final String category;
+  final String categoryId; // Kategori ID olarak tutuluyor
+  final CategoryModel? category; // İlişkili kategori nesnesi
   final DateTime? dueDate;
-  final String color;
+  final String? time;
   final String? notes;
   final bool isCompleted;
   final String userId;
@@ -14,9 +17,10 @@ class TodoModel {
   TodoModel({
     required this.id,
     required this.title,
-    required this.category,
+    required this.categoryId, // Backend ID formatına uyumlu
+    this.category, // Kategori nesnesi isteğe bağlı
     this.dueDate,
-    required this.color,
+    this.time,
     this.notes,
     required this.isCompleted,
     required this.userId,
@@ -25,27 +29,30 @@ class TodoModel {
 
   // 📌 JSON'dan `TodoModel` Nesnesine Çevirme
   factory TodoModel.fromJson(Map<String, dynamic> json) {
+    var categoryData = json['category'];
     return TodoModel(
-      id: json['_id'] ?? json['id'] ?? '', // ✅ `_id` ile `id` desteklendi
+      id: json['_id'] ?? '',
       title: json['title'] ?? '',
-      category: json['category'] ?? 'General',
-      dueDate: json['dueDate'] != null ? DateTime.tryParse(json['dueDate']) : null, // ✅ Null güvenliği
-      color: json['color'] ?? '#000000',
-      notes: json['notes'], // ✅ `null` olabilir, hata vermez
+      categoryId:
+          categoryData is Map ? categoryData['_id'] : (categoryData ?? ''),
+      category:
+          categoryData is Map ? CategoryModel.fromJson(Map<String, dynamic>.from(categoryData)) : null,
+      dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
+      time: json['time'],
+      notes: json['notes'],
       isCompleted: json['isCompleted'] ?? false,
       userId: json['userId'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
-  // 📌 `TodoModel` Nesnesini JSON'a Çevirme
+// 📌 `TodoModel` Nesnesini JSON'a Çevirme
   Map<String, dynamic> toJson() {
     return {
-      // ✅ `_id`'yi göndermiyoruz çünkü MongoDB bunu otomatik atıyor!
       "title": title,
-      "category": category,
-      "dueDate": dueDate?.toIso8601String(), // ✅ `null` olursa hata vermez
-      "color": color,
+      "category": categoryId, // Kategori ID olarak gönderilecek
+      "dueDate": dueDate?.toIso8601String(),
+      "time": time,
       "notes": notes,
       "isCompleted": isCompleted,
       "userId": userId,
@@ -63,9 +70,10 @@ class TodoModel {
   TodoModel copyWith({
     String? id,
     String? title,
-    String? category,
+    String? categoryId,
+    CategoryModel? category,
     DateTime? dueDate,
-    String? color,
+    String? time,
     String? notes,
     bool? isCompleted,
     String? userId,
@@ -74,9 +82,10 @@ class TodoModel {
     return TodoModel(
       id: id ?? this.id,
       title: title ?? this.title,
+      categoryId: categoryId ?? this.categoryId,
       category: category ?? this.category,
       dueDate: dueDate ?? this.dueDate,
-      color: color ?? this.color,
+      time: time ?? this.time,
       notes: notes ?? this.notes,
       isCompleted: isCompleted ?? this.isCompleted,
       userId: userId ?? this.userId,
@@ -86,6 +95,6 @@ class TodoModel {
 
   @override
   String toString() {
-    return 'TodoModel(id: $id, title: $title, category: $category, dueDate: $dueDate, color: $color, notes: $notes, isCompleted: $isCompleted, userId: $userId, createdAt: $createdAt)';
+    return 'TodoModel(id: $id, title: $title, category: ${categoryId}, dueDate: $dueDate, notes: $notes, isCompleted: $isCompleted, userId: $userId, createdAt: $createdAt)';
   }
 }

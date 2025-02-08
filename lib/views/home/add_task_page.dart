@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:mytodo_app/models/todo_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../models/category_model.dart';
+import '../../viewmodels/category_viewmodel.dart';
 import '../../viewmodels/todo_viewmodel.dart';
 
 class AddTaskPage extends ConsumerStatefulWidget {
@@ -16,25 +18,25 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   final TextEditingController _notesController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  String _selectedCategory = "Work";
-  String? _selectedReminder;
-  String _selectedColor = "#7D4CDB"; // Default mor renk
-
-  final List<String> categories = ["Work", "Personal", "Shopping", "Health"];
-  final List<Color> colors = [Colors.purple, Colors.blue, Colors.pink, Colors.green, Colors.teal];
+  String? _selectedCategoryId; // ✅ Sadece kategori ID'si saklanacak
+  CategoryModel? _selectedCategory; // ✅ UI'de göstermek için
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoryProvider); // 📌 Kategorileri al
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Task", style: TextStyle(color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold)),
+        title: Text("Add Task",
+            style: TextStyle(
+                color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
-        centerTitle: false,
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: Colors.red, fontSize: 16)),
+            child: Text("Cancel",
+                style: TextStyle(color: Colors.red, fontSize: 16)),
           ),
         ],
       ),
@@ -47,26 +49,59 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             TextField(
               controller: _titleController,
               decoration: InputDecoration(
-                hintText: "Finish Report",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                hintText: "Görev Başlığı",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
             SizedBox(height: 16),
 
             // 📌 KATEGORİ SEÇİMİ (Dropdown)
-            Text("Category", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text("Kategori", style: TextStyle(fontWeight: FontWeight.bold)),
             DropdownButtonFormField<String>(
-              value: _selectedCategory,
-              items: categories.map((String category) {
-                return DropdownMenuItem(value: category, child: Text(category));
-              }).toList(),
-              onChanged: (value) => setState(() => _selectedCategory = value!),
-              decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
+              value: _selectedCategoryId,
+              items: categories.isNotEmpty
+                  ? categories.map((category) {
+                      return DropdownMenuItem(
+                        value: category.id,
+                        child: Row(
+                          children: [
+                            Text(category.icon), // 📌 Kategori İkonu
+                            SizedBox(width: 8),
+                            Text(category.name),
+                          ],
+                        ),
+                      );
+                    }).toList()
+                  : [
+                      DropdownMenuItem(
+                        value: null,
+                        child: Text("Kategori bulunamadı",
+                            style: TextStyle(color: Colors.red)),
+                      )
+                    ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedCategoryId = value;
+                  _selectedCategory = categories.firstWhere(
+                      (cat) => cat.id == value,
+                      orElse: () => CategoryModel(
+                          id: "",
+                          name: "Bilinmeyen",
+                          icon: "?",
+                          color: Colors.grey));
+                });
+              },
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8))),
             ),
+
             SizedBox(height: 16),
 
             // 📌 TARİH VE SAAT SEÇİMİ
-            Text("Date", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text("Tarih ve Saat",
+                style: TextStyle(fontWeight: FontWeight.bold)),
             Row(
               children: [
                 _buildDateButton(),
@@ -76,51 +111,24 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             ),
             SizedBox(height: 16),
 
-            // 📌 HATIRLATMA SEÇİMİ
-            Text("Reminder", style: TextStyle(fontWeight: FontWeight.bold)),
-            _buildReminderButton(),
-            SizedBox(height: 16),
-
-            // 📌 RENK SEÇİMİ
-            Text("Renk", style: TextStyle(fontWeight: FontWeight.bold)),
-            Row(
-              children: colors.map((color) {
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedColor = color.value.toRadixString(16)),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                      border: _selectedColor == color.value.toRadixString(16)
-                          ? Border.all(color: Colors.black, width: 2)
-                          : null,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 16),
-
             // 📌 NOT EKLEME ALANI
-            Text("Notes", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text("Notlar", style: TextStyle(fontWeight: FontWeight.bold)),
             TextField(
               controller: _notesController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: "Make sure to research from internet",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                hintText: "Ek notlarınızı buraya yazın...",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ],
         ),
       ),
 
-      // 📌 KAYDETME BUTONU (Floating Action Button - Mavi Tik)
+      // 📌 KAYDETME BUTONU
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _saveTask(ref), // ✅ `ref` eklenerek düzeltildi
+        onPressed: () => _saveTask(ref),
         child: Icon(Icons.check),
         backgroundColor: Colors.blue,
       ),
@@ -133,7 +141,9 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       child: OutlinedButton.icon(
         onPressed: _pickDate,
         icon: Icon(Icons.calendar_today, color: Colors.orange),
-        label: Text(_selectedDate == null ? "Set due date" : DateFormat("dd/MM/yyyy").format(_selectedDate!)),
+        label: Text(_selectedDate == null
+            ? "Tarih Seç"
+            : DateFormat("dd/MM/yyyy").format(_selectedDate!)),
       ),
     );
   }
@@ -144,19 +154,10 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       child: OutlinedButton.icon(
         onPressed: _pickTime,
         icon: Icon(Icons.access_time, color: Colors.red),
-        label: Text(_selectedTime == null ? "Set Time" : _selectedTime!.format(context)),
+        label: Text(_selectedTime == null
+            ? "Saat Seç"
+            : _selectedTime!.format(context)),
       ),
-    );
-  }
-
-  // 📌 HATIRLATMA SEÇİMİ BUTONU
-  Widget _buildReminderButton() {
-    return OutlinedButton.icon(
-      onPressed: () {
-        // Hatırlatma ekleme fonksiyonu
-      },
-      icon: Icon(Icons.notifications, color: Colors.red),
-      label: Text(_selectedReminder ?? "Set Reminder"),
     );
   }
 
@@ -181,43 +182,70 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   }
 
   // 📌 Görevi Kaydetme
-  void _saveTask(WidgetRef ref) async { // ✅ `ref` burada kullanılacak şekilde güncellendi
+  void _saveTask(WidgetRef ref) async {
     if (_titleController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Lütfen görev başlığını girin!")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Lütfen görev başlığını girin!")));
       return;
     }
+    if (_selectedCategoryId == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Lütfen bir kategori seçin!")));
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString("userId");
     if (userId == null || userId.isEmpty) {
       print("🚨 Kullanıcı giriş yapmamış, `userId` bulunamadı!");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Giriş yapmadan görev ekleyemezsiniz!")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Giriş yapmadan görev ekleyemezsiniz!")));
       return;
     }
+
+    // 📌 `dueDate` ile `_selectedTime` birleştiriliyor.
+    DateTime? fullDate;
+    if (_selectedDate != null && _selectedTime != null) {
+      fullDate = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
+    } else if (_selectedDate != null) {
+      fullDate = _selectedDate; // Eğer sadece tarih seçildiyse
+    }
+
     // 📌 Yeni görev objesi oluşturuyoruz
     TodoModel newTask = TodoModel(
       id: "",
       title: _titleController.text,
-      category: _selectedCategory,
-      dueDate: _selectedDate,
-      color: _selectedColor,
+      categoryId: _selectedCategoryId!, // ✅ Sadece kategori ID'si kaydediliyor
+      category: _selectedCategory, // ✅ UI'de kullanmak için
+      dueDate: fullDate,
+      time: _selectedTime?.format(context),
       notes: _notesController.text,
       isCompleted: false,
-      userId:userId,
+      userId: userId,
       createdAt: DateTime.now(),
     );
     print("📌 Yeni görev oluşturuldu: ${newTask.toJson()}");
 
-    // 📌 Görevi ViewModel üzerinden backend'e ekle
-    ref.read(todoProvider.notifier).addTodo(newTask);
-
     // 📌 Görev eklendikten sonra anasayfaya dön
-    // 📌 Görevi ViewModel üzerinden backend'e ekle
     ref.read(todoProvider.notifier).addTodo(newTask).then((_) {
       print("✅ Görev başarıyla eklendi!");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Görev başarıyla eklendi!")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Görev başarıyla eklendi!")));
+
+      // Kategorileri yeniden yükle
+      ref.read(categoryProvider.notifier).fetchCategories();
+
+      Navigator.pop(context);
     }).catchError((error) {
       print("🚨 Görev eklenirken hata oluştu: $error");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Görev ekleme başarısız!")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Görev ekleme başarısız!")));
     });
   }
-  }
+}

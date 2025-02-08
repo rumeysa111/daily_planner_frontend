@@ -5,6 +5,7 @@ import 'package:mytodo_app/models/todo_model.dart';
 import 'package:mytodo_app/routes/routes.dart';
 import 'package:mytodo_app/viewmodels/todo_viewmodel.dart';
 import '../../theme/colors.dart';
+import '../../viewmodels/category_viewmodel.dart';
 import '../../widgets/category_card.dart';
 import '../../widgets/task_item.dart';
 
@@ -12,14 +13,16 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todoViewModel = ref.watch(todoProvider.notifier); // 📌 ViewModel
-    //final allTasks = ref.watch(todoProvider); // 📌 Tüm görevler
-    final todayTasks = todoViewModel.todayTasks; // 📌 ViewModel'den bugünün görevlerini al
-
-    final selectedCategory = todoViewModel.selectedCategory; // 📌 Seçilen kategori
-
-
+    final todayTasks = ref.watch(todoProvider); // 📌 Anlık görev listesi
+final ongoingTasks=todayTasks.where((task)=> !task.isCompleted).toList();
+final completedTasks=todayTasks.where((task)=>task.isCompleted).toList();
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text("Görevler", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -28,16 +31,23 @@ class HomePage extends ConsumerWidget {
             children: [
               SizedBox(height: 10),
               _buildSearchBar(),
+
               SizedBox(height: 20),
-              _buildSectionTitle("Kategoriler"),
-              _buildCategoryList(ref,selectedCategory!), // 📌 Kategori Seçimi
-              SizedBox(height: 20),
-              _buildTaskSection(context),
+              _buildTaskSection("Bugünün Görevleri ",ongoingTasks,ref),
               SizedBox(height: 10),
-              Expanded(child: _buildTaskList(todayTasks)), // 📌 Backend'den gelen görevler gösteriliyor
+              //tamamamlana görevler
+              _buildTaskSection("Tamamlanan Görevler",completedTasks,ref),
+
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.addtask);
+        },
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.blue,
       ),
     );
   }
@@ -60,7 +70,7 @@ class HomePage extends ConsumerWidget {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                hintText: "Görevleri ve etkinlikleri ara",
+                hintText: "Görevleri ara...",
                 border: InputBorder.none,
               ),
             ),
@@ -75,66 +85,45 @@ class HomePage extends ConsumerWidget {
     return Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
   }
 
-  /// 📌 Kategorileri Listeleyen Widget
-  Widget _buildCategoryList(WidgetRef ref,String selectedCategory) {
-    final todoViewModel = ref.watch(todoProvider.notifier);
-    final categories = ["Tümü", "Work", "Personal", "Shopping", "Health"];
 
 
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
-      children: categories.map((category) {
-        return GestureDetector(
-          onTap: () {
-            todoViewModel.setCategory(category); // 📌 Backend'den filtrelenmiş görevleri al
-          },
-          child: CategoryCard(
-            title: category,
-            icon: Icons.category,
-            color: category == "Work"
-                ? Colors.blue
-                : category == "Personal"
-                ? Colors.red
-                : category == "Shopping"
-                ? Colors.orange
-                : category == "Health"
-                ? Colors.pink
-                : Colors.grey, // "Tümü" için gri renk
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  /// 📌 Görev Başlığı ve "Tümünü Gör" Butonu
-  Widget _buildTaskSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  /// 📌 Görev Bölümü (Tamamlanan ve Devam Edenler İçin Kullanılır)
+  Widget _buildTaskSection(String title, List<TodoModel> tasks, WidgetRef ref, {bool completed = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle("Bugünün görevleri"),
-        TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.alltask);
-          },
-          child: Text("Tüm görevleri gör", style: TextStyle(color: Colors.blue)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            if (tasks.isNotEmpty)
+              TextButton(
+                onPressed: () {
+          //        Navigator.pushNamed(context , AppRoutes.alltask);
+                },
+                child: Text("Tümünü Gör", style: TextStyle(color: Colors.blue)),
+              ),
+          ],
         ),
+        SizedBox(height: 10),
+        _buildTaskList(tasks, ref, completed),
       ],
     );
   }
-
   /// 📌 Görev Listesi
-  Widget _buildTaskList(List<TodoModel> tasks) {
+  Widget _buildTaskList(List<TodoModel> tasks, WidgetRef ref, bool completed) {
     if (tasks.isEmpty) {
       return Center(
         child: Text(
-          "Bu kategoride henüz görev yok.",
+          completed ? "Tamamlanmış görev yok." : "Bugün için görev yok.",
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
       );
     }
 
     return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
@@ -144,7 +133,16 @@ class HomePage extends ConsumerWidget {
             ? DateFormat("HH:mm").format(task.dueDate!)
             : "Belirtilmemiş";
 
-        return TaskItem(title: task.title, time: formattedTime);
+        return TaskItem(
+          task: task,
+          time: formattedTime,
+          onComplete: () {
+            ref.read(todoProvider.notifier).toggleTaskCompletion(task.id);
+          },
+          onDelete: () {
+            ref.read(todoProvider.notifier).deleteTodo(task.id);
+          },
+        );
       },
     );
   }
