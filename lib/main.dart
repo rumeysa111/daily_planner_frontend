@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // 📌 Riverpod'u ekledik!
-import 'package:mytodo_app/routes/routes.dart';
+import 'package:mytodo_app/core/navigation/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'views/auth/login_page.dart'; // 📌 Login sayfasını çağırıyoruz
+import 'domain/presentation/pages/auth/login_page.dart'; // 📌 Login sayfasını çağırıyoruz
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // 📌 Flutter uygulaması başlatıldı
