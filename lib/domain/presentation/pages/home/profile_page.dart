@@ -1,138 +1,117 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
-import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dart';
-import 'package:mytodo_app/domain/presentation/viewmodels/profile_viewmodel.dart';
-import '../../widgets/category_management_dialog.dart';
-import '../../widgets/category_edit_dialog.dart';
 
-class ProfilePage extends ConsumerWidget {
+class ProfilePage extends StatelessWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(profileProvider);
-    final categories = ref.watch(categoryProvider);
-
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text("Profil",
-            style: TextStyle(
-                color: AppColors.primary, fontWeight: FontWeight.bold)),
+        title: Text(
+          "Profil",
+          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout, color: AppColors.primary),
-            onPressed: () async {
-              await ref.read(profileProvider.notifier).logout();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/login', (route) => false);
-            },
-          ),
-        ],
       ),
-      body: user == null
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildProfileHeader(context),
+            SizedBox(height: 20),
+            _buildStatisticsSection(),
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  // Profile Header
-                  _buildProfileHeader(context, user),
+                  _buildSettingsSection(
+                    "Kategoriler",
+                    [
+                      SettingsItem(
+                        icon: Icons.category,
+                        title: "Kategorileri Yönet",
+                        subtitle: "5 kategori",
+                        onTap: () {},
+                      ),
+                      SettingsItem(
+                        icon: Icons.add_circle_outline,
+                        title: "Yeni Kategori Ekle",
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 20),
-                  // Statistics Section
-                  _buildStatisticsSection(ref),
+                  _buildSettingsSection(
+                    "Hesap Ayarları",
+                    [
+                      SettingsItem(
+                        icon: Icons.person_outline,
+                        title: "Profili Düzenle",
+                        onTap: () {},
+                      ),
+                      SettingsItem(
+                        icon: Icons.lock_outline,
+                        title: "Şifre Değiştir",
+                        onTap: () {},
+                      ),
+                      SettingsItem(
+                        icon: Icons.notifications_outlined,
+                        title: "Bildirim Ayarları",
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 20),
-                  // Settings Sections
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        _buildSettingsSection(
-                          "Kategoriler",
-                          [
-                            SettingsItem(
-                              icon: Icons.category,
-                              title: "Kategorileri Yönet",
-                              subtitle: "${categories.length} kategori",
-                              onTap: () => _showCategoryManagement(context),
-                            ),
-                            SettingsItem(
-                              icon: Icons.add_circle_outline,
-                              title: "Yeni Kategori Ekle",
-                              onTap: () => _showAddCategory(context, ref),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        _buildSettingsSection(
-                          "Hesap Ayarları",
-                          [
-                            SettingsItem(
-                              icon: Icons.person_outline,
-                              title: "Profili Düzenle",
-                              onTap: () {},
-                            ),
-                            SettingsItem(
-                              icon: Icons.lock_outline,
-                              title: "Şifre Değiştir",
-                              onTap: () {},
-                            ),
-                            SettingsItem(
-                              icon: Icons.notifications_outlined,
-                              title: "Bildirim Ayarları",
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        _buildSettingsSection(
-                          "Uygulama Ayarları",
-                          [
-                            SettingsItem(
-                              icon: Icons.color_lens_outlined,
-                              title: "Tema",
-                              trailing: Switch(value: false, onChanged: (val) {}),
-                            ),
-                            SettingsItem(
-                              icon: Icons.language,
-                              title: "Dil",
-                              subtitle: "Türkçe",
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        _buildSettingsSection(
-                          "Destek",
-                          [
-                            SettingsItem(
-                              icon: Icons.help_outline,
-                              title: "Yardım",
-                              onTap: () {},
-                            ),
-                            SettingsItem(
-                              icon: Icons.info_outline,
-                              title: "Hakkında",
-                              onTap: () {},
-                            ),
-                            SettingsItem(
-                              icon: Icons.logout,
-                              title: "Çıkış Yap",
-                              textColor: Colors.red,
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  _buildSettingsSection(
+                    "Uygulama Ayarları",
+                    [
+                      SettingsItem(
+                        icon: Icons.color_lens_outlined,
+                        title: "Tema",
+                        trailing: Switch(value: false, onChanged: (val) {}),
+                      ),
+                      SettingsItem(
+                        icon: Icons.language,
+                        title: "Dil",
+                        subtitle: "Türkçe",
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  _buildSettingsSection(
+                    "Destek",
+                    [
+                      SettingsItem(
+                        icon: Icons.help_outline,
+                        title: "Yardım",
+                        onTap: () {},
+                      ),
+                      SettingsItem(
+                        icon: Icons.info_outline,
+                        title: "Hakkında",
+                        onTap: () {},
+                      ),
+                      SettingsItem(
+                        icon: Icons.logout,
+                        title: "Çıkış Yap",
+                        textColor: Colors.red,
+                        onTap: () {},
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
+            SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, UserModel user) {
+  Widget _buildProfileHeader(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -151,42 +130,34 @@ class ProfilePage extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          GestureDetector(
-            onTap: () => _updateProfilePhoto(context),
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: user.photoUrl != null
-                      ? NetworkImage(user.photoUrl!)
-                      : null,
-                  child: user.photoUrl == null
-                      ? Icon(Icons.person, size: 50, color: Colors.grey[400])
-                      : null,
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child:
-                        Icon(Icons.camera_alt, size: 20, color: Colors.white),
+          Stack(
+            children: [
+              CircleAvatar(
+                radius: 50,
+                child: Icon(Icons.person, size: 50, color: Colors.grey[400]),
+                backgroundColor: Colors.grey[200],
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
                   ),
+                  child: Icon(Icons.camera_alt, size: 20, color: Colors.white),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           SizedBox(height: 16),
           Text(
-            user.username,
+            "Kullanıcı Adı",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Text(
-            user.email,
+            "kullanici@email.com",
             style: TextStyle(color: Colors.grey[600]),
           ),
         ],
@@ -194,67 +165,35 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatisticsSection(WidgetRef ref) {
-    return FutureBuilder<Map<String, int>>(
-      future: ref.read(profileProvider.notifier).getTaskStatistics(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
-        }
-
-        final stats = snapshot.data!;
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
-            ],
+  Widget _buildStatisticsSection() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 5),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildStatItem(
-                  context, stats['completed'].toString(), "Tamamlanan\nGörevler"),
-              _buildStatDivider(),
-              _buildStatItem(
-                  context, stats['pending'].toString(), "Bekleyen\nGörevler"),
-              _buildStatDivider(),
-              _buildStatItem(context, "${stats['successRate']}%", "Başarı\nOranı"),
-            ],
-          ),
-        );
-      },
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildStatItem("12", "Tamamlanan\nGörevler"),
+          _buildStatDivider(),
+          _buildStatItem("5", "Bekleyen\nGörevler"),
+          _buildStatDivider(),
+          _buildStatItem("70%", "Başarı\nOranı"),
+        ],
+      ),
     );
   }
 
-  void _showCategoryManagement(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => CategoryManagementDialog(),
-    );
-  }
-
-  void _showAddCategory(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => CategoryEditDialog(),
-    ).then((created) {
-      if (created == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Kategori başarıyla eklendi')),
-        );
-      }
-    });
-  }
-
-  Widget _buildStatItem(BuildContext context, String value, String label) {
+  Widget _buildStatItem(String value, String label) {
     return Column(
       children: [
         Text(
@@ -262,7 +201,7 @@ class ProfilePage extends ConsumerWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: AppColors.primary,
+            color: Colors.blue,
           ),
         ),
         SizedBox(height: 4),
@@ -318,13 +257,6 @@ class ProfilePage extends ConsumerWidget {
       ),
     );
   }
-
-  void _updateProfilePhoto(BuildContext context) {
-    // TODO: Implement photo upload functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Profil fotoğrafı güncelleme yakında!')),
-    );
-  }
 }
 
 class SettingsItem extends StatelessWidget {
@@ -347,7 +279,7 @@ class SettingsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
+      leading: Icon(icon, color: Colors.blue),
       title: Text(
         title,
         style: TextStyle(

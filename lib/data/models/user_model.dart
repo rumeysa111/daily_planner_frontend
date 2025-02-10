@@ -3,46 +3,58 @@ import 'dart:convert';
 
 class UserModel {
   final String id;
-  final String username;
   final String email;
-  String? photoUrl;
+  final String name;
+  final DateTime? createdAt;
+  final String token;
+  final DateTime? updatedAt;
 
   UserModel({
     required this.id,
-    required this.username,
     required this.email,
-    this.photoUrl,
+    required this.name,
+    this.createdAt, // 📌 Null olabileceği için opsiyonel yaptık
+    required this.token,
+    this.updatedAt, // 📌 Null olabileceği için opsiyonel yaptık
   });
 
   UserModel copyWith({
     String? id,
-    String? username,
     String? email,
-    String? photoUrl,
+    String? name,
+    DateTime? createdAt,
+    String? token,
+    DateTime? updatedAt,
   }) {
     return UserModel(
       id: id ?? this.id,
-      username: username ?? this.username,
       email: email ?? this.email,
-      photoUrl: photoUrl ?? this.photoUrl,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      token: token ?? this.token,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'userID': id,
-      'username': username,
       'email': email,
-      'photoUrl': photoUrl,
+      'name': name,
+      'createdAt': createdAt?.toIso8601String(), // 📌 createdAt opsiyonel olduğu için `?` ekledik
+      'token': token,
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['userId'] ?? "", // 📌 Eğer `null` gelirse boş string yap
-      username: map['username'] ?? '',
       email: map['email'] ?? '',
-      photoUrl: map['photoUrl'],
+      name: map['name'] ?? '',
+      createdAt: map['createdAt'] != null ? DateTime.tryParse(map['createdAt']) : null, // 📌 `tryParse` ile hata önleme
+      token: map['token'] ?? '',
+      updatedAt: map['updatedAt'] != null ? DateTime.tryParse(map['updatedAt']) : null,
     );
   }
 
@@ -55,7 +67,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, username: $username, email: $email, photoUrl: $photoUrl)';
+    return 'UserModel(id: $id, email: $email, name: $name, createdAt: $createdAt, token: $token, updatedAt: $updatedAt)';
   }
 
   @override
@@ -63,16 +75,20 @@ class UserModel {
     if (identical(this, other)) return true;
     return 
       other.id == id &&
-      other.username == username &&
       other.email == email &&
-      other.photoUrl == photoUrl;
+      other.name == name &&
+      other.createdAt == createdAt &&
+      other.token == token &&
+      other.updatedAt == updatedAt;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      username.hashCode ^
       email.hashCode ^
-      photoUrl.hashCode;
+      name.hashCode ^
+      createdAt.hashCode ^
+      token.hashCode ^
+      updatedAt.hashCode;
   }
 }
