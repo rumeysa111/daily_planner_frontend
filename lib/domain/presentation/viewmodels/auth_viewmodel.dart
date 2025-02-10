@@ -17,9 +17,10 @@ class AuthViewModel extends StateNotifier<UserModel?> {
   final Ref ref; // **✅ Riverpod ref ekledik**
 
   // 📌 Constructor (Başlatıcı), AuthService'i alır ve başlangıç state'ini null yapar
-  AuthViewModel(this._authService,this.ref) : super(null) {
+  AuthViewModel(this._authService, this.ref) : super(null) {
     _loadUser();
   }
+
   /// **📌 Kullanıcı giriş yaptıysa bilgileri local storage'dan al**
   Future<void> _loadUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,6 +39,7 @@ class AuthViewModel extends StateNotifier<UserModel?> {
       }
     }
   }
+
   // 📌 Kullanıcı giriş yapma fonksiyonu
   Future<bool> login(String email, String password) async {
     // 📌 AuthService ile giriş API isteğini yapıyoruz
@@ -49,7 +51,7 @@ class AuthViewModel extends StateNotifier<UserModel?> {
 
       state = user;
       //tokenı kaydet
-      final prefs=await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       await prefs.setString("token", user.token);
       await prefs.setString("userId", user.id);
       print("✅ Kullanıcı ID Kaydedildi: ${user.id}");
@@ -63,24 +65,45 @@ class AuthViewModel extends StateNotifier<UserModel?> {
   }
 
   // 📌 Kullanıcı kayıt olma fonksiyonu
-  Future<bool> register(String name,String surname, String email, String password) async {
+  Future<bool> register(
+      String name, String surname, String email, String password) async {
     // 📌 AuthService içindeki register fonksiyonunu çağırarak API'ye istek gönderiyoruz
-    return await _authService.register(name,surname, email, password);
+    return await _authService.register(name, surname, email, password);
   }
 
   // 📌 Kullanıcı çıkış yapma fonksiyonu
-   Future<void> logout()async {
-    state=null;
-    final prefs= await SharedPreferences.getInstance();
+  Future<void> logout() async {
+    state = null;
+    final prefs = await SharedPreferences.getInstance();
     await prefs.remove("token");
     await prefs.remove("userId");
     // **✅ Çıkış yapınca kategori listesini temizle**
     ref.read(categoryProvider.notifier).clearCategories();
+  }
+
+  Future<bool> updateProfile(String name, String email) async {
+    if (state == null) return false;
+
+    final updatedUser =
+        await _authService.updateProfile(state!.token, name, email);
+    if (updatedUser != null) {
+      state = updatedUser;
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> changePassword(
+      String currentPassword, String newPassword) async {
+    if (state == null) return false;
+    return await _authService.changePassword(
+        state!.token, currentPassword, newPassword);
   }
 }
 
 // 📌 Riverpod Provider tanımlaması
 // 📌 StateNotifierProvider, AuthViewModel'in durumunu yönetir ve UI ile bağlantıyı sağlar
 final authProvider = StateNotifierProvider<AuthViewModel, UserModel?>((ref) {
-  return AuthViewModel(AuthService(),ref); // 📌 AuthViewModel'in bir örneğini oluşturuyoruz
+  return AuthViewModel(
+      AuthService(), ref); // 📌 AuthViewModel'in bir örneğini oluşturuyoruz
 });

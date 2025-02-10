@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../widgets/custom_app_bar.dart';
 
 class FocusModePage extends ConsumerStatefulWidget {
   @override
@@ -64,10 +65,16 @@ class _FocusModePageState extends ConsumerState<FocusModePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Focus Mode"),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+      appBar: CustomAppBar(
+        title: "Odaklan",
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.blue),
+            onPressed: () {
+              // Odak modu ayarları
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -95,7 +102,8 @@ class _FocusModePageState extends ConsumerState<FocusModePage> {
                 ElevatedButton(
                   onPressed: _isRunning ? null : _startTimer,
                   child: Text("Başlat"),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
@@ -107,7 +115,8 @@ class _FocusModePageState extends ConsumerState<FocusModePage> {
                 ElevatedButton(
                   onPressed: _resetTimer,
                   child: Text("Sıfırla"),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.orange),
                 ),
               ],
             ),

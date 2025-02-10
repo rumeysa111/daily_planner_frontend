@@ -239,7 +239,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       _selectedDate!.day,
       _selectedTime?.hour ?? 0,
       _selectedTime?.minute ?? 0,
-    );
+    ).toLocal(); // Yerel saat dilimine çevir
 
     TodoModel newTask = TodoModel(
       id: "",

@@ -6,6 +6,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../data/models/todo_model.dart';
 import '../../viewmodels/todo_viewmodel.dart';
 import '../../widgets/task_item.dart';
+import '../../widgets/custom_app_bar.dart';
 
 enum TaskFilter { today, week, month }
 
@@ -32,12 +33,24 @@ class HomePage extends ConsumerWidget {
     final completedTasks = allTasks.where((task) => task.isCompleted).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text("Görevler",
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        elevation: 0,
+      backgroundColor: Colors.grey[50],
+      appBar: CustomAppBar(
+        title: "Görevlerim",
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.blue),
+            onPressed: () {
+              // Arama fonksiyonu
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications_none, color: Colors.blue),
+            onPressed: () {
+              // Bildirimler fonksiyonu
+            },
+          ),
+          SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
         child: Column(

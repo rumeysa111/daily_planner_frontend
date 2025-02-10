@@ -81,7 +81,7 @@ class TaskItem extends ConsumerWidget {
                       SizedBox(width: 4),
                       Text(
                         task.dueDate != null
-                            ? '${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}'
+                            ? '${task.dueDate!.toLocal().day}/${task.dueDate!.toLocal().month}/${task.dueDate!.toLocal().year}'
                             : 'Tarih yok',
                         style: TextStyle(
                           color: Colors.grey[600],

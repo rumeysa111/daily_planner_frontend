@@ -16,9 +16,18 @@ class CategoryManagementDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'Kategorileri Yönet',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Kategorileri Yönet',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline, color: Colors.blue),
+                  onPressed: () => _showAddCategory(context),
+                ),
+              ],
             ),
             SizedBox(height: 16),
             ConstrainedBox(
@@ -69,6 +78,13 @@ class CategoryManagementDialog extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddCategory(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => CategoryEditDialog(),
     );
   }
 

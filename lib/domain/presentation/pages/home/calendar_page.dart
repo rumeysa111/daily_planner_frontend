@@ -6,6 +6,7 @@ import '../../viewmodels/calendar_viewmodel.dart';
 import '../../widgets/task_item.dart';
 import '../../viewmodels/todo_viewmodel.dart';
 import '../home/add_task_page.dart';
+import '../../widgets/custom_app_bar.dart';
 
 class CalendarPage extends ConsumerStatefulWidget {
   @override
@@ -20,7 +21,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
   void initState() {
     super.initState();
     _focusedDay = DateTime.now();
-    
+
     // İlk yüklemede veri getirme işlemini güvenli bir şekilde yap
     Future.microtask(() {
       _loadTasks(_focusedDay);
@@ -35,7 +36,8 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(ref.read(calendarProvider.notifier).selectedDate, selectedDay)) {
+    if (!isSameDay(
+        ref.read(calendarProvider.notifier).selectedDate, selectedDay)) {
       setState(() {
         _focusedDay = focusedDay;
       });
@@ -49,20 +51,13 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     final isLoading = ref.watch(calendarProvider.notifier).isLoading;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Takvim',
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        elevation: 0,
+      appBar: CustomAppBar(
+        title: "Takvim",
         actions: [
           IconButton(
-            icon: Icon(Icons.today),
+            icon: Icon(Icons.filter_list, color: Colors.blue),
             onPressed: () {
-              final now = DateTime.now();
-              setState(() {
-                _focusedDay = now;
-              });
-              _onDaySelected(now, now);
+              // Filtreleme işlemleri
             },
           ),
         ],
@@ -75,7 +70,8 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           Expanded(
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
-                : _buildTaskList(calendarState, ref.read(calendarProvider.notifier)),
+                : _buildTaskList(
+                    calendarState, ref.read(calendarProvider.notifier)),
           ),
         ],
       ),

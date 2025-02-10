@@ -1,25 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mytodo_app/core/navigation/routes.dart';
+import 'package:mytodo_app/domain/presentation/pages/profile/change_password_page.dart';
+import 'package:mytodo_app/domain/presentation/pages/profile/edit_profile_page.dart';
+import '../../viewmodels/auth_viewmodel.dart';
+import '../../viewmodels/todo_viewmodel.dart';
+import '../../widgets/category_management_dialog.dart';
+import '../../widgets/custom_app_bar.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider);
+    final todos = ref.watch(todoProvider);
+
+    // İstatistikleri hesapla
+    final completedTasks = todos.where((todo) => todo.isCompleted).length;
+    final pendingTasks = todos.where((todo) => !todo.isCompleted).length;
+    final successRate =
+        todos.isEmpty ? 0 : (completedTasks / todos.length * 100).round();
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: Text(
-          "Profil",
-          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+      appBar: CustomAppBar(
+        title: "Profil",
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.blue),
+            onPressed: () {
+              // Profil ayarları
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildProfileHeader(context),
+            _buildProfileHeader(user?.name ?? "Kullanıcı", user?.email ?? ""),
             SizedBox(height: 20),
-            _buildStatisticsSection(),
+            _buildStatisticsSection(completedTasks, pendingTasks, successRate),
             SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -31,13 +50,12 @@ class ProfilePage extends StatelessWidget {
                       SettingsItem(
                         icon: Icons.category,
                         title: "Kategorileri Yönet",
-                        subtitle: "5 kategori",
-                        onTap: () {},
-                      ),
-                      SettingsItem(
-                        icon: Icons.add_circle_outline,
-                        title: "Yeni Kategori Ekle",
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => CategoryManagementDialog(),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -48,56 +66,43 @@ class ProfilePage extends StatelessWidget {
                       SettingsItem(
                         icon: Icons.person_outline,
                         title: "Profili Düzenle",
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfilePage()),
+                          );
+                        },
                       ),
                       SettingsItem(
                         icon: Icons.lock_outline,
                         title: "Şifre Değiştir",
-                        onTap: () {},
-                      ),
-                      SettingsItem(
-                        icon: Icons.notifications_outlined,
-                        title: "Bildirim Ayarları",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  _buildSettingsSection(
-                    "Uygulama Ayarları",
-                    [
-                      SettingsItem(
-                        icon: Icons.color_lens_outlined,
-                        title: "Tema",
-                        trailing: Switch(value: false, onChanged: (val) {}),
-                      ),
-                      SettingsItem(
-                        icon: Icons.language,
-                        title: "Dil",
-                        subtitle: "Türkçe",
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChangePasswordPage()),
+                          );
+                        },
                       ),
                     ],
                   ),
                   SizedBox(height: 20),
                   _buildSettingsSection(
-                    "Destek",
+                    "Uygulama",
                     [
-                      SettingsItem(
-                        icon: Icons.help_outline,
-                        title: "Yardım",
-                        onTap: () {},
-                      ),
-                      SettingsItem(
-                        icon: Icons.info_outline,
-                        title: "Hakkında",
-                        onTap: () {},
-                      ),
                       SettingsItem(
                         icon: Icons.logout,
                         title: "Çıkış Yap",
                         textColor: Colors.red,
-                        onTap: () {},
+                        onTap: () async {
+                          await ref.read(authProvider.notifier).logout();
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            AppRoutes.login,
+                            (route) => false,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -111,7 +116,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(String name, String email) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -130,34 +135,12 @@ class ProfilePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Stack(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                child: Icon(Icons.person, size: 50, color: Colors.grey[400]),
-                backgroundColor: Colors.grey[200],
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.camera_alt, size: 20, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
           Text(
-            "Kullanıcı Adı",
+            name,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Text(
-            "kullanici@email.com",
+            email,
             style: TextStyle(color: Colors.grey[600]),
           ),
         ],
@@ -165,7 +148,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatisticsSection() {
+  Widget _buildStatisticsSection(int completed, int pending, int successRate) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       padding: EdgeInsets.all(20),
@@ -183,11 +166,11 @@ class ProfilePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem("12", "Tamamlanan\nGörevler"),
+          _buildStatItem("$completed", "Tamamlanan\nGörevler"),
           _buildStatDivider(),
-          _buildStatItem("5", "Bekleyen\nGörevler"),
+          _buildStatItem("$pending", "Bekleyen\nGörevler"),
           _buildStatDivider(),
-          _buildStatItem("70%", "Başarı\nOranı"),
+          _buildStatItem("$successRate%", "Başarı\nOranı"),
         ],
       ),
     );
@@ -278,18 +261,23 @@ class SettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: textColor ?? Colors.grey[800],
-          fontWeight: FontWeight.w500,
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(icon, color: Colors.blue),
+          title: Text(
+            title,
+            style: TextStyle(
+              color: textColor ?? Colors.grey[800],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          subtitle: subtitle != null ? Text(subtitle!) : null,
+          trailing: trailing ?? Icon(Icons.chevron_right, color: Colors.grey),
+          onTap: onTap,
         ),
-      ),
-      subtitle: subtitle != null ? Text(subtitle!) : null,
-      trailing: trailing ?? Icon(Icons.chevron_right, color: Colors.grey),
-      onTap: onTap,
+        Divider(height: 1, thickness: 0.5, color: Colors.grey[300]),
+      ],
     );
   }
 }

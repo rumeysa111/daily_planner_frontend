@@ -82,17 +82,29 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
   /// Zaman bazlı filtreleme için yeni metod ekle
   List<TodoModel> getFilteredTasks(TaskFilter filter) {
     final now = DateTime.now();
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    final endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    final endOfWeek = startOfToday.add(Duration(days: 7));
+    final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
+
     return state.where((task) {
       if (task.dueDate == null) return false;
+
+      final taskDate = DateTime(
+        task.dueDate!.year,
+        task.dueDate!.month,
+        task.dueDate!.day,
+      );
+
       switch (filter) {
         case TaskFilter.today:
-          return isSameDay(task.dueDate!, now);
+          return taskDate.isAtSameMomentAs(startOfToday);
         case TaskFilter.week:
-          return task.dueDate!.isAfter(now.subtract(Duration(days: 1))) &&
-              task.dueDate!.isBefore(now.add(Duration(days: 7)));
+          return taskDate.isAfter(startOfToday.subtract(Duration(days: 1))) &&
+              taskDate.isBefore(endOfWeek);
         case TaskFilter.month:
-          return task.dueDate!.year == now.year &&
-              task.dueDate!.month == now.month;
+          return taskDate.isAfter(startOfToday.subtract(Duration(days: 1))) &&
+              taskDate.isBefore(endOfMonth);
       }
     }).toList();
   }

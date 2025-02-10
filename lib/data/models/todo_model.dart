@@ -36,9 +36,12 @@ class TodoModel {
       title: json['title'] ?? '',
       categoryId:
           categoryData is Map ? categoryData['_id'] : (categoryData ?? ''),
-      category:
-          categoryData is Map ? CategoryModel.fromJson(Map<String, dynamic>.from(categoryData)) : null,
-      dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
+      category: categoryData is Map
+          ? CategoryModel.fromJson(Map<String, dynamic>.from(categoryData))
+          : null,
+      dueDate: json['dueDate'] != null
+          ? DateTime.parse(json['dueDate']).toLocal()
+          : null,
       time: json['time'],
       notes: json['notes'],
       isCompleted: json['isCompleted'] ?? false,
@@ -52,7 +55,7 @@ class TodoModel {
     return {
       "title": title,
       "category": categoryId, // Kategori ID olarak gönderilecek
-      "dueDate": dueDate?.toIso8601String(),
+      "dueDate": dueDate?.toUtc()?.toIso8601String(), // UTC'ye çevirerek gönder
       "time": time,
       "notes": notes,
       "isCompleted": isCompleted,
