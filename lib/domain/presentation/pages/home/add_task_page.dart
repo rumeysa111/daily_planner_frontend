@@ -57,57 +57,144 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     final categories = ref.watch(categoryProvider);
 
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text("Görev Ekle",
-            style: TextStyle(
-                color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold)),
+        title: Text(
+          "Yeni Görev",
+          style: TextStyle(
+            color: Colors.blue[800],
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.blue[800]),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: categories.isEmpty
-          ? Center(
+          ? _buildEmptyCategoryState()
+          : SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Henüz kategori eklenmemiş'),
-                  ElevatedButton(
-                    onPressed: _showAddCategoryDialog,
-                    child: Text('Kategori Ekle'),
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildTitleField(),
+                        SizedBox(height: 24),
+                        _buildCategoryDropdown(categories),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildDateTimePicker(),
+                        SizedBox(height: 24),
+                        _buildNotesField(),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            )
-          : Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTitleField(),
-                  SizedBox(height: 16),
-                  _buildCategoryDropdown(categories),
-                  SizedBox(height: 16),
-                  _buildDateTimePicker(),
-                  SizedBox(height: 16),
-                  _buildNotesField(),
-                ],
-              ),
             ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _saveTask(ref),
-        child: Icon(Icons.check),
+        label: Text('Kaydet'),
+        icon: Icon(Icons.check),
         backgroundColor: Colors.blue,
       ),
     );
   }
 
-  // 📌 Görev Başlığı Alanı
-  Widget _buildTitleField() {
-    return TextField(
-      controller: _titleController,
-      decoration: InputDecoration(
-        hintText: "Görev Başlığı",
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+  Widget _buildEmptyCategoryState() {
+    return Center(
+      child: Container(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                shape: BoxShape.circle,
+              ),
+              child:
+                  Icon(Icons.category_outlined, size: 48, color: Colors.blue),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Henüz kategori eklenmemiş',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: _showAddCategoryDialog,
+              icon: Icon(Icons.add),
+              label: Text('Kategori Ekle'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildTitleField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Görev Başlığı",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[800],
+          ),
+        ),
+        SizedBox(height: 8),
+        TextField(
+          controller: _titleController,
+          decoration: InputDecoration(
+            hintText: "Görevinizi yazın",
+            hintStyle: TextStyle(color: Colors.grey[400]),
+            filled: true,
+            fillColor: Colors.grey[50],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey[200]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.blue),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -116,67 +203,91 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Kategori",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Kategori",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+            ),
+            TextButton.icon(
+              onPressed: _showAddCategoryDialog,
+              icon: Icon(Icons.add, size: 18),
+              label: Text("Yeni"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 12),
         Container(
-          height: 100, // Yüksekliği ayarlayabilirsiniz
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              final isSelected = _selectedCategoryId == category.id;
+          constraints: BoxConstraints(maxHeight: 200), // Maximum yükseklik
+          child: SingleChildScrollView(
+            child: Wrap(
+              spacing: 8, // yatay boşluk
+              runSpacing: 8, // dikey boşluk
+              children: categories.map((category) {
+                final isSelected = _selectedCategoryId == category.id;
 
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedCategoryId = category.id;
-                    _selectedCategory = category;
-                  });
-                },
-                child: Container(
-                  width: 80,
-                  margin: EdgeInsets.only(right: 12),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? category.color.withOpacity(0.2)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isSelected ? category.color : Colors.grey.shade300,
-                      width: isSelected ? 2 : 1,
+                return Container(
+                  width: (MediaQuery.of(context).size.width - 64) /
+                      4, // 4 item per row
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedCategoryId = category.id;
+                        _selectedCategory = category;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? category.color.withOpacity(0.2)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSelected
+                              ? category.color
+                              : Colors.grey.shade300,
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            category.icon,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            category.name,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color:
+                                  isSelected ? category.color : Colors.black87,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        category.icon,
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        category.name,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? category.color : Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+                );
+              }).toList(),
+            ),
           ),
         ),
       ],
@@ -188,7 +299,19 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return DateTimePicker(
       selectedDate: _selectedDate,
       selectedTime: _selectedTime,
-      onDateSelected: (date) => setState(() => _selectedDate = date),
+      onDateSelected: (date) {
+        // Geçmiş tarihleri kontrol et
+        if (date.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Geçmiş tarihlere görev eklenemez!'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+        setState(() => _selectedDate = date);
+      },
       onTimeSelected: (time) => setState(() => _selectedTime = time),
     );
   }
@@ -198,13 +321,35 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Notlar", style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          "Notlar",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[800],
+          ),
+        ),
+        SizedBox(height: 8),
         TextField(
           controller: _notesController,
           maxLines: 3,
           decoration: InputDecoration(
             hintText: "Ek notlarınızı buraya yazın...",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            hintStyle: TextStyle(color: Colors.grey[400]),
+            filled: true,
+            fillColor: Colors.grey[50],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey[200]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.blue),
+            ),
           ),
         ),
       ],
@@ -213,6 +358,17 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
 
   // 📌 Görevi Kaydetme
   void _saveTask(WidgetRef ref) async {
+    // Tarih kontrolü ekle
+    if (_selectedDate!.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Geçmiş tarihlere görev eklenemez!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Lütfen görev başlığını girin!")));

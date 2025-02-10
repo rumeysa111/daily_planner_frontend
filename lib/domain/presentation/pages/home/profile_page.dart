@@ -118,7 +118,7 @@ class ProfilePage extends ConsumerWidget {
 
   Widget _buildProfileHeader(String name, String email) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -137,11 +137,32 @@ class ProfilePage extends ConsumerWidget {
         children: [
           Text(
             name,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+              letterSpacing: 0.5,
+            ),
           ),
-          Text(
-            email,
-            style: TextStyle(color: Colors.grey[600]),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.email_outlined,
+                size: 18,
+                color: Colors.blue[700],
+              ),
+              SizedBox(width: 8),
+              Text(
+                email,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ],
       ),
