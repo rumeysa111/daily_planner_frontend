@@ -31,23 +31,59 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
       print("🚨 Kategorileri çekerken hata oluştu: $e");
     }
   }
+
   void reloadCategories() {
     fetchCategories(); // ✅ Kullanıcı değişirse yeniden yükle
   }
 
   /// ✅ Yeni kategori ekle
-  Future<void> addCategory(CategoryModel category) async {
-    bool success = await _categoryService.addCategory(category);
-    if (success) {
-      state = [...state, category]; // ✅ Yeni kategoriyi listeye ekle
+  Future<bool> addCategory(CategoryModel category) async {
+    try {
+      // SharedPreferences'dan userId'yi al
+      final prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString("userId");
+
+      if (userId == null) {
+        print("🚨 Kullanıcı ID'si bulunamadı!");
+        return false;
+      }
+
+      // Kategori nesnesini userId ile güncelle
+      final categoryWithUserId = CategoryModel(
+        id: category.id,
+        name: category.name,
+        icon: category.icon,
+        color: category.color,
+        userId: userId, // Kullanıcı ID'sini ekle
+      );
+
+      // Güncellenmiş kategoriyi backende gönder
+      bool success = await _categoryService.addCategory(categoryWithUserId);
+      if (success) {
+        await fetchCategories(); // Tüm kategorileri yeniden yükle
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("🚨 Kategori ekleme hatası: $e");
+      return false;
     }
   }
 
   /// ✅ Kategori güncelle
-  Future<void> updateCategory(String categoryId, CategoryModel updatedCategory) async {
-    bool success = await _categoryService.updateCategory(categoryId, updatedCategory);
-    if (success) {
-      state = state.map((cat) => cat.id == categoryId ? updatedCategory : cat).toList();
+  Future<bool> updateCategory(
+      String categoryId, CategoryModel updatedCategory) async {
+    try {
+      bool success =
+          await _categoryService.updateCategory(categoryId, updatedCategory);
+      if (success) {
+        await fetchCategories(); // Tüm kategorileri yeniden yükle
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("🚨 Kategori güncelleme hatası: $e");
+      return false;
     }
   }
 
@@ -58,11 +94,11 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
       state = state.where((cat) => cat.id != categoryId).toList();
     }
   }
+
   /// **📌 Kullanıcı çıkış yaptığında kategorileri temizle**
   void clearCategories() {
     state = [];
   }
-
 
   /// ✅ Seçili kategoriyi ayarla
   void setCategory(String categoryId) {
@@ -72,6 +108,7 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
 }
 
 /// 📌 Riverpod Provider
-final categoryProvider = StateNotifierProvider<CategoryViewModel, List<CategoryModel>>((ref) {
+final categoryProvider =
+    StateNotifierProvider<CategoryViewModel, List<CategoryModel>>((ref) {
   return CategoryViewModel(CategoryService());
 });

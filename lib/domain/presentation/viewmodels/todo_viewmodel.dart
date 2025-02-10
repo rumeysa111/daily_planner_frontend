@@ -13,6 +13,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
 
   String? selectedCategory = "Tümü"; // 📌 Varsayılan olarak tüm görevleri getir
   List<TodoModel> allTodos = []; // 📌 Backend'den gelen tüm görevler
+  bool isLoading = false;
 
   TodoViewModel(this._todoService) : super([]) {
     fetchTodos();
@@ -44,10 +45,12 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
   }
 
   Future<void> fetchTodos({String? category}) async {
+    isLoading = true;
     final token = await _getToken();
     if (token == null) {
       print("🚨 Kullanıcı giriş yapmamış, token bulunamadı");
       state = [];
+      isLoading = false;
       return;
     }
     try {
@@ -58,6 +61,8 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     } catch (e) {
       print("🚨 Görevleri çekerken hata oluştu: $e");
       state = [];
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -114,19 +119,40 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     final token = await _getToken();
     if (token == null) return;
 
-    // 📌 Önce UI'de değiştir
-    state = List.from(state.map((task) {
-      if (task.id == taskId) {
-        return task.copyWith(isCompleted: !task.isCompleted);
-      }
-      return task;
-    }));
+    // Mevcut task'ı bul
+    final taskIndex = state.indexWhere((task) => task.id == taskId);
+    if (taskIndex == -1) return;
 
-    // 📌 Backend'e gönder
-    Future.delayed(Duration(milliseconds: 500), () async {
-      final taskToUpdate = state.firstWhere((task) => task.id == taskId);
-      await _todoService.updateTodo(token, taskId, taskToUpdate);
-    });
+    try {
+      // Yeni durumu oluştur
+      final currentTask = state[taskIndex];
+      final updatedTask = currentTask.copyWith(
+        isCompleted: !currentTask.isCompleted,
+      );
+
+      // Önce backend'i güncelle
+      await _todoService.updateTodo(token, taskId, updatedTask);
+
+      // Backend başarılı olduysa state'i güncelle
+      state = [
+        ...state.sublist(0, taskIndex),
+        updatedTask,
+        ...state.sublist(taskIndex + 1),
+      ];
+
+      // allTodos listesini de güncelle
+      final allTodosIndex = allTodos.indexWhere((task) => task.id == taskId);
+      if (allTodosIndex != -1) {
+        allTodos = [
+          ...allTodos.sublist(0, allTodosIndex),
+          updatedTask,
+          ...allTodos.sublist(allTodosIndex + 1),
+        ];
+      }
+    } catch (e) {
+      print("🚨 Görev güncellenirken hata: $e");
+      // Hata durumunda kullanıcıya bilgi verilebilir
+    }
   }
 
   Future<void> addTodo(TodoModel todo) async {
@@ -157,18 +183,58 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     }
   }
 
-  Future<void> deleteTodo(String id) async {
+  Future<bool> deleteTodo(String id) async {
+    final token = await _getToken();
+    if (token == null) return false;
+
+    try {
+      // Backend'e silme isteği gönder
+      bool success = await _todoService.deleteTodo(token, id);
+
+      if (success) {
+        // Backend'den silme başarılı olduysa state'i güncelle
+        state = List.from(state.where((task) => task.id != id));
+        allTodos = List.from(allTodos.where((task) => task.id != id));
+        print("✅ Görev başarıyla silindi: $id");
+        return true;
+      } else {
+        print("🚨 Görev silme başarısız oldu!");
+        return false;
+      }
+    } catch (e) {
+      print("🚨 Görev silinirken hata oluştu: $e");
+      return false;
+    }
+  }
+
+  Future<void> updateTodo(String taskId, TodoModel updatedTask) async {
     final token = await _getToken();
     if (token == null) return;
 
-    // 📌 UI'den hemen kaldır (Beklemeden)
-    state = List.from(state.where((task) => task.id != id));
+    try {
+      // Backend'i güncelle
+      await _todoService.updateTodo(token, taskId, updatedTask);
 
-    // 📌 Backend'e bildir (Eğer hata olursa geri al)
-    bool success = await _todoService.deleteTodo(token, id);
-    if (!success) {
-      print("🚨 Görev silme başarısız oldu, UI'yi geri alıyoruz!");
-      fetchTodos(); // Hata olursa backend’den veriyi tekrar al
+      // State'i güncelle
+      state = state.map((task) {
+        if (task.id == taskId) {
+          return updatedTask;
+        }
+        return task;
+      }).toList();
+
+      // allTodos listesini de güncelle
+      allTodos = allTodos.map((task) {
+        if (task.id == taskId) {
+          return updatedTask;
+        }
+        return task;
+      }).toList();
+
+      print("✅ Görev başarıyla güncellendi: $taskId");
+    } catch (e) {
+      print("🚨 Görev güncellenirken hata: $e");
+      throw e; // Re-throw to handle in UI
     }
   }
 }

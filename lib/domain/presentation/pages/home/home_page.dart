@@ -55,35 +55,65 @@ class HomePage extends ConsumerWidget {
               ),
             ),
 
-            // Add loading indicator
-            tasks.isEmpty
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        // Devam Eden Görevler Bölümü
-                        _buildSectionHeader(
-                            "Devam Eden Görevler", ongoingTasks.length),
-                        if (ongoingTasks.isEmpty)
-                          _buildEmptyState("Devam eden görev bulunmuyor")
-                        else
-                          _buildTasksList(ongoingTasks, ref),
-
-                        SizedBox(height: 24),
-
-                        // Tamamlanan Görevler Bölümü
-                        _buildSectionHeader(
-                            "Tamamlanan Görevler", completedTasks.length),
-                        if (completedTasks.isEmpty)
-                          _buildEmptyState("Tamamlanan görev bulunmuyor")
-                        else
-                          _buildTasksList(completedTasks, ref),
-                      ],
-                    ),
+            if (todoViewModel.isLoading)
+              Center(child: CircularProgressIndicator())
+            else if (tasks.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.task_outlined,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Henüz görev eklemediniz',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Yeni görev eklemek için + butonuna tıklayın',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+              )
+            else
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    // Devam Eden Görevler Bölümü
+                    _buildSectionHeader(
+                        "Devam Eden Görevler", ongoingTasks.length),
+                    if (ongoingTasks.isEmpty)
+                      _buildEmptyState("Devam eden görev bulunmuyor")
+                    else
+                      _buildTasksList(ongoingTasks, ref),
+
+                    SizedBox(height: 24),
+
+                    // Tamamlanan Görevler Bölümü
+                    _buildSectionHeader(
+                        "Tamamlanan Görevler", completedTasks.length),
+                    if (completedTasks.isEmpty)
+                      _buildEmptyState("Tamamlanan görev bulunmuyor")
+                    else
+                      _buildTasksList(completedTasks, ref),
+                  ],
+                ),
+              ),
           ],
         ),
       ),

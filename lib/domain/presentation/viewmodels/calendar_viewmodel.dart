@@ -2,13 +2,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/models/todo_model.dart';
 import '../../../data/repositories/todo_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class CalendarViewModel extends StateNotifier<List<TodoModel>> {
   final TodoService _todoService;
-  DateTime selectedDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
+  Timer? _refreshTimer;
+  bool isLoading = false;
+
+  DateTime get selectedDate => _selectedDate;
 
   CalendarViewModel(this._todoService) : super([]) {
-    fetchTodosByDate(selectedDate);
+    fetchTodosByDate(_selectedDate);
+    _startAutoRefresh();
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(Duration(seconds: 30), (_) {
+      fetchTodosByDate(_selectedDate);
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   Future<String?> _getToken() async {
@@ -17,23 +36,40 @@ class CalendarViewModel extends StateNotifier<List<TodoModel>> {
   }
 
   Future<void> fetchTodosByDate(DateTime date) async {
+    if (isLoading) return;
+
+    isLoading = true;
+    state = []; // Yükleme başlamadan önce mevcut state'i temizle
+
     final token = await _getToken();
     if (token == null) {
-      state = [];
+      isLoading = false;
       return;
     }
+
     try {
       final todos = await _todoService.fetchTodosByDate(token, date);
+      if (!mounted) return; // StateNotifier dispose edilmişse işlemi iptal et
+
       state = todos;
-      selectedDate = date;
+      _selectedDate = date;
+      print(
+          "📅 Fetched ${todos.length} tasks for ${date.toString().split(' ')[0]}");
     } catch (e) {
-      print("🚨 Takvim görevlerini çekerken hata: $e");
-      state = [];
+      print("🚨 Calendar tasks fetch error: $e");
+      if (mounted) {
+        state = [];
+      }
+    } finally {
+      isLoading = false;
     }
   }
 
   void setSelectedDate(DateTime date) {
-    fetchTodosByDate(date);
+    if (_selectedDate != date) {
+      _selectedDate = date;
+      fetchTodosByDate(date);
+    }
   }
 }
 
