@@ -106,17 +106,25 @@ class TaskItem extends ConsumerWidget {
             ),
             Row(
               children: [
-                Transform.scale(
-                  scale: 1.2,
-                  child: Checkbox(
-                    value: task.isCompleted,
-                    onChanged: (_) => onComplete(),
-                    activeColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
+               Transform.scale(
+  scale: 1.2,
+  child: Checkbox(
+    value: task.isCompleted,
+    onChanged: (_) => onComplete(),
+    fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.green; // Color when the box is checked
+      }
+      return Colors.white; // Fill color when unchecked
+    }),
+    side: BorderSide(
+      color: Colors.black, // Checkbox border color when unchecked
+    ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+    ),
+  ),
+),
                 IconButton(
                   icon: Icon(Icons.delete, color: Colors.red),
                   onPressed: onDelete,

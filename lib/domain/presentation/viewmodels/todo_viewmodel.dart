@@ -6,6 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:async'; // Add this import
 import '../../../data/models/todo_model.dart';
 import '../../../data/repositories/todo_service.dart';
+import '../../../services/remote_config_service.dart';
 
 class TodoViewModel extends StateNotifier<List<TodoModel>> {
   final TodoService _todoService;
@@ -14,6 +15,8 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
   String? selectedCategory = "Tümü"; // 📌 Varsayılan olarak tüm görevleri getir
   List<TodoModel> allTodos = []; // 📌 Backend'den gelen tüm görevler
   bool isLoading = false;
+
+  final RemoteConfigService _remoteConfig = RemoteConfigService();
 
   TodoViewModel(this._todoService) : super([]) {
     fetchTodos();
@@ -172,6 +175,18 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     if (token == null) {
       print("token bulunamadı");
       return;
+    }
+
+    // ML service kısmını RemoteConfig kontrolü ile değiştiriyoruz
+    if (_remoteConfig.isEnabled) {
+      // RemoteConfig'den gelen genel kontrol
+      // Günlük görev limiti kontrolü
+      final todayTasks =
+          state.where((task) => task.dueDate?.day == DateTime.now().day).length;
+
+      if (todayTasks >= _remoteConfig.maxTasksPerDay) {
+        throw Exception('Günlük görev limitine ulaştınız!');
+      }
     }
 
     try {

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/navigation/routes.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../data/models/todo_model.dart';
 import '../../viewmodels/todo_viewmodel.dart';
 import '../../widgets/task_item.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../providers/motivation_provider.dart';
 
 enum TaskFilter { today, week, month }
 
@@ -26,6 +28,7 @@ class HomePage extends ConsumerWidget {
     final selectedFilter = ref.watch(taskFilterProvider);
     final allTasks = todoViewModel.getFilteredTasks(selectedFilter);
     final selectedView = ref.watch(taskViewProvider); // Add view type provider
+    final motivationMessage = ref.watch(motivationProvider);
 
     // Add auto-refresh listener
     ref.listen<bool>(autoRefreshProvider, (previous, next) {
@@ -42,6 +45,7 @@ class HomePage extends ConsumerWidget {
       backgroundColor: Colors.grey[50],
       appBar: CustomAppBar(
         title: "Görevlerim",
+        showLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.notifications_none, color: Colors.blue),
@@ -54,6 +58,25 @@ class HomePage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: Colors.blue.shade50,
+              child: Row(
+                children: [
+                  Icon(Icons.emoji_emotions, color: Colors.blue),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      motivationMessage,
+                      style: TextStyle(
+                        color: Colors.blue.shade800,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             _buildHeader(ref, selectedFilter),
             if (todoViewModel.isLoading)
               Center(child: CircularProgressIndicator())
@@ -80,9 +103,15 @@ class HomePage extends ConsumerWidget {
       floatingActionButton: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         child: FloatingActionButton.extended(
-          onPressed: () => Navigator.pushNamed(context, '/add-task'),
-          label: Text('Yeni Görev'),
-          icon: Icon(Icons.add),
+          onPressed: () => Navigator.pushNamed(context, AppRoutes.addtask),
+          label: Text(
+            'Yeni Görev',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
           backgroundColor: Colors.blue,
         ),
       ),
@@ -220,8 +249,7 @@ class HomePage extends ConsumerWidget {
         onTap: () => ref.read(taskViewProvider.notifier).state = view,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: EdgeInsets.symmetric(
-              vertical: 12, horizontal: 8), // Reduced horizontal padding
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             color: isSelected ? Colors.blue.shade50 : Colors.transparent,
             border: Border.all(
@@ -232,26 +260,18 @@ class HomePage extends ConsumerWidget {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Add this line
             children: [
               Icon(
                 icon,
                 size: 20,
                 color: isSelected ? Colors.blue : Colors.grey.shade600,
               ),
-              SizedBox(width: 4), // Reduced spacing
-              Flexible(
-                // Wrap with Flexible
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: isSelected ? Colors.blue : Colors.grey.shade600,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
-                    fontSize: 13, // Slightly reduced font size
-                  ),
-                  overflow: TextOverflow.ellipsis, // Add this
-                  maxLines: 1, // Add this
+              SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? Colors.blue : Colors.grey.shade600,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
             ],
@@ -316,46 +336,50 @@ class HomePage extends ConsumerWidget {
   }
 
   Widget _buildEmptyState([String message = "", String subtitle = ""]) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.task_outlined,
-              size: 48,
-              color: Colors.blue,
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade800,
-            ),
-          ),
-          if (subtitle.isNotEmpty) ...[
-            SizedBox(height: 8),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
+    return Center(
+      // Add this Center widget
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        width: double.infinity, // Add this to ensure full width
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.task_outlined,
+                size: 48,
+                color: Colors.blue,
               ),
             ),
+            SizedBox(height: 16),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade800,
+              ),
+            ),
+            if (subtitle.isNotEmpty) ...[
+              SizedBox(height: 8),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

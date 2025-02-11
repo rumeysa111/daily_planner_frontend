@@ -23,6 +23,7 @@ class ProfilePage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: CustomAppBar(
+        showLeading: false,
         title: "Profil",
         actions: [
           IconButton(

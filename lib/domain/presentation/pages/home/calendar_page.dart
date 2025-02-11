@@ -78,6 +78,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: CustomAppBar(
+        showLeading: false,
         title: "Takvim",
         actions: [
           IconButton(
