@@ -70,7 +70,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
               _buildNavItem(Icons.home_rounded, "Ana Sayfa", 0, screenWidth),
               _buildNavItem(
                   Icons.calendar_today_rounded, "Takvim", 1, screenWidth),
-              _buildNavItem(Icons.timer_rounded, "İstatistik", 2, screenWidth),
+              _buildNavItem(Icons.bar_chart, "İstatistik", 2, screenWidth),
               _buildNavItem(Icons.person_rounded, "Profil", 3, screenWidth),
             ],
           ),
