@@ -162,11 +162,23 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     final isSmallScreen = size.width < 360;
 
     return TableCalendar(
+      locale: 'tr_TR',
       firstDay: DateTime.utc(2023, 1, 1),
       lastDay: DateTime.utc(2025, 12, 31),
       focusedDay: _focusedDay,
       selectedDayPredicate: (day) => isSameDay(selectedDate, day),
       calendarFormat: _calendarFormat,
+          // Türkçe gün başlıkları için bu kısmı ekleyin
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekdayStyle: TextStyle(
+          color: Colors.grey[800],
+          fontSize: isSmallScreen ? 12 : 14,
+        ),
+        weekendStyle: TextStyle(
+          color: Colors.red,
+          fontSize: isSmallScreen ? 12 : 14,
+        ),
+      ),
       onFormatChanged: (format) {
         setState(() => _calendarFormat = format);
       },
