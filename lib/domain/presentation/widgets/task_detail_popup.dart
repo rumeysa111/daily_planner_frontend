@@ -16,7 +16,6 @@ class TaskDetailPopup extends ConsumerStatefulWidget {
 
 class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
   late TextEditingController _titleController;
-  late TextEditingController _notesController; // Add this line
   late DateTime? _selectedDate;
   late TimeOfDay? _selectedTime;
   late String _selectedCategoryId;
@@ -26,9 +25,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.task.title);
-    _notesController =
-        TextEditingController(text: widget.task.notes ?? ''); // Add this line
-    _selectedDate = widget.task.dueDate ?? DateTime.now();
+    _selectedDate = widget.task.dueDate;
     _selectedTime = widget.task.time != null && widget.task.time != "Tüm gün"
         ? TimeOfDay.fromDateTime(
             DateTime.parse("2023-01-01 ${widget.task.time}:00"))
@@ -40,7 +37,6 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
   @override
   void dispose() {
     _titleController.dispose();
-    _notesController.dispose(); // Add this line
     super.dispose();
   }
 
@@ -193,39 +189,6 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               ),
               SizedBox(height: 24),
 
-              // Add Notes Field after the Category Dropdown
-              SizedBox(height: 24),
-              Text(
-                'Notlar',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
-              ),
-              SizedBox(height: 8),
-              TextField(
-                controller: _notesController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: 'Görev ile ilgili notları girin',
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[200]!),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                  ),
-                ),
-              ),
-
               // Date and Time Selection
               Row(
                 children: [
@@ -242,30 +205,16 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                           ),
                         ),
                         SizedBox(height: 8),
-                        GestureDetector(
+                        InkWell(
                           onTap: () async {
-                            final DateTime? pickedDate = await showDatePicker(
+                            final date = await showDatePicker(
                               context: context,
                               initialDate: _selectedDate ?? DateTime.now(),
                               firstDate: DateTime(2023),
                               lastDate: DateTime(2025),
-                              builder: (context, child) {
-                                return Theme(
-                                  data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Colors.blue,
-                                      onPrimary: Colors.white,
-                                    ),
-                                  ),
-                                  child: child!,
-                                );
-                              },
                             );
-
-                            if (pickedDate != null && mounted) {
-                              setState(() {
-                                _selectedDate = pickedDate;
-                              });
+                            if (date != null) {
+                              setState(() => _selectedDate = date);
                             }
                           },
                           child: Container(
@@ -404,11 +353,10 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                       ),
                     ),
                     child: Text(
-                      'Güncelle',
+                      'Kaydet',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: Colors.white
                       ),
                     ),
                   ),
@@ -428,7 +376,6 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
       dueDate: _selectedDate,
       time: _selectedTime?.format(context) ?? "Tüm gün",
       isCompleted: _isCompleted,
-      notes: _notesController.text, // Add this line
     );
 
     try {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'focus_mode_page.dart';
+import 'package:mytodo_app/domain/presentation/pages/home/statistics_page.dart';
 import 'home_page.dart';
 import 'calendar_page.dart';
 import 'profile_page.dart';
@@ -15,7 +15,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   final List<Widget> _pages = [
     HomePage(),
     CalendarPage(),
-    FocusModePage(),
+    StatisticsPage(),
     ProfilePage(),
   ];
 
@@ -70,7 +70,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
               _buildNavItem(Icons.home_rounded, "Ana Sayfa", 0, screenWidth),
               _buildNavItem(
                   Icons.calendar_today_rounded, "Takvim", 1, screenWidth),
-              _buildNavItem(Icons.timer_rounded, "Odaklan", 2, screenWidth),
+              _buildNavItem(Icons.timer_rounded, "İstatistik", 2, screenWidth),
               _buildNavItem(Icons.person_rounded, "Profil", 3, screenWidth),
             ],
           ),

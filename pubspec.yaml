@@ -22,6 +22,7 @@ dependencies:
   intl: ^0.19.0
   firebase_core: ^2.24.2
   firebase_remote_config: ^4.3.8
+  fl_chart: ^0.70.2
 
 dev_dependencies:
   flutter_test:
