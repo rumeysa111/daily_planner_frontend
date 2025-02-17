@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // 📌 Riverpod'u ekledik!
 import 'package:intl/date_symbol_data_local.dart';
@@ -11,30 +12,61 @@ import 'services/remote_config_service.dart';
 import 'domain/presentation/pages/auth/login_page.dart'; // 📌 Login sayfasını çağırıyoruz
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // 📌 Flutter uygulaması başlatıldı
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    // Load environment variables
+    await dotenv.load(fileName: ".env");
+    
+    // Initialize Firebase first
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Firebase initialized successfully');
+
+    // Initialize date formatting
     await initializeDateFormatting('tr_TR', null);
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+    // Initialize Remote Config after Firebase
+    final remoteConfig = RemoteConfigService();
+    await remoteConfig.initialize().catchError((error) {
+      print('Remote config error handled: $error');
+    });
 
-  final remoteConfig = RemoteConfigService();
-  await remoteConfig.initialize();
+    // Check authentication status
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString("token");
+    print('Auth token status: ${token != null ? 'exists' : 'not found'}');
 
-  //shared prefencsten token kontorl ediliyor
-  final prefs = await SharedPreferences.getInstance();
-  final String? token = prefs.getString("token");
-  runApp(
-    ProviderScope(
-      // 📌 Riverpod için ProviderScope EKLENMELİ!
-      child: MyApp(isLoggenIn: token != null), //kullnaıcı giriş yapmış mı
-    ),
-  );
+    runApp(
+      ProviderScope(
+        child: MyApp(
+          isLoggenIn: token != null,
+        ),
+      ),
+    );
+  } catch (e, stackTrace) {
+    print('Initialization error: $e');
+    print('Stack trace: $stackTrace');
+    
+    // Fallback to run app without initialization
+    runApp(
+      ProviderScope(
+        child: MyApp(
+          isLoggenIn: false,
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
   final bool isLoggenIn;
-  MyApp({required this.isLoggenIn});
+  
+  const MyApp({
+    required this.isLoggenIn,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +83,10 @@ class MyApp extends StatelessWidget {
         Locale('tr', 'TR'),
       ],
       locale: const Locale('tr', 'TR'),
-      initialRoute: isLoggenIn
-          ? AppRoutes.home
-          : AppRoutes
-              .onboarding, //uygulama ilk açıldıgında login sayfası gelicek
+      // Changed initial route to always show login first
+      initialRoute: isLoggenIn 
+      ?  AppRoutes.home
+      : AppRoutes.onboarding,
       onGenerateRoute: AppRoutes.generateRoute,
     );
   }

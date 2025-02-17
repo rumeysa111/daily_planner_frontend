@@ -29,9 +29,18 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
         title: "İstatistikler",
         showLeading: false,
       ),
-      body: statistics == null
-          ? const Center(child: CircularProgressIndicator())
-          : _buildContent(statistics),
+      body: statistics.when(
+        data: (data) {
+          if (data == null) {
+            return _buildEmptyState();
+          }
+          return _buildContent(data);
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Text('Hata: $error'),
+        ),
+      ),
     );
   }
 
@@ -49,8 +58,6 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           _buildWeeklyProgressChart(statistics),
           const SizedBox(height: 24),
           _buildCategoryCompletionChart(statistics),
-          const SizedBox(height: 24),
-          _buildHourlyActivityChart(statistics),
         ],
       ),
     );
@@ -349,89 +356,6 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                 ),
               );
             }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHourlyActivityChart(TaskStatistics statistics) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Saatlik Aktivite",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
-          ),
-          SizedBox(height: 24),
-          SizedBox(
-            height: 200,
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(show: true, drawVerticalLine: false),
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          '${value.toInt()}:00',
-                          style:
-                              TextStyle(fontSize: 12, color: Colors.grey[600]),
-                        );
-                      },
-                      interval: 3,
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style:
-                              TextStyle(fontSize: 12, color: Colors.grey[600]),
-                        );
-                      },
-                    ),
-                  ),
-                  rightTitles:
-                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles:
-                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                ),
-                borderData: FlBorderData(show: true),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: statistics.hourlyCompletion.entries
-                        .map(
-                            (e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
-                        .toList(),
-                    isCurved: true,
-                    color: Colors.blue,
-                    barWidth: 3,
-                    dotData: FlDotData(show: true),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),

@@ -1,16 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:mytodo_app/constans/api_constans.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_model.dart';
 
 class AuthService {
   final Dio dio =
-      Dio(BaseOptions(baseUrl: "http://192.168.0.105:3000/api/auth"));
+      Dio(BaseOptions(baseUrl: ApiConstans.BASE_URL));
 
   Future<UserModel?> login(String email, String password) async {
     try {
       final response = await dio
-          .post('/login', data: {"email": email, "password": password});
+          .post('/auth/login', data: {"email": email, "password": password});
       print(
           "Login API Response: ${response.data}"); // 📌 API'den gelen yanıtı konsola yazdır
 
@@ -39,7 +40,7 @@ class AuthService {
       print(
           "📢 Flutter Register API İsteği: $body"); // 🔍 İstek öncesinde veriyi logla
 
-      final response = await dio.post('/register', data: body);
+      final response = await dio.post('/auth/register', data: body);
 
       print(
           "✅ Register API Yanıtı: ${response.data}"); // 🔍 Backend’den gelen yanıtı logla
@@ -63,7 +64,7 @@ class AuthService {
   // 📌 Token ile kullanıcı bilgilerini çekme fonksiyonu (Eksik olan metod!)
   Future<UserModel?> getUser(String token) async {
     try {
-      final response = await dio.get('/user',
+      final response = await dio.get('/auth/user',
           options: Options(headers: {"Authorization": "Bearer $token"}));
 
       if (response.statusCode == 200) {
@@ -79,7 +80,7 @@ class AuthService {
       String token, String name, String email) async {
     try {
       final response = await dio.put(
-        '/profile',
+        '/auth/profile',
         data: {
           "name": name,
           "email": email,
@@ -100,7 +101,7 @@ class AuthService {
       String token, String currentPassword, String newPassword) async {
     try {
       final response = await dio.post(
-        '/change-password',
+        '/auth/change-password',
         data: {
           "currentPassword": currentPassword,
           "newPassword": newPassword,

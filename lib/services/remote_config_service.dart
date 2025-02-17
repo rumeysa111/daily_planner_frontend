@@ -12,25 +12,35 @@ class RemoteConfigService {
   RemoteConfigService._internal();
 
   Future<void> initialize() async {
-    await _remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(minutes: 1),
-      minimumFetchInterval: const Duration(hours: 1),
-    ));
+    try {
+      await _remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(minutes: 1),
+        minimumFetchInterval: const Duration(hours: 1),
+      ));
 
-    // Convert the list to a JSON string
-    final defaultMessages = jsonEncode([
-      'Harika gidiyorsun!',
-      'Bugün çok üretkensin!',
-      'Görevlerini tamamlamaya devam et!',
-    ]);
+      final defaultMessages = jsonEncode([
+        'Harika gidiyorsun!',
+        'Bugün çok üretkensin!',
+        'Görevlerini tamamlamaya devam et!',
+      ]);
 
-    await _remoteConfig.setDefaults({
-      'is_enabled': true,
-      'max_tasks_per_day': 10,
-      'motivation_messages': defaultMessages,
-    });
+      await _remoteConfig.setDefaults({
+        'is_enabled': true,
+        'max_tasks_per_day': 10,
+        'motivation_messages': defaultMessages,
+      });
 
-    await _remoteConfig.fetchAndActivate();
+      // Hata yönetimi ekleyelim
+      try {
+        await _remoteConfig.fetchAndActivate();
+      } catch (e) {
+        print('Remote config fetch error: $e');
+        // Hata durumunda varsayılan değerleri kullan
+      }
+    } catch (e) {
+      print('Remote config initialization error: $e');
+      // Hata durumunda servisi yine de kullanılabilir hale getir
+    }
   }
 
   bool get isEnabled => _remoteConfig.getBool('is_enabled');

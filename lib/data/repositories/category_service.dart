@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:mytodo_app/constans/api_constans.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/category_model.dart';
 
 class CategoryService {
-  final Dio _dio =
-      Dio(BaseOptions(baseUrl: "http://192.168.0.105:3000/api/categories"));
+   final Dio _dio = Dio(BaseOptions(baseUrl: ApiConstans.BASE_URL + "/categories"));
 
   /// **✅ Kullanıcının kategorilerini getir**
   Future<List<CategoryModel>> fetchCategories(String userId) async {

@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:mytodo_app/constans/api_constans.dart';
 
 import '../models/todo_model.dart';
 
 class TodoService {
   final Dio _dio = Dio(BaseOptions(
           baseUrl:
-              "http://192.168.0.105:3000/api/todos") // 📌 Backend URL'ini ekledik
+              ApiConstans.BASE_URL+"/todos") // 📌 Backend URL'ini ekledik
       );
 
   Future<List<TodoModel>> fetchTodos(String token, {String? category}) async {
@@ -13,7 +14,7 @@ class TodoService {
       print("📌 Backend'den görevler çekiliyor...");
 
       final response = await _dio.get(
-        '/',
+        '',
         options: Options(headers: {"Authorization": "Bearer $token"}),
         queryParameters: category != null && category != "Tümü"
             ? {"category": category}

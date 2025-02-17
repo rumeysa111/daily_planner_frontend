@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mytodo_app/domain/presentation/widgets/ai_assistant_buble.dart';
 
 import '../../../../core/navigation/routes.dart';
 import '../../../../core/theme/colors.dart';
@@ -41,65 +42,48 @@ class HomePage extends ConsumerWidget {
     final ongoingTasks = allTasks.where((task) => !task.isCompleted).toList();
     final completedTasks = allTasks.where((task) => task.isCompleted).toList();
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: CustomAppBar(
-        title: "Görevlerim",
-        showLeading: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: Colors.blue),
-            onPressed: () {},
-          ),
-          SizedBox(width: 8),
-        ],
+     return Scaffold(
+      appBar: AppBar(
+        title: Text('Ana Sayfa'),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              color: Colors.blue.shade50,
-              child: Row(
-                children: [
-                  Icon(Icons.emoji_emotions, color: Colors.blue),
-                  SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(ref, selectedFilter),
+                if (todoViewModel.isLoading)
+                  Center(child: CircularProgressIndicator())
+                else if (tasks.isEmpty)
+                  _buildEmptyState("Henüz görev eklemediniz",
+                      "Yeni görev eklemek için + butonuna tıklayın")
+                else
                   Expanded(
-                    child: Text(
-                      motivationMessage,
-                      style: TextStyle(
-                        color: Colors.blue.shade800,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    child: Column(
+                      children: [
+                        _buildViewSelector(ref),
+                        Expanded(
+                          child: selectedView == TaskView.categorized
+                              ? _buildCategorizedView(
+                                  ongoingTasks, completedTasks, ref)
+                              : _buildAllTasksView(allTasks, ref),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
-            _buildHeader(ref, selectedFilter),
-            if (todoViewModel.isLoading)
-              Center(child: CircularProgressIndicator())
-            else if (tasks.isEmpty)
-              _buildEmptyState("Henüz görev eklemediniz",
-                  "Yeni görev eklemek için + butonuna tıklayın")
-            else
-              Expanded(
-                child: Column(
-                  children: [
-                    _buildViewSelector(ref),
-                    Expanded(
-                      child: selectedView == TaskView.categorized
-                          ? _buildCategorizedView(
-                              ongoingTasks, completedTasks, ref)
-                          : _buildAllTasksView(allTasks, ref),
-                    ),
-                  ],
-                ),
-              ),
+            Positioned(
+              bottom: 80,
+              right: 16,
+              child: AiAssistantBuble(), // Yapay zeka asistanı baloncuğu
+            ),
           ],
         ),
       ),
+      
+      
       floatingActionButton: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         child: FloatingActionButton.extended(
