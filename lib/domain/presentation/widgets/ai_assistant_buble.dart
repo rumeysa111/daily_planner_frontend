@@ -23,10 +23,11 @@ class AiAssistantBuble extends StatelessWidget {
           color: Colors.blue,
           borderRadius: BorderRadius.circular(16),
         ),
-            child: Icon(
-          Icons.chat,
-          color: Colors.white,
-          size: 28,
+            child: Image.asset(
+                'assets/logo/robot.png', // Eklediğiniz resmin yolu
+          width: 24,
+          height: 24,
+         // color: Colors.white, // İkonu beyaz renkte göstermek için
         ),
       ),
     );

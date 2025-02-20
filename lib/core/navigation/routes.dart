@@ -30,10 +30,10 @@ class AppRoutes {
 
       case home:
         return MaterialPageRoute(
-            builder: (_) => _getHomePage()); // 📌 Navbar'a yönlendirdik!
+            builder: (_) => Navbar()); 
       case addtask:
         return MaterialPageRoute(
-            builder: (_) => AddTaskPage()); // 📌 Navbar'a yönlendirdik!
+            builder: (_) => AddTaskPage()); // 
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

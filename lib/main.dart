@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
       // Changed initial route to always show login first
       initialRoute: isLoggenIn 
       ?  AppRoutes.home
-      : AppRoutes.onboarding,
+      : AppRoutes.login,
       onGenerateRoute: AppRoutes.generateRoute,
     );
   }
