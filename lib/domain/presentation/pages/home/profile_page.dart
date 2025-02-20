@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/navigation/routes.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/domain/presentation/pages/profile/change_password_page.dart';
 import 'package:mytodo_app/domain/presentation/pages/profile/edit_profile_page.dart';
 import '../../viewmodels/auth_viewmodel.dart';
@@ -21,13 +22,13 @@ class ProfilePage extends ConsumerWidget {
         todos.isEmpty ? 0 : (completedTasks / todos.length * 100).round();
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         showLeading: false,
         title: "Profil",
         actions: [
           IconButton(
-            icon: Icon(Icons.settings, color: Colors.blue),
+            icon: Icon(Icons.settings, color: AppColors.primary),
             onPressed: () {
               // Profil ayarları
             },
@@ -121,14 +122,15 @@ class ProfilePage extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
           bottomRight: Radius.circular(30),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -141,7 +143,7 @@ class ProfilePage extends ConsumerWidget {
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+              color: AppColors.textPrimary,
               letterSpacing: 0.5,
             ),
           ),
@@ -152,13 +154,13 @@ class ProfilePage extends ConsumerWidget {
               Icon(
                 Icons.email_outlined,
                 size: 18,
-                color: Colors.blue[700],
+                color: AppColors.primary,
               ),
               SizedBox(width: 8),
               Text(
                 email,
                 style: TextStyle(
-                  color: Colors.grey[600],
+                  color: AppColors.textSecondary,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -175,11 +177,12 @@ class ProfilePage extends ConsumerWidget {
       margin: EdgeInsets.symmetric(horizontal: 20),
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -188,17 +191,18 @@ class ProfilePage extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem("$completed", "Tamamlanan\nGörevler"),
+          _buildStatItem(
+              "$completed", "Tamamlanan\nGörevler", AppColors.success),
           _buildStatDivider(),
-          _buildStatItem("$pending", "Bekleyen\nGörevler"),
+          _buildStatItem("$pending", "Bekleyen\nGörevler", AppColors.warning),
           _buildStatDivider(),
-          _buildStatItem("$successRate%", "Başarı\nOranı"),
+          _buildStatItem("$successRate%", "Başarı\nOranı", AppColors.primary),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(String value, String label) {
+  Widget _buildStatItem(String value, String label, Color color) {
     return Column(
       children: [
         Text(
@@ -206,7 +210,7 @@ class ProfilePage extends ConsumerWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.blue,
+            color: color,
           ),
         ),
         SizedBox(height: 4),
@@ -215,7 +219,7 @@ class ProfilePage extends ConsumerWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.grey[600],
+            color: AppColors.textSecondary,
           ),
         ),
       ],
@@ -226,18 +230,19 @@ class ProfilePage extends ConsumerWidget {
     return Container(
       height: 40,
       width: 1,
-      color: Colors.grey[300],
+      color: AppColors.divider,
     );
   }
 
   Widget _buildSettingsSection(String title, List<SettingsItem> items) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -253,7 +258,7 @@ class ProfilePage extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -286,19 +291,24 @@ class SettingsItem extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          leading: Icon(icon, color: Colors.blue),
+          leading: Icon(icon, color: AppColors.primary),
           title: Text(
             title,
             style: TextStyle(
-              color: textColor ?? Colors.grey[800],
+              color: textColor ?? AppColors.textPrimary,
               fontWeight: FontWeight.w500,
             ),
           ),
-          subtitle: subtitle != null ? Text(subtitle!) : null,
-          trailing: trailing ?? Icon(Icons.chevron_right, color: Colors.grey),
+          subtitle: subtitle != null
+              ? Text(
+                  subtitle!,
+                  style: TextStyle(color: AppColors.textSecondary),
+                )
+              : null,
+          trailing: trailing ?? Icon(Icons.chevron_right, color: AppColors.textSecondary),
           onTap: onTap,
         ),
-        Divider(height: 1, thickness: 0.5, color: Colors.grey[300]),
+        Divider(height: 1, thickness: 0.5, color: AppColors.divider,),
       ],
     );
   }

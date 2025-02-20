@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/data/models/task_statistics.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/statistics_viewmodel.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -23,6 +24,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
   @override
   Widget build(BuildContext context) {
     final statistics = ref.watch(statisticsProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -36,9 +38,16 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           }
           return _buildContent(data);
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+        ),
         error: (error, stack) => Center(
-          child: Text('Hata: $error'),
+          child: Text(
+            'Hata: $error',
+            style: TextStyle(color: AppColors.error),
+          ),
         ),
       ),
     );
@@ -71,14 +80,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           Icon(
             Icons.analytics_outlined,
             size: 64,
-            color: Colors.grey[400],
+            color: AppColors.textSecondary,
           ),
           const SizedBox(height: 16),
           Text(
             'Henüz istatistik gösterilecek görev bulunmuyor',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -96,11 +105,13 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.divider),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -125,7 +136,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey[600],
+              color: AppColors.textSecondary,
             ),
           ),
         ],
@@ -145,25 +156,25 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           title: "Tamamlanan Görevler",
           value: statistics.completedTasks.toString(),
           icon: Icons.check_circle,
-          color: Colors.green,
+          color: AppColors.success,
         ),
         _buildStatisticCard(
           title: "Bekleyen Görevler",
           value: statistics.pendingTasks.toString(),
           icon: Icons.pending,
-          color: Colors.orange,
+          color: AppColors.warning,
         ),
         _buildStatisticCard(
           title: "Tamamlanma Oranı",
           value: "${statistics.completionRate.toStringAsFixed(1)}%",
           icon: Icons.pie_chart,
-          color: Colors.blue,
+          color: AppColors.primary,
         ),
         _buildStatisticCard(
           title: "Streak",
           value: "${statistics.currentStreak} gün",
           icon: Icons.local_fire_department,
-          color: Colors.red,
+          color: AppColors.error,
         ),
       ],
     );
@@ -183,11 +194,12 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -201,7 +213,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+              color: AppColors.textPrimary,
             ),
           ),
           SizedBox(height: 24),
@@ -223,9 +235,9 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                           child: Text(
                             '${(value * 100).toInt()}%',
                             style: TextStyle(
-                                color: Colors.grey[600], fontSize: 12),
+                              color: AppColors.textSecondary,
                           ),
-                        );
+                        ));
                       },
                       reservedSize: 40,
                     ),
@@ -251,25 +263,28 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                 ),
                 borderData: FlBorderData(
                   border: const Border(
-                    bottom: BorderSide(color: Colors.black, width: 1),
-                    left: BorderSide(color: Colors.black, width: 1),
+                   bottom: BorderSide(color: AppColors.divider),
+                    left: BorderSide(color: AppColors.divider),
                   ),
                 ),
-                gridData: FlGridData(
+                   gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
-                  horizontalInterval: 0.2, // Çizgilerin aralığını belirle
+                  horizontalInterval: 0.2,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: AppColors.divider,
+                      strokeWidth: 1,
+                    );
+                  },
                 ),
-                barGroups:
-                    statistics.weeklyProgress.asMap().entries.map((entry) {
-                  int index = entry.key;
-                  double value = entry.value;
+                   barGroups: statistics.weeklyProgress.asMap().entries.map((entry) {
                   return BarChartGroupData(
-                    x: index,
+                    x: entry.key,
                     barRods: [
                       BarChartRodData(
-                        toY: value,
-                        color: Colors.blue,
+                        toY: entry.value,
+                        color: AppColors.primary,
                         width: 20,
                         borderRadius: BorderRadius.circular(4),
                       ),
@@ -288,11 +303,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.divider),
+
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -306,7 +324,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+              color: AppColors.textPrimary,
             ),
           ),
           SizedBox(height: 24),
@@ -315,16 +333,17 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             child: PieChart(
               PieChartData(
                 sections: statistics.categoryCompletion.entries.map((entry) {
+                  Color categoryColor = Colors.primaries[
+                      entry.key.hashCode % Colors.primaries.length];
                   return PieChartSectionData(
-                    color: Colors.primaries[
-                        entry.key.hashCode % Colors.primaries.length],
+                    color: categoryColor.withOpacity(0.8),
                     value: entry.value,
                     title: '${entry.value.toStringAsFixed(1)}%',
                     radius: 100,
                     titleStyle: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.cardBackground,
                     ),
                   );
                 }).toList(),
@@ -335,8 +354,10 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           ),
           SizedBox(height: 16),
           // Kategori lejantları
-          Column(
+       Column(
             children: statistics.categoryCompletion.entries.map((entry) {
+              Color categoryColor = Colors.primaries[
+                  entry.key.hashCode % Colors.primaries.length];
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 4),
                 child: Row(
@@ -345,13 +366,15 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: Colors.primaries[
-                            entry.key.hashCode % Colors.primaries.length],
+                        color: categoryColor.withOpacity(0.8),
                         shape: BoxShape.circle,
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text(entry.key),
+                    Text(
+                      entry.key,
+                      style: TextStyle(color: AppColors.textPrimary),
+                    ),
                   ],
                 ),
               );

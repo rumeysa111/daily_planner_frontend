@@ -40,6 +40,7 @@ class CalendarViewModel extends StateNotifier<List<TodoModel>> {
 
     isLoading = true;
     state = []; // Yükleme başlamadan önce mevcut state'i temizle
+    final normalizedDate = DateTime(date.year, date.month, date.day);
 
     final token = await _getToken();
     if (token == null) {
@@ -48,13 +49,13 @@ class CalendarViewModel extends StateNotifier<List<TodoModel>> {
     }
 
     try {
-      final todos = await _todoService.fetchTodosByDate(token, date);
+      final todos = await _todoService.fetchTodosByDate(token, normalizedDate);
       if (!mounted) return; // StateNotifier dispose edilmişse işlemi iptal et
 
       state = todos;
-      _selectedDate = date;
+      _selectedDate = normalizedDate;
       print(
-          "📅 Fetched ${todos.length} tasks for ${date.toString().split(' ')[0]}");
+          "📅 Fetched ${todos.length} tasks for ${normalizedDate.toString().split(' ')[0]}");
     } catch (e) {
       print("🚨 Calendar tasks fetch error: $e");
       if (mounted) {
@@ -65,10 +66,12 @@ class CalendarViewModel extends StateNotifier<List<TodoModel>> {
     }
   }
 
-  void setSelectedDate(DateTime date) {
-    if (_selectedDate != date) {
-      _selectedDate = date;
-      fetchTodosByDate(date);
+ void setSelectedDate(DateTime date) {
+    // Tarihi normalize et
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    if (_selectedDate != normalizedDate) {
+      _selectedDate = normalizedDate;
+      fetchTodosByDate(normalizedDate);
     }
   }
 }

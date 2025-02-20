@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../core/theme/colors.dart';
 
 class DateTimePicker extends StatelessWidget {
   final DateTime? selectedDate;
@@ -17,10 +18,19 @@ class DateTimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Tarih ve Saat", style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          "Tarih ve Saat",
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 12),
         Row(
           children: [
             Expanded(
@@ -28,14 +38,45 @@ class DateTimePicker extends StatelessWidget {
                 onPressed: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2023),
+                    initialDate: selectedDate ?? DateTime.now(),
+                    firstDate: DateTime.now(),
                     lastDate: DateTime(2030),
+                    builder: (context, child) {
+                      return Theme(
+                        data: theme.copyWith(
+                          colorScheme: theme.colorScheme.copyWith(
+                            primary: AppColors.primary,
+                            onPrimary: Colors.white,
+                            surface: AppColors.cardBackground,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   );
                   if (pickedDate != null) onDateSelected(pickedDate);
                 },
-                icon: Icon(Icons.calendar_today, color: Colors.orange),
-                label: Text(selectedDate != null ? DateFormat("dd/MM/yyyy").format(selectedDate!) : "Tarih Seç"),
+                icon: Icon(
+                  Icons.calendar_today,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+                label: Text(
+                  selectedDate != null 
+                      ? DateFormat("dd/MM/yyyy").format(selectedDate!)
+                      : "Tarih Seç",
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.textPrimary,
+                  side: BorderSide(color: AppColors.divider),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
             ),
             SizedBox(width: 16),
@@ -44,12 +85,43 @@ class DateTimePicker extends StatelessWidget {
                 onPressed: () async {
                   TimeOfDay? pickedTime = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay.now(),
+                    initialTime: selectedTime ?? TimeOfDay.now(),
+                    builder: (context, child) {
+                      return Theme(
+                        data: theme.copyWith(
+                          colorScheme: theme.colorScheme.copyWith(
+                            primary: AppColors.primary,
+                            onPrimary: Colors.white,
+                            surface: AppColors.cardBackground,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   );
                   onTimeSelected(pickedTime);
                 },
-                icon: Icon(Icons.access_time, color: Colors.red),
-                label: Text(selectedTime != null ? selectedTime!.format(context) : "Saat Seç"),
+                icon: Icon(
+                  Icons.access_time,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+                label: Text(
+                  selectedTime != null 
+                      ? selectedTime!.format(context)
+                      : "Saat Seç",
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.textPrimary,
+                  side: BorderSide(color: AppColors.divider),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
             ),
           ],

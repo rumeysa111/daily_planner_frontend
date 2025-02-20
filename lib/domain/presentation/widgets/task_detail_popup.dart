@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import '../../../data/models/todo_model.dart';
 import '../../../data/models/category_model.dart';
 import '../viewmodels/category_viewmodel.dart';
@@ -20,11 +21,15 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
   late TimeOfDay? _selectedTime;
   late String _selectedCategoryId;
   late bool _isCompleted;
+  late TextEditingController _notesController; // Notlar için yeni controller
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.task.title);
+    _notesController =
+        TextEditingController(text: widget.task.notes); // Notları yükle
+
     _selectedDate = widget.task.dueDate;
     _selectedTime = widget.task.time != null && widget.task.time != "Tüm gün"
         ? TimeOfDay.fromDateTime(
@@ -37,11 +42,14 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
   @override
   void dispose() {
     _titleController.dispose();
+    _notesController.dispose(); // Controller'ı temizle
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final categories = ref.watch(categoryProvider);
     final selectedCategory = categories.firstWhere(
       (cat) => cat.id == _selectedCategoryId,
@@ -49,20 +57,16 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
         id: "0",
         name: "Unknown",
         icon: "❓",
-        color: Colors.grey,
+        color: AppColors.textSecondary,
         userId: "",
       ),
     );
 
     return Dialog(
-      backgroundColor: Colors.grey[100], // Add this line for dialog background
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: AppColors.cardBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         padding: EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.grey[100], // Add this line for container background
-          borderRadius: BorderRadius.circular(20),
-        ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -73,7 +77,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 padding: EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Colors.grey.shade200),
+                    bottom: BorderSide(color: AppColors.divider),
                   ),
                 ),
                 child: Row(
@@ -84,18 +88,15 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                         color: selectedCategory.color.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
-                        selectedCategory.icon,
-                        style: TextStyle(fontSize: 24),
-                      ),
+                      child: Text(selectedCategory.icon,
+                          style: TextStyle(fontSize: 24)),
                     ),
                     SizedBox(width: 16),
                     Text(
                       'Görev Detayları',
-                      style: TextStyle(
-                        fontSize: 20,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
                       ),
                     ),
                   ],
@@ -106,10 +107,9 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               // Title Field
               Text(
                 'Başlık',
-                style: TextStyle(
-                  fontSize: 16,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
                 ),
               ),
               SizedBox(height: 8),
@@ -117,19 +117,20 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: 'Görev başlığını girin',
+                  hintStyle: TextStyle(color: AppColors.textSecondary),
                   filled: true,
-                  fillColor: Colors.grey[50],
+                  fillColor: theme.colorScheme.background,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(color: AppColors.divider),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[200]!),
+                    borderSide: BorderSide(color: AppColors.divider),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
                   ),
                 ),
               ),
@@ -138,18 +139,17 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               // Category Dropdown
               Text(
                 'Kategori',
-                style: TextStyle(
-                  fontSize: 16,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
                 ),
               ),
               SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[50],
+                  color: theme.colorScheme.background,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
+                  border: Border.all(color: AppColors.divider),
                 ),
                 child: DropdownButtonFormField<String>(
                   value: _selectedCategoryId,
@@ -157,6 +157,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     border: InputBorder.none,
                   ),
+                  dropdownColor: AppColors.cardBackground,
                   items: categories.map((category) {
                     return DropdownMenuItem(
                       value: category.id,
@@ -174,7 +175,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                           Text(
                             category.name,
                             style: TextStyle(
-                              color: Colors.grey[800],
+                              color: AppColors.textPrimary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -189,124 +190,53 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               ),
               SizedBox(height: 24),
 
-              // Date and Time Selection
+              // Date and Time Row
               Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tarih',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        InkWell(
-                          onTap: () async {
-                            final date = await showDatePicker(
-                              context: context,
-                              initialDate: _selectedDate ?? DateTime.now(),
-                              firstDate: DateTime(2023),
-                              lastDate: DateTime(2025),
-                            );
-                            if (date != null) {
-                              setState(() => _selectedDate = date);
-                            }
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[50],
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey[200]!),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.calendar_today,
-                                    size: 20, color: Colors.blue),
-                                SizedBox(width: 8),
-                                Text(
-                                  _selectedDate == null
-                                      ? 'Tarih Seç'
-                                      : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                                  style: TextStyle(color: Colors.grey[800]),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildDateField(theme),
                   SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Saat',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        InkWell(
-                          onTap: () async {
-                            final time = await showTimePicker(
-                              context: context,
-                              initialTime: _selectedTime ?? TimeOfDay.now(),
-                            );
-                            if (time != null) {
-                              setState(() => _selectedTime = time);
-                            }
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[50],
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey[200]!),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.access_time,
-                                    size: 20, color: Colors.blue),
-                                SizedBox(width: 8),
-                                Text(
-                                  _selectedTime == null
-                                      ? 'Saat Seç'
-                                      : '${_selectedTime!.format(context)}',
-                                  style: TextStyle(color: Colors.grey[800]),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildTimeField(theme),
                 ],
               ),
               SizedBox(height: 24),
-
+   // Notes Field
+              Text(
+                'Notlar',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 8),
+                 TextField(
+                controller: _notesController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: 'Ek notlarınızı buraya yazın...',
+                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  filled: true,
+                  fillColor: theme.colorScheme.background,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.divider),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.divider),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
               // Task Status
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[50],
+                  color: theme.colorScheme.background,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
+                  border: Border.all(color: AppColors.divider),
                 ),
                 child: CheckboxListTile(
                   value: _isCompleted,
@@ -314,13 +244,13 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                     setState(() => _isCompleted = value!);
                   },
                   title: Text(
-                    'Tamamlandı',
+                    'Tamamlanma Durumu',
                     style: TextStyle(
+                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey[800],
                     ),
                   ),
-                  activeColor: Colors.blue,
+                  activeColor: AppColors.primary,
                   checkColor: Colors.white,
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 ),
@@ -333,19 +263,17 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'İptal',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w600,
-                      ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
                     ),
+                    child: Text('İptal'),
                   ),
                   SizedBox(width: 16),
                   ElevatedButton(
                     onPressed: _saveChanges,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                       padding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
@@ -369,6 +297,128 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
     );
   }
 
+  Widget _buildDateField(ThemeData theme) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Tarih',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 8),
+          InkWell(
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: _selectedDate ?? DateTime.now(),
+                firstDate: DateTime(2023),
+                lastDate: DateTime(2025),
+                builder: (context, child) {
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                      colorScheme: ColorScheme.light(
+                        primary: AppColors.primary,
+                      ),
+                    ),
+                    child: child!,
+                  );
+                },
+              );
+              if (date != null) {
+                setState(() => _selectedDate = date);
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.background,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.divider),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today,
+                      size: 20, color: AppColors.primary),
+                  SizedBox(width: 8),
+                  Text(
+                    _selectedDate == null
+                        ? 'Tarih Seç'
+                        : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Add helper method for time field similar to date field
+  Widget _buildTimeField(ThemeData theme) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Saat',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 8),
+          InkWell(
+            onTap: () async {
+              final time = await showTimePicker(
+                context: context,
+                initialTime: _selectedTime ?? TimeOfDay.now(),
+                builder: (context, child) {
+                  return Theme(
+                    data: Theme.of(context).copyWith(
+                      colorScheme: ColorScheme.light(
+                        primary: AppColors.primary,
+                      ),
+                    ),
+                    child: child!,
+                  );
+                },
+              );
+              if (time != null) {
+                setState(() => _selectedTime = time);
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.background,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.divider),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.access_time, size: 20, color: AppColors.primary),
+                  SizedBox(width: 8),
+                  Text(
+                    _selectedTime == null
+                        ? 'Saat Seç'
+                        : _selectedTime!.format(context),
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _saveChanges() async {
     final updatedTask = widget.task.copyWith(
       title: _titleController.text,
@@ -376,6 +426,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
       dueDate: _selectedDate,
       time: _selectedTime?.format(context) ?? "Tüm gün",
       isCompleted: _isCompleted,
+         notes: _notesController.text, // Notları da kaydet
     );
 
     try {
@@ -388,7 +439,10 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Görev güncellenirken bir hata oluştu')),
+          SnackBar(
+            content: Text('Görev güncellenirken bir hata oluştu'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }

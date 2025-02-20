@@ -11,59 +11,62 @@ class LoginPage extends ConsumerWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  @override
+ @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref
-        .watch(authProvider); // Kullanıcının giriş yapıp yapmadığını takip et
-
+    final theme = Theme.of(context);
+    final user = ref.watch(authProvider);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.colorScheme.background,
       body: Center(
         child: SingleChildScrollView(
-          // 📌 Kaydırılabilir ekran (klavye açılınca bozulmaz)
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal:
-                    screenWidth * 0.08), // 📌 Cihaz genişliğine bağlı padding
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                    height: screenHeight *
-                        0.12), // 📌 Ekran yüksekliğine göre yukarı boşluk
+                SizedBox(height: screenHeight * 0.12),
 
-                // 📌 "Hoşgeldiniz" Yazısı
+                // Hoşgeldiniz Yazısı
                 Text(
                   "Hoşgeldiniz",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.08, // 📌 Dinamik font boyutu
-                    fontWeight: FontWeight.bold,
+                  style: theme.textTheme.headlineMedium?.copyWith(
                     color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.04), // 📌 Boşluk
+                SizedBox(height: screenHeight * 0.04),
 
-                // 📌 "Giriş Yap" Başlığı
+                // Giriş Yap Başlığı
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Giriş Yap",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.06, // 📌 Dinamik font boyutu
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
                     ),
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.03), // 📌 Boşluk
+                SizedBox(height: screenHeight * 0.03),
 
-                // 📌 Form Alanı (TextField'ler)
+                // Form Alanı
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -82,64 +85,85 @@ class LoginPage extends ConsumerWidget {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // 📌 Şifremi Unuttum Linki
+                    // Şifremi Unuttum
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {},
-                        child: Text("Şifremi Unuttum",
-                            style: TextStyle(color: AppColors.primary)),
+                        style: TextButton.styleFrom(
+                          foregroundColor: theme.colorScheme.primary,
+                        ),
+                        child: Text("Şifremi Unuttum"),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // 📌 Giriş Butonu
+                    // Giriş Butonu
                     CustomButton(
                       text: "Giriş Yap",
                       onPressed: () async {
-                        final success = await ref
-                            .read(authProvider.notifier)
-                            .login(
-                                emailController.text, passwordController.text);
+                        try {
+                          final success = await ref
+                              .read(authProvider.notifier)
+                              .login(emailController.text, passwordController.text);
 
-                        if (success) {
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Başarılı Giriş!"),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                            Navigator.pushReplacementNamed(context, AppRoutes.home);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Giriş Başarısız!"),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Başarılı Giriş!")));
-                          Navigator.pushNamed(context, AppRoutes.home);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Giriş Başarısız!")));
+                            SnackBar(
+                              content: Text("Bir hata oluştu: ${e.toString()}"),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
                         }
                       },
                     ),
                   ],
                 ),
 
-                SizedBox(
-                    height:
-                        screenHeight * 0.02), // 📌 Formun altına boşluk ekledik
+                SizedBox(height: screenHeight * 0.02),
 
-                // 📌 Kayıt Ol Linki
+                // Kayıt Ol Linki
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Hesabınız yok mu?",
-                        style: TextStyle(
-                            fontSize: screenWidth * 0.04,
-                            color: AppColors.textSecondary)),
+                    Text(
+                      "Hesabınız yok mu?",
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, AppRoutes.register);
                       },
-                      child: Text("Kayıt Ol",
-                          style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold)),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.primary,
+                      ),
+                      child: Text(
+                        "Kayıt Ol",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
 
-                SizedBox(height: screenHeight * 0.03), // 📌 Alt boşluk
+                SizedBox(height: screenHeight * 0.03),
               ],
             ),
           ),
@@ -148,3 +172,4 @@ class LoginPage extends ConsumerWidget {
     );
   }
 }
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/colors.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final Function(String)? onSearch;
@@ -7,26 +8,65 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.divider),
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2)),
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.05),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
         children: [
-          Icon(Icons.search, color: Colors.grey),
-          SizedBox(width: 10),
+          Icon(
+            Icons.search,
+            color: AppColors.primary,
+            size: 22,
+          ),
+          SizedBox(width: 12),
           Expanded(
             child: TextField(
               onChanged: onSearch,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: AppColors.textPrimary,
+              ),
               decoration: InputDecoration(
                 hintText: "Görevleri ara...",
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
                 border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
               ),
+              cursorColor: AppColors.primary,
+            ),
+          ),
+          SizedBox(width: 8),
+          IconButton(
+            icon: Icon(
+              Icons.close,
+              size: 20,
+              color: AppColors.textSecondary,
+            ),
+            onPressed: () {
+              // TextField'ı temizlemek için controller ekleyin
+              // controller.clear();
+            },
+            splashRadius: 20,
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(
+              minWidth: 32,
+              minHeight: 32,
             ),
           ),
         ],

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
+import '../../../core/theme/colors.dart';
 import '../../../data/models/category_model.dart';
 
 class CategoryCard extends StatelessWidget {
-  final CategoryModel category; // ✅ Direkt model kullanıyoruz
+  final CategoryModel category;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -16,27 +16,51 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return GestureDetector(
-      onTap: onTap, // ✅ Kullanıcı tıklayınca kategori seçilsin
+      onTap: onTap,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300), // ✅ Animasyonlu geçiş efekti
+        duration: Duration(milliseconds: 300),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? category.color.withOpacity(0.2) : Colors.white,
+          color: isSelected 
+              ? category.color.withOpacity(0.1)
+              : AppColors.cardBackground,
           borderRadius: BorderRadius.circular(12),
-          border: isSelected ? Border.all(color: category.color, width: 2) : null,
+          border: Border.all(
+            color: isSelected ? category.color : AppColors.divider,
+            width: isSelected ? 2 : 1,
+          ),
           boxShadow: [
-            BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 2)),
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.05),
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(category.icon, style: TextStyle(fontSize: 30)), // ✅ İkon gösterme
+            Text(
+              category.icon,
+              style: TextStyle(
+                fontSize: 30,
+                color: isSelected ? category.color : AppColors.icon,
+              ),
+            ),
             SizedBox(height: 8),
             Text(
               category.name,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected 
+                    ? category.color
+                    : AppColors.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

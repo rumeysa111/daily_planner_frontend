@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import '../../../data/models/category_model.dart';
 import 'task_detail_popup.dart';
 import '../../../data/models/todo_model.dart';
@@ -18,17 +19,18 @@ class TaskItem extends ConsumerWidget {
     required this.onDelete,
   });
 
-  @override
+ @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(categoryProvider); // 📌 Tüm kategorileri al
+    final theme = Theme.of(context);
+    final categories = ref.watch(categoryProvider);
     final category = categories.firstWhere(
       (cat) => cat.id == task.categoryId,
       orElse: () => CategoryModel(
         id: "0",
         name: "Unknown",
         icon: "❓",
-        color: Colors.grey, // 🔥 Default renk düzeltildi
-        userId: "", // Add this line
+        color: AppColors.textSecondary,
+        userId: "",
       ),
     );
 
@@ -38,12 +40,15 @@ class TaskItem extends ConsumerWidget {
         margin: EdgeInsets.only(bottom: 12),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color:
-              Colors.white, // Tamamlanan görevler için gri arka plan kaldırıldı
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.divider),
           boxShadow: [
             BoxShadow(
-                color: Colors.black12, blurRadius: 5, offset: Offset(0, 2)),
+              color: AppColors.primary.withOpacity(0.05),
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
           ],
         ),
         child: Row(
@@ -55,48 +60,62 @@ class TaskItem extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Text(category.icon, style: TextStyle(fontSize: 24)),
-                      SizedBox(width: 10),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: category.color.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          category.icon,
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           task.title,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
                             decoration: task.isCompleted
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
-                            color:
-                                task.isCompleted ? Colors.grey : Colors.black,
+                            color: task.isCompleted
+                                ? AppColors.textSecondary
+                                : AppColors.textPrimary,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.calendar_today,
-                          size: 12, color: Colors.grey[600]),
+                      Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
                       SizedBox(width: 4),
                       Text(
                         task.dueDate != null
                             ? '${task.dueDate!.toLocal().day}/${task.dueDate!.toLocal().month}/${task.dueDate!.toLocal().year}'
                             : 'Tarih yok',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
                         ),
                       ),
                       SizedBox(width: 16),
-                      Icon(Icons.access_time,
-                          size: 12, color: Colors.grey[600]),
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
                       SizedBox(width: 4),
                       Text(
                         task.time ?? 'Saat belirtilmedi',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -106,28 +125,29 @@ class TaskItem extends ConsumerWidget {
             ),
             Row(
               children: [
-               Transform.scale(
-  scale: 1.2,
-  child: Checkbox(
-    value: task.isCompleted,
-    onChanged: (_) => onComplete(),
-    fillColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
-      if (states.contains(WidgetState.selected)) {
-        return Colors.green; // Color when the box is checked
-      }
-      return Colors.white; // Fill color when unchecked
-    }),
-    side: BorderSide(
-      color: Colors.black, // Checkbox border color when unchecked
-    ),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(4),
-    ),
-  ),
-),
+                Transform.scale(
+                  scale: 1.1,
+                  child: Checkbox(
+                    value: task.isCompleted,
+                    onChanged: (_) => onComplete(),
+                    activeColor: AppColors.success,
+                    checkColor: Colors.white,
+                    side: BorderSide(
+                      color: AppColors.divider,
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: AppColors.error,
+                  ),
                   onPressed: onDelete,
+                  splashRadius: 24,
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/models/category_model.dart';
@@ -61,8 +62,11 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      backgroundColor: AppColors.cardBackground,
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Form(
@@ -72,15 +76,33 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
             children: [
               Text(
                 widget.category == null ? 'Yeni Kategori' : 'Kategori Düzenle',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Kategori Adı',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: AppColors.textSecondary),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.divider),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.divider),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  filled: true,
+                  fillColor: theme.colorScheme.background,
                 ),
+                style: TextStyle(color: AppColors.textPrimary),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen kategori adı girin';
@@ -89,20 +111,27 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
                 },
               ),
               SizedBox(height: 16),
-              _buildIconSelector(),
+              _buildIconSelector(theme),
               SizedBox(height: 16),
-              _buildColorSelector(),
+              _buildColorSelector(theme),
               SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary,
+                    ),
                     child: Text('İptal'),
                   ),
                   SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: _saveCategory,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                    ),
                     child: Text('Kaydet'),
                   ),
                 ],
@@ -114,11 +143,17 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
     );
   }
 
-  Widget _buildIconSelector() {
+  Widget _buildIconSelector(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('İkon Seç', style: TextStyle(fontSize: 16)),
+        Text(
+          'İkon Seç',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         SizedBox(height: 8),
         Container(
           height: 60,
@@ -127,24 +162,28 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
             itemCount: _icons.length,
             itemBuilder: (context, index) {
               final icon = _icons[index];
+              final isSelected = _selectedIcon == icon;
               return GestureDetector(
                 onTap: () => setState(() => _selectedIcon = icon),
                 child: Container(
                   width: 50,
                   margin: EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
-                    color: _selectedIcon == icon
+                    color: isSelected
                         ? _selectedColor.withOpacity(0.2)
-                        : Colors.grey[100],
+                        : AppColors.background,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: _selectedIcon == icon
-                          ? _selectedColor
-                          : Colors.grey[300]!,
+                      color: isSelected ? _selectedColor : AppColors.divider,
+                      width: isSelected ? 2 : 1,
                     ),
                   ),
-                  child:
-                      Center(child: Text(icon, style: TextStyle(fontSize: 24))),
+                  child: Center(
+                    child: Text(
+                      icon,
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ),
                 ),
               );
             },
@@ -154,11 +193,17 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
     );
   }
 
-  Widget _buildColorSelector() {
+  Widget _buildColorSelector(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Renk Seç', style: TextStyle(fontSize: 16)),
+        Text(
+          'Renk Seç',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         SizedBox(height: 8),
         Container(
           height: 50,
@@ -167,6 +212,7 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
             itemCount: _colors.length,
             itemBuilder: (context, index) {
               final color = _colors[index];
+              final isSelected = _selectedColor == color;
               return GestureDetector(
                 onTap: () => setState(() => _selectedColor = color),
                 child: Container(
@@ -176,11 +222,19 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
                     color: color,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: _selectedColor == color
-                          ? Colors.black
+                      color: isSelected
+                          ? AppColors.textPrimary
                           : Colors.transparent,
                       width: 2,
                     ),
+                    boxShadow: [
+                      if (isSelected)
+                        BoxShadow(
+                          color: color.withOpacity(0.3),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                    ],
                   ),
                 ),
               );
@@ -201,7 +255,10 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
       if (userId == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Kullanıcı girişi gerekli')),
+            SnackBar(
+              content: Text('Kullanıcı girişi gerekli'),
+              backgroundColor: AppColors.success,
+            ),
           );
         }
         return;
@@ -210,7 +267,10 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
       // Loading göstergesi
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Kategori kaydediliyor...')),
+          SnackBar(
+            content: Text('Kategori kaydediliyor...'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
 
@@ -243,7 +303,7 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Kategori kaydedilemedi. Lütfen tekrar deneyin.'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -253,7 +313,7 @@ class _CategoryEditDialogState extends ConsumerState<CategoryEditDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Bir hata oluştu: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }

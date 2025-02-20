@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/colors.dart';
+import '../../widgets/category_management_dialog.dart';
 
 class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Profil'),
+        title: Text(
+          'Profil',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: AppColors.cardBackground,
+        elevation: 0,
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
           _buildSettingsSection(
+            context,
             "Kategoriler",
             [
               SettingsItem(
@@ -27,22 +41,30 @@ class ProfilePage extends ConsumerWidget {
               ),
             ],
           ),
-          // Diğer ayar bölümleri...
+          SizedBox(height: 16),
+          // Add more sections here...
         ],
       ),
     );
   }
 
-  Widget _buildSettingsSection(String title, List<SettingsItem> items) {
+  Widget _buildSettingsSection(
+    BuildContext context,
+    String title,
+    List<SettingsItem> items,
+  ) {
+    final theme = Theme.of(context);
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.divider),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 5),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -53,13 +75,13 @@ class ProfilePage extends ConsumerWidget {
             padding: EdgeInsets.all(16),
             child: Text(
               title,
-              style: TextStyle(
-                fontSize: 18,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
               ),
             ),
           ),
+          Divider(color: AppColors.divider),
           ...items,
         ],
       ),
@@ -73,36 +95,50 @@ class SettingsItem extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  SettingsItem({
+  const SettingsItem({
+    Key? key,
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: Text(subtitle),
       onTap: onTap,
-    );
-  }
-}
-
-class CategoryManagementDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Kategori Yönetimi'),
-      content: Text('Burada kategori yönetimi yapılabilir.'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('Kapat'),
+      leading: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ],
+        child: Icon(
+          icon,
+          color: AppColors.primary,
+          size: 24,
+        ),
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge?.copyWith(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: AppColors.textSecondary,
+        ),
+      ),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: AppColors.primary,
+        size: 24,
+      ),
     );
   }
 }

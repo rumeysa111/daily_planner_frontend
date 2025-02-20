@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/data/repositories/ai_asistant_service.dart';
 import 'package:mytodo_app/data/repositories/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -112,7 +113,7 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
 
     setState(() {
       _messages.add(Message(
-          "Merhaba $username! Ben senin AI asistanınım. Bugün sana nasıl yardımcı olabilirim?",
+          "Merhaba! Ben senin AI asistanınım. Bugün sana nasıl yardımcı olabilirim?",
           false));
     });
   }
@@ -159,16 +160,20 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("AI Asistan"),
-        elevation: 1,
-      ),
-      body: Column(
-        children: [
-          Expanded(
+ @override
+Widget build(BuildContext context) {
+  final theme = Theme.of(context);
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("AI Asistan"),
+      elevation: 1,
+      backgroundColor: AppColors.primary,
+    ),
+    body: Column(
+      children: [
+        Expanded(
+          child: Container(
+            color: AppColors.background,
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.all(16),
@@ -179,81 +184,112 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
                   alignment: message.isUser
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
-                  child:GestureDetector(
-                    onTap:(){
-                      if(!message.isUser){
+                  child: GestureDetector(
+                    onTap: () {
+                      if (!message.isUser) {
                         _speak(message.text);
                       }
                     },
-                    
-                  child: Container(
-                    margin: EdgeInsets.only(
-                      bottom: 8,
-                      left: message.isUser ? 50 : 0,
-                      right: message.isUser ? 0 : 50,
-                    ),
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: message.isUser
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      message.text,
-                      style: TextStyle(
-                        color: message.isUser ? Colors.white : Colors.black,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        bottom: 8,
+                        left: message.isUser ? 50 : 0,
+                        right: message.isUser ? 0 : 50,
+                      ),
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: message.isUser
+                            ? AppColors.primary
+                            : AppColors.cardBackground,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 5,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        message.text,
+                        style: TextStyle(
+                          color: message.isUser
+                              ? Colors.white
+                              : AppColors.textPrimary,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
-                  )   );
+                );
               },
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                ),
-              ],
-            ),
-            padding: EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: "Mesajınızı yazın...",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                    ),
-                    onSubmitted: _sendMessage,
-                  ),
-                ),
-                SizedBox(width: 8),
-                //ses kayıt Butonu
-                IconButton(onPressed: _listen, icon: Icon(_isListening ? Icons.mic : Icons.mic_none, color: _isListening ? Colors.red : Colors.grey,)),
-                FloatingActionButton(
-                  onPressed: () => _sendMessage(_controller.text),
-                  child: Icon(Icons.send),
-                  mini: true,
-                ),
-              ],
-            ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.cardBackground,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, -1),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+          padding: EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    hintText: "Mesajınızı yazın...",
+                    hintStyle: TextStyle(color: AppColors.textSecondary),
+                    filled: true,
+                    fillColor: AppColors.background,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide(color: AppColors.divider),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide(color: AppColors.divider),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                  ),
+                  onSubmitted: _sendMessage,
+                ),
+              ),
+              SizedBox(width: 8),
+              IconButton(
+                onPressed: _listen,
+                icon: Icon(
+                  _isListening ? Icons.mic : Icons.mic_none,
+                  color: _isListening ? AppColors.error : AppColors.icon,
+                  size: 28,
+                ),
+              ),
+              FloatingActionButton(
+                onPressed: () => _sendMessage(_controller.text),
+                child: Icon(Icons.send),
+                backgroundColor: AppColors.primary,
+                mini: true,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   void dispose() {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:mytodo_app/domain/presentation/pages/ai/ai_assistan_page.dart';
 import 'package:mytodo_app/domain/presentation/pages/home/statistics_page.dart';
 import 'home_page.dart';
 import 'calendar_page.dart';
@@ -15,8 +17,10 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   final List<Widget> _pages = [
     HomePage(),
     CalendarPage(),
+    AiAssistantPage(),
     StatisticsPage(),
-    ProfilePage(),
+        ProfilePage(),
+
   ];
 
   @override
@@ -36,11 +40,13 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 360;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: _pages[_currentIndex],
       bottomNavigationBar: Container(
         margin: EdgeInsets.only(
@@ -51,11 +57,12 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
         ),
         height: isSmallScreen ? 65 : 75,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppColors.divider),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: AppColors.primary.withOpacity(0.1),
               blurRadius: 20,
               offset: Offset(0, 10),
               spreadRadius: 0,
@@ -70,8 +77,10 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
               _buildNavItem(Icons.home_rounded, "Ana Sayfa", 0, screenWidth),
               _buildNavItem(
                   Icons.calendar_today_rounded, "Takvim", 1, screenWidth),
-              _buildNavItem(Icons.bar_chart, "İstatistik", 2, screenWidth),
-              _buildNavItem(Icons.person_rounded, "Profil", 3, screenWidth),
+              _buildNavItem(
+                  Icons.smart_toy, "AI Asistan", 2, screenWidth), // Düzeltildi
+              _buildNavItem(Icons.bar_chart, "İstatistik", 3, screenWidth),
+              _buildNavItem(Icons.person_rounded, "Profil", 4, screenWidth),
             ],
           ),
         ),
@@ -82,7 +91,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   Widget _buildNavItem(
       IconData icon, String label, int index, double screenWidth) {
     final isSelected = _currentIndex == index;
-    final itemWidth = (screenWidth - 32) / 4;
+    final itemWidth = (screenWidth - 32) / 5;
 
     return GestureDetector(
       onTap: () {
@@ -102,13 +111,13 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.all(isSelected ? 12 : 8),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.blue.withOpacity(0.15)
+                    ? AppColors.primary.withOpacity(0.15)
                     : Colors.transparent,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: isSelected ? Colors.blue : Colors.grey.shade600,
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
                 size: isSelected ? 28 : 24,
               ),
             ),
@@ -117,7 +126,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
               Text(
                 label,
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: AppColors.primary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),

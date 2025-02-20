@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mytodo_app/domain/presentation/widgets/ai_assistant_buble.dart';
 
 import '../../../../core/navigation/routes.dart';
 import '../../../../core/theme/colors.dart';
@@ -25,6 +24,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todoViewModel = ref.watch(todoProvider.notifier);
+    final theme = Theme.of(context);
     final tasks = ref.watch(todoProvider); // Watch the tasks directly
     final selectedFilter = ref.watch(taskFilterProvider);
     final allTasks = todoViewModel.getFilteredTasks(selectedFilter);
@@ -42,9 +42,11 @@ class HomePage extends ConsumerWidget {
     final ongoingTasks = allTasks.where((task) => !task.isCompleted).toList();
     final completedTasks = allTasks.where((task) => task.isCompleted).toList();
 
-     return Scaffold(
-      appBar: AppBar(
-        title: Text('Ana Sayfa'),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: CustomAppBar(
+        title: 'Ana Sayfa',
+        showLeading: false,
       ),
       body: SafeArea(
         child: Stack(
@@ -74,29 +76,22 @@ class HomePage extends ConsumerWidget {
                   ),
               ],
             ),
-            Positioned(
-              bottom: 80,
-              right: 16,
-              child: AiAssistantBuble(), // Yapay zeka asistanı baloncuğu
-            ),
           ],
         ),
       ),
-      
-      
       floatingActionButton: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         child: FloatingActionButton.extended(
           onPressed: () => Navigator.pushNamed(context, AppRoutes.addtask),
           label: Text(
             'Yeni Görev',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.blue,
+          icon: Icon(Icons.add, color: Colors.white),
+          backgroundColor: AppColors.primary,
         ),
       ),
     );
@@ -113,11 +108,11 @@ class HomePage extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -164,7 +159,10 @@ class HomePage extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
             gradient: isSelected
                 ? LinearGradient(
-                    colors: [Colors.blue.shade400, Colors.blue.shade600],
+                    colors: [
+                      AppColors.primary.withOpacity(0.8),
+                      AppColors.primary,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   )
@@ -175,14 +173,14 @@ class HomePage extends ConsumerWidget {
             children: [
               Icon(
                 icon,
-                color: isSelected ? Colors.white : Colors.grey.shade600,
+                color: isSelected ? Colors.white : AppColors.textSecondary,
                 size: 22,
               ),
               SizedBox(height: 4),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.grey.shade600,
+                  color: isSelected ? Colors.white : AppColors.textSecondary,
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
@@ -235,9 +233,11 @@ class HomePage extends ConsumerWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.blue.shade50 : Colors.transparent,
+            color: isSelected
+                ? AppColors.primary.withOpacity(0.1)
+                : Colors.transparent,
             border: Border.all(
-              color: isSelected ? Colors.blue : Colors.grey.shade300,
+              color: isSelected ? AppColors.primary : AppColors.divider,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(12),
@@ -248,13 +248,14 @@ class HomePage extends ConsumerWidget {
               Icon(
                 icon,
                 size: 20,
-                color: isSelected ? Colors.blue : Colors.grey.shade600,
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
               ),
               SizedBox(width: 8),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? Colors.blue : Colors.grey.shade600,
+                  color:
+                      isSelected ? AppColors.primary : AppColors.textSecondary,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -321,10 +322,9 @@ class HomePage extends ConsumerWidget {
 
   Widget _buildEmptyState([String message = "", String subtitle = ""]) {
     return Center(
-      // Add this Center widget
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20),
-        width: double.infinity, // Add this to ensure full width
+        width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -332,13 +332,13 @@ class HomePage extends ConsumerWidget {
             Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: AppColors.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.task_outlined,
                 size: 48,
-                color: Colors.blue,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: 16),
@@ -348,7 +348,7 @@ class HomePage extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: AppColors.textPrimary,
               ),
             ),
             if (subtitle.isNotEmpty) ...[
@@ -358,7 +358,7 @@ class HomePage extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -378,20 +378,20 @@ class HomePage extends ConsumerWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.blue[800],
+              color: AppColors.textPrimary,
             ),
           ),
           SizedBox(width: 8),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: Colors.blue[100],
+              color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               count.toString(),
               style: TextStyle(
-                color: Colors.blue[800],
+                color: AppColors.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),

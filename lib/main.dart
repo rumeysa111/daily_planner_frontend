@@ -32,6 +32,7 @@ void main() async {
     await remoteConfig.initialize().catchError((error) {
       print('Remote config error handled: $error');
     });
+    
 
     // Check authentication status
     final prefs = await SharedPreferences.getInstance();
@@ -52,7 +53,9 @@ void main() async {
     // Fallback to run app without initialization
     runApp(
       ProviderScope(
+        
         child: MyApp(
+          
           isLoggenIn: false,
         ),
       ),
@@ -84,8 +87,8 @@ class MyApp extends StatelessWidget {
       ],
       locale: const Locale('tr', 'TR'),
       // Changed initial route to always show login first
-      initialRoute: isLoggenIn 
-      ?  AppRoutes.home
+      initialRoute: !isLoggenIn 
+      ?  AppRoutes.onboarding
       : AppRoutes.login,
       onGenerateRoute: AppRoutes.generateRoute,
     );

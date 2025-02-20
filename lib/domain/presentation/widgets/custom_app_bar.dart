@@ -1,35 +1,64 @@
-//// filepath: /c:/src/project/mytodo_app/lib/domain/presentation/widgets/custom_app_bar.dart
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
-  final bool showLeading; // New parameter
+  final bool showLeading;
 
   const CustomAppBar({
     Key? key,
     required this.title,
     this.actions,
-    this.showLeading = true, // Default to true
+    this.showLeading = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      automaticallyImplyLeading: showLeading, // Use the parameter here
+      backgroundColor: AppColors.cardBackground,
+      elevation: 1,
+      shadowColor: Colors.black.withOpacity(0.1),
+      automaticallyImplyLeading: showLeading,
+      leading: showLeading 
+          ? IconButton(
+              icon: Icon(Icons.arrow_back_ios, 
+                   size: 20,
+                   color: AppColors.primary),
+              onPressed: () => Navigator.pop(context),
+            )
+          : null,
       title: Text(
         title,
-        style: TextStyle(
+        style: theme.textTheme.titleLarge?.copyWith(
           color: AppColors.textPrimary,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w600,
           fontSize: 20,
         ),
       ),
-      actions: actions,
-      iconTheme: IconThemeData(color: AppColors.primary),
+      actions: actions != null 
+          ? actions!.map((action) {
+              if (action is IconButton) {
+                return IconButton(
+                  icon: action.icon,
+                  onPressed: action.onPressed,
+                  color: AppColors.primary,
+                  iconSize: 24,
+                  splashRadius: 24,
+                );
+              }
+              return action;
+            }).toList()
+          : null,
+      centerTitle: true,
+      shape: Border(
+        bottom: BorderSide(
+          color: AppColors.divider,
+          width: 1,
+        ),
+      ),
     );
   }
 

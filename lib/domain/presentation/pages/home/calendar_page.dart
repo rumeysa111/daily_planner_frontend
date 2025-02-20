@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Add this import
+import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../../data/models/todo_model.dart';
 import '../../viewmodels/calendar_viewmodel.dart';
@@ -39,36 +40,40 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     });
   }
 
-  // Görev yükleme mantığını tek bir metoda taşıyalım
-  void _loadTasks(DateTime date) {
-    if (!mounted) return;
-    ref.read(calendarProvider.notifier).setSelectedDate(date);
-    ref.read(calendarProvider.notifier).fetchTodosByDate(date);
+// _loadTasks metodunu güncelle
+void _loadTasks(DateTime date) {
+  if (!mounted) return;
+  final normalizedDate = DateTime(date.year, date.month, date.day);
+  ref.read(calendarProvider.notifier).setSelectedDate(normalizedDate);
+  ref.read(calendarProvider.notifier).fetchTodosByDate(normalizedDate);
+}
+
+// _onDaySelected metodunu güncelle
+void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+  final normalizedSelectedDay = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+  final normalizedToday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
+  if (normalizedSelectedDay.isBefore(normalizedToday)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Geçmiş tarihlere görev eklenemez!'),
+        backgroundColor: AppColors.error,
+      ),
+    );
+    return;
   }
 
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    // Geçmiş tarihleri kontrol et
-    if (selectedDay.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Geçmiş tarihlere görev eklenemez!'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    if (!isSameDay(
-        ref.read(calendarProvider.notifier).selectedDate, selectedDay)) {
-      setState(() {
-        _focusedDay = focusedDay;
-      });
-      _loadTasks(selectedDay);
-    }
+  if (!isSameDay(ref.read(calendarProvider.notifier).selectedDate, normalizedSelectedDay)) {
+    setState(() {
+      _focusedDay = focusedDay;
+    });
+    _loadTasks(normalizedSelectedDay);
   }
+}
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final calendarState = ref.watch(calendarProvider);
     final isLoading = ref.watch(calendarProvider.notifier).isLoading;
     final size = MediaQuery.of(context).size;
@@ -76,13 +81,13 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     final isSmallScreen = size.width < 360;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         showLeading: false,
         title: "Takvim",
         actions: [
           IconButton(
-            icon: Icon(Icons.today, color: Colors.blue),
+            icon: Icon(Icons.today, color: AppColors.primary),
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime.now();
@@ -101,7 +106,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                 vertical: size.height * 0.01,
               ),
               elevation: 2,
-              color: Colors.grey[100],
+              color: AppColors.cardBackground,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -135,7 +140,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           ),
           icon: Icon(Icons.add,
               color: Colors.white, size: isSmallScreen ? 20 : 24),
-          backgroundColor: Colors.blue,
+          backgroundColor: AppColors.primary,
         ),
       ),
     );
@@ -146,11 +151,13 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
           SizedBox(height: 16),
           Text(
             'Görevler yükleniyor...',
-            style: TextStyle(color: Colors.grey[600]),
+            style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -168,14 +175,14 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
       focusedDay: _focusedDay,
       selectedDayPredicate: (day) => isSameDay(selectedDate, day),
       calendarFormat: _calendarFormat,
-          // Türkçe gün başlıkları için bu kısmı ekleyin
+      // Türkçe gün başlıkları için bu kısmı ekleyin
       daysOfWeekStyle: DaysOfWeekStyle(
         weekdayStyle: TextStyle(
-          color: Colors.grey[800],
+          color: AppColors.textPrimary,
           fontSize: isSmallScreen ? 12 : 14,
         ),
         weekendStyle: TextStyle(
-          color: Colors.red,
+          color: AppColors.error,
           fontSize: isSmallScreen ? 12 : 14,
         ),
       ),
@@ -188,27 +195,28 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
       },
       calendarStyle: CalendarStyle(
         defaultTextStyle: TextStyle(
-          color: Colors.grey[800],
+          color: AppColors.textPrimary,
           fontSize: isSmallScreen ? 12 : 14,
         ),
         weekendTextStyle: TextStyle(
-          color: Colors.red,
+          color: AppColors.error,
           fontSize: isSmallScreen ? 12 : 14,
         ),
         outsideTextStyle: TextStyle(
-          color: Colors.grey[500],
+          color: AppColors.textSecondary,
           fontSize: isSmallScreen ? 12 : 14,
         ),
         selectedDecoration: BoxDecoration(
-          color: Colors.blue,
+          color: AppColors.primary,
           shape: BoxShape.circle,
         ),
         todayDecoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.3),
+          // ignore: deprecated_member_use
+          color: AppColors.primary.withOpacity(0.3),
           shape: BoxShape.circle,
         ),
         markerDecoration: BoxDecoration(
-          color: Colors.orange,
+          color: AppColors.secondary,
           shape: BoxShape.circle,
         ),
         outsideDaysVisible: false,
@@ -218,23 +226,27 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
         titleCentered: true,
         formatButtonShowsNext: false,
         formatButtonDecoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.1),
+          // ignore: deprecated_member_use
+          color: AppColors.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         formatButtonTextStyle: TextStyle(
-          color: Colors.blue,
+          color: AppColors.primary,
           fontSize: isSmallScreen ? 12 : 14,
         ),
         titleTextStyle: TextStyle(
+          color: AppColors.textPrimary,
           fontSize: isSmallScreen ? 15 : 17,
           fontWeight: FontWeight.bold,
         ),
         leftChevronIcon: Icon(
+          color: AppColors.primary,
           Icons.chevron_left,
           size: isSmallScreen ? 20 : 24,
         ),
         rightChevronIcon: Icon(
           Icons.chevron_right,
+          color: AppColors.primary,
           size: isSmallScreen ? 20 : 24,
         ),
       ),
@@ -272,9 +284,9 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
         vertical: size.height * 0.015,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200),
+          bottom: BorderSide(color: AppColors.divider),
         ),
       ),
       child: Row(
@@ -282,12 +294,12 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
           Container(
             padding: EdgeInsets.all(isSmallScreen ? 6 : 8),
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
+              color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               Icons.event,
-              color: Colors.blue,
+              color: AppColors.primary,
               size: isSmallScreen ? 16 : 20,
             ),
           ),
@@ -298,7 +310,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
               style: TextStyle(
                 fontSize: isSmallScreen ? 14 : 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
+                color: AppColors.textPrimary,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -310,7 +322,10 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
 
   Widget _buildTaskList(List<TodoModel> tasks, CalendarViewModel viewModel) {
     if (viewModel.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return Center(
+          child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+      ));
     }
 
     if (tasks.isEmpty) {
@@ -345,7 +360,10 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Görev güncellenirken bir hata oluştu')),
+          SnackBar(
+            content: Text('Görev güncellenirken bir hata oluştu'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -360,7 +378,10 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
         _loadTasks(task.dueDate ?? _focusedDay);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Görev başarıyla silindi')),
+            SnackBar(
+              content: Text('Görev başarıyla silindi'),
+              backgroundColor: AppColors.success,
+            ),
           );
         }
       }
@@ -369,7 +390,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Görev silinirken bir hata oluştu'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -385,22 +406,23 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     );
   }
 
-  Future<void> _showAddTaskPage(
-      BuildContext context, DateTime selectedDate) async {
-    if (!mounted) return;
+// _showAddTaskPage metodunu güncelle
+Future<void> _showAddTaskPage(BuildContext context, DateTime selectedDate) async {
+  if (!mounted) return;
 
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddTaskPage(selectedDate: selectedDate),
-      ),
-    );
+  final normalizedDate = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+  
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AddTaskPage(selectedDate: normalizedDate),
+    ),
+  );
 
-    // Sayfa kapandığında ve yeni görev eklendiyse görevleri yenile
-    if (mounted && result == true) {
-      _loadTasks(selectedDate);
-    }
+  if (mounted && result == true) {
+    _loadTasks(normalizedDate);
   }
+}
 
   Widget _buildEmptyState() {
     final size = MediaQuery.of(context).size;
@@ -417,13 +439,14 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
             Container(
               padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                // ignore: deprecated_member_use
+                color: AppColors.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.event_busy,
                 size: isSmallScreen ? 36 : 48,
-                color: Colors.blue,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: size.height * 0.02),
@@ -432,7 +455,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
               style: TextStyle(
                 fontSize: isSmallScreen ? 16 : 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
+                color: AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -441,7 +464,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
               'Yeni görev eklemek için + butonuna tıklayın',
               style: TextStyle(
                 fontSize: isSmallScreen ? 12 : 14,
-                color: Colors.grey[600],
+                color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
