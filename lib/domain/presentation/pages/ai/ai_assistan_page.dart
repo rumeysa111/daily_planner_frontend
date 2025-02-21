@@ -28,16 +28,46 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
   final stt.SpeechToText _speech = stt.SpeechToText();
   final FlutterTts _flutterTts = FlutterTts();
   bool _isListening = false;
-
+  bool _isInitialized = false;
+  bool _isLoading = false;
   String? username;
   @override
   void initState() {
     super.initState();
-    _initializeSpeech();
-    _initializeTts();
-
-    _loadUserName();
+   
+    _setupAssistant();
   }
+   Future<void> _setupAssistant() async {
+    setState(() => _isLoading = true);
+    try {
+      await _initializeSpeech();
+      await _initializeTts();
+      await AiAssistantService.initialize();
+      await _loadUserName();
+      setState(() => _isInitialized = true);
+    } catch (e) {
+      print('Setup error: $e');
+      _showErrorDialog('Uygulama başlatılamadı: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Hata'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Tamam'),
+          ),
+        ],
+      ),
+    );
+  }
+ 
 
   // konuşma tanıma başlat
  Future<void> _initializeSpeech() async {
@@ -72,41 +102,77 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
   Future<void> _speak(String text) async {
     await _flutterTts.speak(text);
   }
+   Future<bool> _handleMicrophonePermission() async {
+    PermissionStatus status = await Permission.microphone.status;
+    
+    if (status.isDenied) {
+      // İzin henüz istenmemiş, kullanıcıdan iste
+      status = await Permission.microphone.request();
+    }
+
+    if (status.isPermanentlyDenied) {
+      // Kullanıcı izni kalıcı olarak reddetmiş, ayarlara yönlendir
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Mikrofon İzni Gerekli'),
+          content: Text('Sesli komut özelliğini kullanmak için mikrofon iznine ihtiyaç var. Lütfen ayarlardan mikrofon iznini verin.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () => openAppSettings(),
+              child: Text('Ayarlara Git'),
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+
+    return status.isGranted;
+  }
   // Sesle yazma
  void _listen() async {
-  try {
-    if (!_isListening) {
-      print("Starting listening...");
-      if (!_speech.isAvailable) {
-        await _initializeSpeech();
+    try {
+      // Mikrofon iznini kontrol et
+      bool hasPermission = await _handleMicrophonePermission();
+      if (!hasPermission) {
+        return;
       }
-      
-      setState(() => _isListening = true);
-      await _speech.listen(
-        onResult: (result) {
-          print("Speech result: ${result.recognizedWords}");
-          setState(() {
-            _controller.text = result.recognizedWords;
-            if (result.finalResult) {
-              _sendMessage(_controller.text);
-              _isListening = false;
-            }
-          });
-        },
-        localeId: "tr_TR",
-        listenFor: Duration(seconds: 60),
-        pauseFor: Duration(seconds: 5),
-      );
-    } else {
+
+      if (!_isListening) {
+        if (!_speech.isAvailable) {
+          await _initializeSpeech();
+        }
+        
+        setState(() => _isListening = true);
+        await _speech.listen(
+          onResult: (result) {
+            setState(() {
+              _controller.text = result.recognizedWords;
+              if (result.finalResult) {
+                _sendMessage(_controller.text);
+                _isListening = false;
+              }
+            });
+          },
+          localeId: "tr-TR",
+          listenFor: Duration(seconds: 30),
+          pauseFor: Duration(seconds: 3),
+        );
+      } else {
+        setState(() => _isListening = false);
+        await _speech.stop();
+      }
+    } catch (e) {
+      print("Listen error: $e");
       setState(() => _isListening = false);
-      await _speech.stop();
-      print("Stopped listening");
+      _showErrorDialog('Ses tanıma başlatılamadı: $e');
     }
-  } catch (e) {
-    print("Listen error: $e");
-    setState(() => _isListening = false);
   }
-}
 
   Future<void> _loadUserName() async {
     //String? userName = await LocalStorageService.getUserName();
@@ -120,46 +186,66 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
   }
 
   void _sendMessage(String text) {
-    if (text.trim().isEmpty) return;
+  final trimmedText = text.trim();
+  if (trimmedText.isEmpty) return;
 
-    setState(() {
-      _messages.add(Message(text, true));
-      _controller.clear();
-    });
-
-    // Mesaj gönderildikten sonra en alta scroll
-    Future.delayed(Duration(milliseconds: 100), () {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
-    // AI Yanıtını Al
-    _getAIResponse(text);
+  if (!_isInitialized) {
+    _showErrorDialog('AI servisi henüz hazır değil');
+    return;
   }
 
-  Future<void> _getAIResponse(String userMessage) async {
+  setState(() {
+    _messages.add(Message(trimmedText, true));
+    _controller.clear();
+  });
+
+  _getAIResponse(trimmedText);
+}
+
+   Future<void> _getAIResponse(String userMessage) async {
+    if (!_isInitialized) {
+      _showErrorDialog('AI servisi henüz hazır değil');
+      return;
+    }
+
+    // Yazıyor... mesajını ekle
+    final typingMessageIndex = _messages.length;
     setState(() {
-      _messages.add(Message("Yazıyor...", false)); // Kullanıcı beklediğini görebilir
+      _isLoading = true;
+      _messages.add(Message("Yazıyor...", false));
     });
 
-    String aiResponse = await AiAssistantService.getAIResponse(userMessage);
+    try {
+      final aiResponse = await AiAssistantService.getAIResponse(userMessage);
+      setState(() {
+        // Yazıyor... mesajını kaldır ve AI yanıtını ekle
+        _messages.removeAt(typingMessageIndex);
+        _messages.add(Message(aiResponse, false));
+        _isLoading = false;
+      });
 
-    setState(() {
-      _messages.removeLast(); // "Yapay Zeka yazıyor..." mesajını kaldır
-      _messages.add(Message(aiResponse, false)); // Gerçek yanıtı ekle
-    });
-
-    // Yanıt alındıktan sonra en alta scroll
-    Future.delayed(Duration(milliseconds: 100), () {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
+      await _scrollToBottom();
+    } catch (e) {
+      setState(() {
+        // Hata durumunda Yazıyor... mesajını kaldır
+        _messages.removeAt(typingMessageIndex);
+        _messages.add(Message("Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.", false));
+        _isLoading = false;
+      });
+      print('AI Response Error: $e');
+    }
+}
+// Scroll helper method
+Future<void> _scrollToBottom() async {
+  await Future.delayed(Duration(milliseconds: 100));
+  if (_scrollController.hasClients) {
+    await _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
+}
 
  @override
 Widget build(BuildContext context) {

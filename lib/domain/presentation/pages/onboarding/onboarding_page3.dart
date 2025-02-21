@@ -75,7 +75,7 @@ class OnboardingPage3 extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.1),
+                    color: AppColors.secondary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -83,7 +83,7 @@ class OnboardingPage3 extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.notifications_active_outlined,
-                        color: AppColors.success,
+                        color: AppColors.primary,
                         size: isSmallScreen ? 24 : 28,
                       ),
                       SizedBox(width: 12),
@@ -93,7 +93,7 @@ class OnboardingPage3 extends StatelessWidget {
                           Text(
                             "Akıllı Hatırlatıcılar",
                             style: TextStyle(
-                              color: AppColors.success,
+                              color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                               fontSize: isSmallScreen ? 14 : 16,
                             ),
@@ -102,7 +102,7 @@ class OnboardingPage3 extends StatelessWidget {
                           Text(
                             "Zamanında bildirim al",
                             style: TextStyle(
-                              color: AppColors.success.withOpacity(0.8),
+                              color: AppColors.primary.withOpacity(0.8),
                               fontSize: isSmallScreen ? 12 : 14,
                             ),
                           ),

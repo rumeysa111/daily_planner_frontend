@@ -4,12 +4,33 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AiAssistantService {
+    static bool _isInitialized = false;
+  static late GenerativeModel model;
+
   static String apiKey = dotenv.env['GEMINI_API_KEY'] ??
       ""; // Buraya kendi OpenAI API anahtarını ekle
-  static final model = GenerativeModel(
-    model: 'gemini-pro',
-    apiKey: apiKey,
-  );
+  static Future<void> initialize() async {
+    if (!_isInitialized) {
+      try {
+        await dotenv.load(fileName: ".env");
+        apiKey = dotenv.env['GEMINI_API_KEY'] ?? "";
+        
+        if (apiKey.isEmpty) {
+          throw Exception("API anahtarı bulunamadı!");
+        }
+
+        model = GenerativeModel(
+          model: 'gemini-pro',
+          apiKey: apiKey,
+        );
+
+        _isInitialized = true;
+      } catch (e) {
+        print('AI Service initialization error: $e');
+        throw Exception('AI servisi başlatılamadı: $e');
+      }
+    }
+  }
   static Future<String> getAIResponse(String userMessage) async {
     try {
       if (apiKey.isEmpty) {
