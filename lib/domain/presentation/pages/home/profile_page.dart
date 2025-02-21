@@ -26,14 +26,7 @@ class ProfilePage extends ConsumerWidget {
       appBar: CustomAppBar(
         showLeading: false,
         title: "Profil",
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings, color: AppColors.primary),
-            onPressed: () {
-              // Profil ayarları
-            },
-          ),
-        ],
+    
       ),
       body: SingleChildScrollView(
         child: Column(

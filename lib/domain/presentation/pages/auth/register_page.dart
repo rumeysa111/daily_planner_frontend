@@ -8,194 +8,255 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 
 
-class RegisterPage extends ConsumerWidget {
+class RegisterPage extends ConsumerStatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerProviderStateMixin {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController surnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordControllerAgain = TextEditingController();
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  bool isLoading = false;
 
   @override
-Widget build(BuildContext context, WidgetRef ref) {
-  final theme = Theme.of(context);
-  double screenWidth = MediaQuery.of(context).size.width;
-  double screenHeight = MediaQuery.of(context).size.height;
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+    _animationController.forward();
+  }
 
-  return Scaffold(
-    backgroundColor: theme.colorScheme.background,
-    body: Center(
-      child: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-          decoration: BoxDecoration(
-            color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: screenHeight * 0.08),
+  @override
+  void dispose() {
+    _animationController.dispose();
+    nameController.dispose();
+    surnameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    passwordControllerAgain.dispose();
+    super.dispose();
+  }
 
-              // Kayıt Ol Başlığı
-              Text(
-                "Kayıt Ol",
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
 
-              SizedBox(height: screenHeight * 0.02),
-
-              // Hesap Oluştur Başlığı
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Hesap Oluştur",
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: screenHeight * 0.03),
-
-              // Form Alanı
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          hintText: "Ad",
-                          icon: Icons.person_outline,
-                          controller: nameController,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: CustomTextField(
-                          hintText: "Soyad",
-                          icon: Icons.person_outline,
-                          controller: surnameController,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: screenHeight * 0.015),
-
-                  CustomTextField(
-                    hintText: "E-posta adresiniz",
-                    icon: Icons.email_outlined,
-                    controller: emailController,
-                  ),
-
-                  SizedBox(height: screenHeight * 0.015),
-
-                  CustomTextField(
-                    hintText: "Şifreniz",
-                    icon: Icons.lock_outline,
-                    controller: passwordController,
-                    isPassword: true,
-                  ),
-
-                  SizedBox(height: screenHeight * 0.015),
-
-                  CustomTextField(
-                    hintText: "Şifrenizi tekrar giriniz",
-                    icon: Icons.lock_outline,
-                    controller: passwordControllerAgain,
-                    isPassword: true,
-                  ),
-
-                  SizedBox(height: screenHeight * 0.025),
-
-                  // Kayıt Ol Butonu
-                  CustomButton(
-                    text: "Kayıt Ol",
-                    onPressed: () async {
-                      if (passwordController.text != passwordControllerAgain.text) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Şifreler uyuşmuyor!"),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
-                        return;
-                      }
-
-                      final success = await ref.read(authProvider.notifier).register(
-                        nameController.text,
-                        surnameController.text,
-                        emailController.text,
-                        passwordController.text
-                      );
-
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Kayıt başarılı"),
-                            backgroundColor: AppColors.success,
-                          ),
-                        );
-                        Navigator.pushReplacementNamed(context, AppRoutes.login);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Kayıt başarısız!"),
-                            backgroundColor: AppColors.error,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-
-              SizedBox(height: screenHeight * 0.02),
-
-              // Giriş Yap Linki
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Hesabınız var mı?",
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: theme.colorScheme.primary,
-                    ),
-                    child: Text(
-                      "Giriş Yap",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: screenHeight * 0.03),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.primary.withOpacity(0.1),
+              theme.colorScheme.secondary.withOpacity(0.1),
             ],
           ),
         ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: 400),
+                    padding: EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Logo
+                        Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/logo/app_logo.png'),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 24),
+
+                        // Başlık
+                        Text(
+                          "Hesap Oluştur",
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 28,
+                          ),
+                        ),
+                        SizedBox(height: 32),
+
+                        // Form Alanları
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                hintText: "Ad",
+                                icon: Icons.person_outline,
+                                controller: nameController,
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: CustomTextField(
+                                hintText: "Soyad",
+                                icon: Icons.person_outline,
+                                controller: surnameController,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        CustomTextField(
+                          hintText: "E-posta adresiniz",
+                          icon: Icons.email_outlined,
+                          controller: emailController,
+                        ),
+                        SizedBox(height: 16),
+                        CustomTextField(
+                          hintText: "Şifreniz",
+                          icon: Icons.lock_outline,
+                          controller: passwordController,
+                          isPassword: true,
+                        ),
+                        SizedBox(height: 16),
+                        CustomTextField(
+                          hintText: "Şifrenizi tekrar giriniz",
+                          icon: Icons.lock_outline,
+                          controller: passwordControllerAgain,
+                          isPassword: true,
+                        ),
+                        SizedBox(height: 32),
+
+                        // Kayıt Ol Butonu
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: isLoading ? null : () async {
+                              setState(() => isLoading = true);
+                              try {
+                                if (passwordController.text != passwordControllerAgain.text) {
+                                  _showErrorSnackbar(context, "Şifreler uyuşmuyor!");
+                                  return;
+                                }
+
+                                final success = await ref.read(authProvider.notifier).register(
+                                  nameController.text,
+                                  surnameController.text,
+                                  emailController.text.trim(),
+                                  passwordController.text
+                                );
+
+                                if (success) {
+                                  Navigator.pushReplacementNamed(context, AppRoutes.login);
+                                } else {
+                                  _showErrorSnackbar(context, "Kayıt başarısız!");
+                                }
+                              } catch (e) {
+                                _showErrorSnackbar(context, "Bir hata oluştu: ${e.toString()}");
+                              } finally {
+                                setState(() => isLoading = false);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.colorScheme.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: isLoading
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(
+                                    "Kayıt Ol",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        SizedBox(height: 24),
+
+                        // Giriş Yap Linki
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Hesabınız var mı?",
+                              style: TextStyle(color: AppColors.textSecondary),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(context, AppRoutes.login);
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: theme.colorScheme.primary,
+                              ),
+                              child: Text(
+                                "Giriş Yap",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
+
+  void _showErrorSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
 }

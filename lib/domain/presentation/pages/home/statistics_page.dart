@@ -173,7 +173,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           color: AppColors.primary,
         ),
         _buildStatisticCard(
-          title: "Streak",
+          title: "Seri",
           value: "${statistics.currentStreak} gün",
           icon: Icons.local_fire_department,
           color: AppColors.error,

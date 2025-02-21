@@ -346,9 +346,8 @@ class HomePage extends ConsumerWidget {
               message,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                fontSize: 14,
+                color: AppColors.textSecondary,
               ),
             ),
             if (subtitle.isNotEmpty) ...[
