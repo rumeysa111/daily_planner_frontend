@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/calendar_viewmodel.dart';
 import 'package:mytodo_app/domain/presentation/widgets/category_edit_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,15 +63,15 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
         title: Text(
           "Yeni Görev",
           style: TextStyle(
-            color: Colors.blue[800],
+            color: AppColors.textPrimary,
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.cardBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.blue[800]),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -111,7 +112,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
         onPressed: () => _saveTask(ref),
         label: Text('Kaydet'),
         icon: Icon(Icons.check),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.primary,
       ),
     );
   }
@@ -126,20 +127,20 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                // ignore: deprecated_member_use
+                color: AppColors.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child:
-                  Icon(Icons.category_outlined, size: 48, color: Colors.blue),
+                  Icon(Icons.category_outlined, size: 48,       color: AppColors.primary),
             ),
             SizedBox(height: 16),
             Text(
               'Henüz kategori eklenmemiş',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
-              ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,),
             ),
             SizedBox(height: 12),
             ElevatedButton.icon(
@@ -147,7 +148,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
               icon: Icon(Icons.add),
               label: Text('Kategori Ekle'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+              backgroundColor: AppColors.primary,
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -169,7 +170,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.grey[800],
+          color: AppColors.textPrimary,
           ),
         ),
         SizedBox(height: 8),
@@ -177,20 +178,20 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
           controller: _titleController,
           decoration: InputDecoration(
             hintText: "Görevinizi yazın",
-            hintStyle: TextStyle(color: Colors.grey[400]),
+            hintStyle: TextStyle(color: AppColors.textSecondary),
             filled: true,
-            fillColor: Colors.grey[50],
+          fillColor: AppColors.background,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(color: AppColors.divider),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[200]!),
+              borderSide: BorderSide(color: AppColors.divider),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.blue),
+              borderSide: BorderSide(color:  AppColors.primary),
             ),
           ),
         ),
@@ -211,7 +212,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+              color: AppColors.textPrimary,
               ),
             ),
             TextButton.icon(
@@ -219,7 +220,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
               icon: Icon(Icons.add, size: 18),
               label: Text("Yeni"),
               style: TextButton.styleFrom(
-                foregroundColor: Colors.blue,
+              foregroundColor: AppColors.primary,
               ),
             ),
           ],

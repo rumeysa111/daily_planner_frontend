@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/data/repositories/ai_asistant_service.dart';
 import 'package:mytodo_app/data/repositories/local_storage_service.dart';
+import 'package:mytodo_app/domain/presentation/widgets/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -93,8 +94,8 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
           });
         },
         localeId: "tr_TR",
-        listenFor: Duration(seconds: 30),
-        pauseFor: Duration(seconds: 3),
+        listenFor: Duration(seconds: 60),
+        pauseFor: Duration(seconds: 5),
       );
     } else {
       setState(() => _isListening = false);
@@ -140,7 +141,7 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
 
   Future<void> _getAIResponse(String userMessage) async {
     setState(() {
-      _messages.add(Message("...", false)); // Kullanıcı beklediğini görebilir
+      _messages.add(Message("Yazıyor...", false)); // Kullanıcı beklediğini görebilir
     });
 
     String aiResponse = await AiAssistantService.getAIResponse(userMessage);
@@ -164,11 +165,11 @@ class _AiAssistantPageState extends State<AiAssistantPage> {
 Widget build(BuildContext context) {
   final theme = Theme.of(context);
   return Scaffold(
-    appBar: AppBar(
-      title: Text("AI Asistan"),
-      elevation: 1,
-      backgroundColor: AppColors.primary,
-    ),
+    appBar: CustomAppBar(
+  title: "AI Asistan",
+  showLeading: false,
+ 
+),
     body: Column(
       children: [
         Expanded(

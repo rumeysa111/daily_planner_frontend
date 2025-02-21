@@ -29,12 +29,24 @@ dependencies:
   speech_to_text: ^7.0.0
   flutter_tts: ^4.2.2
   permission_handler: ^11.3.1
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^3.0.1
+  flutter_launcher_icons: ^0.14.3
+
+# Flutter Launcher Icons yapılandırması
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/app_logo.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/logo/app_logo.png"
+  remove_alpha_ios: true
+ 
 
 flutter:
   uses-material-design: true

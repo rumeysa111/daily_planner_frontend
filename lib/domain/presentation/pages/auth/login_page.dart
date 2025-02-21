@@ -105,7 +105,7 @@ class LoginPage extends ConsumerWidget {
                         try {
                           final success = await ref
                               .read(authProvider.notifier)
-                              .login(emailController.text, passwordController.text);
+                              .login(emailController.text.trim(), passwordController.text);
 
                           if (success) {
                             ScaffoldMessenger.of(context).showSnackBar(

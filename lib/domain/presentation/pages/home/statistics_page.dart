@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:mytodo_app/data/models/category_model.dart';
 import 'package:mytodo_app/data/models/task_statistics.dart';
+import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/statistics_viewmodel.dart';
 import '../../widgets/custom_app_bar.dart';
 
@@ -231,13 +233,13 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                       interval: 0.2, // Eksenin aralık değerini belirle
                       getTitlesWidget: (value, meta) {
                         return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Text(
-                            '${(value * 100).toInt()}%',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                          ),
-                        ));
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Text(
+                              '${(value * 100).toInt()}%',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                              ),
+                            ));
                       },
                       reservedSize: 40,
                     ),
@@ -263,11 +265,11 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                 ),
                 borderData: FlBorderData(
                   border: const Border(
-                   bottom: BorderSide(color: AppColors.divider),
+                    bottom: BorderSide(color: AppColors.divider),
                     left: BorderSide(color: AppColors.divider),
                   ),
                 ),
-                   gridData: FlGridData(
+                gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
                   horizontalInterval: 0.2,
@@ -278,7 +280,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                     );
                   },
                 ),
-                   barGroups: statistics.weeklyProgress.asMap().entries.map((entry) {
+                barGroups:
+                    statistics.weeklyProgress.asMap().entries.map((entry) {
                   return BarChartGroupData(
                     x: entry.key,
                     barRods: [
@@ -305,11 +308,9 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider),
-
+        border: Border.all(color: AppColors.divider),
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
             color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 4),
@@ -328,57 +329,88 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             ),
           ),
           SizedBox(height: 24),
-          SizedBox(
-            height: 200,
+          AspectRatio(
+            aspectRatio: 1.5,
             child: PieChart(
               PieChartData(
                 sections: statistics.categoryCompletion.entries.map((entry) {
-                  Color categoryColor = Colors.primaries[
-                      entry.key.hashCode % Colors.primaries.length];
+                  // AppColors.categoryColors'dan renk al
+                  final colorIndex =
+                      entry.key.hashCode % AppColors.categoryColors.length;
+                  final categoryColor = AppColors.categoryColors[colorIndex];
+
                   return PieChartSectionData(
                     color: categoryColor.withOpacity(0.8),
                     value: entry.value,
-                    title: '${entry.value.toStringAsFixed(1)}%',
-                    radius: 100,
+                    title: '', // Dilim üzerindeki yazıyı kaldır
+                    radius: 80, // Daire boyutunu küçült
                     titleStyle: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: AppColors.cardBackground,
                     ),
                   );
                 }).toList(),
                 sectionsSpace: 2,
-                centerSpaceRadius: 40,
+                centerSpaceRadius: 30,
               ),
             ),
           ),
           SizedBox(height: 16),
-          // Kategori lejantları
-       Column(
-            children: statistics.categoryCompletion.entries.map((entry) {
-              Color categoryColor = Colors.primaries[
-                  entry.key.hashCode % Colors.primaries.length];
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: categoryColor.withOpacity(0.8),
-                        shape: BoxShape.circle,
-                      ),
+          // Kategori lejantlarını kaydırılabilir yap
+          Container(
+            height: 120,
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 8,
+                children: statistics.categoryCompletion.entries.map((entry) {
+                  final colorIndex =
+                      entry.key.hashCode % AppColors.categoryColors.length;
+                  final categoryColor = AppColors.categoryColors[colorIndex];
+
+                  // Kategori adını bulmak için ref.watch(categoryProvider) kullan
+                  final categories = ref.watch(categoryProvider);
+                  final categoryName = categories
+                      .firstWhere((cat) => cat.id == entry.key,
+                          orElse: () => CategoryModel(
+                              id: entry.key,
+                              name: "Bilinmeyen Kategori",
+                              icon: "❓",
+                              color: AppColors.textSecondary,
+                              userId: ""))
+                      .name;
+
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: categoryColor.withOpacity(0.8),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '$categoryName (${entry.value.toStringAsFixed(1)}%)',
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 8),
-                    Text(
-                      entry.key,
-                      style: TextStyle(color: AppColors.textPrimary),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
         ],
       ),
