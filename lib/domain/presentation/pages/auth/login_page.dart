@@ -96,7 +96,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
 
                         // Hoşgeldiniz yazısı
                         Text(
-                          "Hoşgeldiniz",
+                          "Hoş geldiniz",
                           style: theme.textTheme.headlineMedium?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,

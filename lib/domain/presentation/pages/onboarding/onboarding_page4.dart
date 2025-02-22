@@ -32,7 +32,7 @@ class OnboardingPage4 extends StatelessWidget {
             ),
             padding: EdgeInsets.all(24),
             child: Image.asset(
-              'assets/images/onboarding4.png', // AI asistan görseli
+              'assets/images/onboarding44.png', // AI asistan görseli
               fit: BoxFit.contain,
             ),
           ),
