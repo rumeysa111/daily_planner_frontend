@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 
 class OnboardingPage1 extends StatelessWidget {
+    const OnboardingPage1({super.key});  // const constructor ekleyelim
   @override
+  
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context); // <-- Daha performanslı yöntem
     final isSmallScreen = size.width < 360;
 
     return Container(
@@ -23,7 +25,7 @@ class OnboardingPage1 extends StatelessWidget {
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(24),
             ),
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Image.asset(
               'assets/images/onboarding1.png',
               fit: BoxFit.contain,
@@ -31,7 +33,7 @@ class OnboardingPage1 extends StatelessWidget {
           ),
           SizedBox(height: size.height * 0.05),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding:const  EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(20),
@@ -39,7 +41,7 @@ class OnboardingPage1 extends StatelessWidget {
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.05),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset:const  Offset(0, 10),
                 ),
               ],
             ),
@@ -53,7 +55,7 @@ class OnboardingPage1 extends StatelessWidget {
                     fontSize: isSmallScreen ? 24 : 28,
                   ),
                 ),
-                SizedBox(height: 16),
+             const    SizedBox(height: 16),
                 Text(
                   "Tüm görevlerini, hatırlatıcılarını ve etkinliklerini tek bir yerden yönet.",
                   textAlign: TextAlign.center,
@@ -63,9 +65,9 @@ class OnboardingPage1 extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                SizedBox(height: 24),
+            const    SizedBox(height: 24),
                 Container(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -78,7 +80,7 @@ class OnboardingPage1 extends StatelessWidget {
                         color: AppColors.primary,
                         size: isSmallScreen ? 20 : 24,
                       ),
-                      SizedBox(width: 8),
+                const      SizedBox(width: 8),
                       Text(
                         "İpucu: Kaydır ve keşfet!",
                         style: TextStyle(

@@ -44,7 +44,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   void _showAddCategoryDialog() async {
     final result = await showDialog(
       context: context,
-      builder: (context) => CategoryEditDialog(),
+      builder: (context) => const CategoryEditDialog(),
     );
 
     if (result == true) {
@@ -60,7 +60,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Yeni Görev",
           style: TextStyle(
             color: AppColors.textPrimary,
@@ -71,7 +71,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
         backgroundColor: AppColors.cardBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primary),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -82,25 +82,25 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 children: [
                   Container(
                     color: Colors.white,
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildTitleField(),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         _buildCategoryDropdown(categories),
                       ],
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Container(
                     color: Colors.white,
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildDateTimePicker(),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         _buildNotesField(),
                       ],
                     ),
@@ -110,8 +110,8 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _saveTask(ref),
-        label: Text('Kaydet'),
-        icon: Icon(Icons.check),
+        label: const Text('Kaydet'),
+        icon: const Icon(Icons.check),
         backgroundColor: AppColors.primary,
       ),
     );
@@ -120,36 +120,36 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   Widget _buildEmptyCategoryState() {
     return Center(
       child: Container(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 // ignore: deprecated_member_use
                 color: AppColors.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child:
-                  Icon(Icons.category_outlined, size: 48,       color: AppColors.primary),
+                  const Icon(Icons.category_outlined, size: 48,       color: AppColors.primary),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Henüz kategori eklenmemiş',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             ElevatedButton.icon(
               onPressed: _showAddCategoryDialog,
-              icon: Icon(Icons.add),
-              label: Text('Kategori Ekle'),
+              icon: const Icon(Icons.add),
+              label: const Text('Kategori Ekle'),
               style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -165,7 +165,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Görev Başlığı",
           style: TextStyle(
             fontSize: 16,
@@ -173,25 +173,25 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
           color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         TextField(
           controller: _titleController,
           decoration: InputDecoration(
             hintText: "Görevinizi yazın",
-            hintStyle: TextStyle(color: AppColors.textSecondary),
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
             filled: true,
           fillColor: AppColors.background,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider),
+              borderSide: const BorderSide(color: AppColors.divider),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider),
+              borderSide: const BorderSide(color: AppColors.divider),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color:  AppColors.primary),
+              borderSide: const BorderSide(color:  AppColors.primary),
             ),
           ),
         ),
@@ -207,7 +207,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               "Kategori",
               style: TextStyle(
                 fontSize: 16,
@@ -217,17 +217,17 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             ),
             TextButton.icon(
               onPressed: _showAddCategoryDialog,
-              icon: Icon(Icons.add, size: 18),
-              label: Text("Yeni"),
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text("Yeni"),
               style: TextButton.styleFrom(
               foregroundColor: AppColors.primary,
               ),
             ),
           ],
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Container(
-          constraints: BoxConstraints(maxHeight: 200), // Maximum yükseklik
+          constraints: const BoxConstraints(maxHeight: 200), // Maximum yükseklik
           child: SingleChildScrollView(
             child: Wrap(
               spacing: 8, // yatay boşluk
@@ -235,7 +235,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
               children: categories.map((category) {
                 final isSelected = _selectedCategoryId == category.id;
 
-                return Container(
+                return SizedBox(
                   width: (MediaQuery.of(context).size.width - 64) /
                       4, // 4 item per row
                   child: GestureDetector(
@@ -246,7 +246,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                       });
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? category.color.withOpacity(0.2)
@@ -265,9 +265,9 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                         children: [
                           Text(
                             category.icon,
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             category.name,
                             style: TextStyle(
@@ -302,9 +302,9 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       selectedTime: _selectedTime,
       onDateSelected: (date) {
         // Geçmiş tarihleri kontrol et
-        if (date.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+        if (date.isBefore(DateTime.now().subtract(const Duration(days: 1)))) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Geçmiş tarihlere görev eklenemez!'),
               backgroundColor: Colors.red,
             ),
@@ -330,7 +330,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             color: Colors.grey[800],
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         TextField(
           controller: _notesController,
           maxLines: 3,
@@ -349,7 +349,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.blue),
+              borderSide: const BorderSide(color: Colors.blue),
             ),
           ),
         ),
@@ -360,9 +360,9 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   // 📌 Görevi Kaydetme
   void _saveTask(WidgetRef ref) async {
     // Tarih kontrolü ekle
-    if (_selectedDate!.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+    if (_selectedDate!.isBefore(DateTime.now().subtract(const Duration(days: 1)))) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Geçmiş tarihlere görev eklenemez!'),
           backgroundColor: Colors.red,
         ),
@@ -372,12 +372,12 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
 
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Lütfen görev başlığını girin!")));
+          const SnackBar(content: Text("Lütfen görev başlığını girin!")));
       return;
     }
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Lütfen bir kategori seçin!")));
+          .showSnackBar(const SnackBar(content: Text("Lütfen bir kategori seçin!")));
       return;
     }
 
@@ -385,7 +385,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     String? userId = prefs.getString("userId");
     if (userId == null || userId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Giriş yapmadan görev ekleyemezsiniz!")));
+          const SnackBar(content: Text("Giriş yapmadan görev ekleyemezsiniz!")));
       return;
     }
 

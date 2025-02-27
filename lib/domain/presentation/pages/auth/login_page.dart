@@ -1,18 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/navigation/routes.dart';
 import '../../../../core/theme/colors.dart';
 
 import '../../viewmodels/auth_viewmodel.dart';
-import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends ConsumerState<LoginPage>
+    with SingleTickerProviderStateMixin {
+  Timer? _debouncer;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   late AnimationController _animationController;
@@ -24,17 +29,38 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
-    );
+      duration: const Duration(milliseconds: 1000),
+    )..forward(); // Animasyon bir kez çalıştırıldı
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
-    _animationController.forward();
+  }
+
+  void _handleLogin() async {
+    // eğer halihazırda bir debouncer aktifse yeni isteği Engelle(
+
+    if (_debouncer?.isActive ?? false) return;
+    //yeni bir debouncer
+    _debouncer = Timer(const Duration(microseconds: 500), () async {
+      try {
+        final success = await ref
+            .read(authProvider.notifier)
+            .login(emailController.text.trim(), passwordController.text)
+            .timeout(const Duration(seconds: 10), onTimeout: () {
+          throw TimeoutException("İstek zaman aşımına uğradı");
+        });
+      } catch (e) {
+        print(e);
+      }
+    });
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _debouncer?.cancel(); // Debouncer'ı temizle
+
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -43,7 +69,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
       body: Container(
@@ -61,12 +87,12 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
                   child: Container(
-                    constraints: BoxConstraints(maxWidth: 400),
-                    padding: EdgeInsets.all(24),
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -74,7 +100,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
                           blurRadius: 20,
-                          offset: Offset(0, 10),
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
@@ -85,14 +111,14 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
                         Container(
                           height: 80,
                           width: 80,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage('assets/logo/app_logo.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Hoşgeldiniz yazısı
                         Text(
@@ -103,7 +129,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
                             fontSize: 28,
                           ),
                         ),
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
 
                         // Form alanları
                         CustomTextField(
@@ -111,7 +137,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
                           icon: Icons.email_outlined,
                           controller: emailController,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         CustomTextField(
                           hintText: "Şifreniz",
@@ -119,7 +145,7 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
                           controller: passwordController,
                           isPassword: true,
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
                         // Şifremi unuttum
                         Align(
@@ -135,70 +161,94 @@ class _LoginPageState extends ConsumerState<LoginPage> with SingleTickerProvider
                             ),
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Giriş butonu
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: isLoading ? null : () async {
-                              setState(() => isLoading = true);
-                              try {
-                                final success = await ref
-                                    .read(authProvider.notifier)
-                                    .login(emailController.text.trim(), passwordController.text);
+                        Consumer(
+                          builder: (context, ref, child) {
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: isLoading
+                                    ? null
+                                    : () async {
 
-                                if (success) {
-                                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                                } else {
-                                  _showErrorSnackbar(context, "Giriş başarısız!");
-                                }
-                              } catch (e) {
-                                _showErrorSnackbar(context, "Bir hata oluştu: ${e.toString()}");
-                              } finally {
-                                setState(() => isLoading = false);
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.colorScheme.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 2,
-                            ),
-                            child: isLoading
-                                ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : Text(
-                                    "Giriş Yap",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                        setState(() => isLoading = true);
+                                        try {
+                                          // Debounce ekleyelim
+                                          if (_debouncer?.isActive ?? false)
+                                            return;
+                                          final success = await ref
+                                              .read(authProvider.notifier)
+                                              .login(
+                                                  emailController.text.trim(),
+                                                  passwordController.text)
+                                              .timeout(
+                                                  const Duration(seconds: 10),
+                                                  onTimeout: () {
+                                            throw TimeoutException(
+                                                "İstek zaman aşımına uğradı");
+                                          });
+
+                                          if (success && mounted) {
+                                            Navigator.pushReplacementNamed(
+                                                context, AppRoutes.home);
+                                          } else {
+                                            _showErrorSnackbar(
+                                                context, "Giriş başarısız!");
+                                          }
+                                        } catch (e) {
+                                          _showErrorSnackbar(context,
+                                              "Bir hata oluştu: ${e.toString()}");
+                                        } finally {
+                                          if (mounted)
+                                            setState(() => isLoading = false);
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                          ),
+                                  elevation: 2,
+                                ),
+                                child: isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text(
+                                        "Giriş Yap",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            );
+                          },
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Kayıt ol linki
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            // ignore: prefer_const_constructors
                             Text(
                               "Hesabınız yok mu?",
                               style: TextStyle(color: AppColors.textSecondary),
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, AppRoutes.register);
+                                Navigator.pushNamed(
+                                    context, AppRoutes.register);
                               },
                               child: Text(
                                 "Kayıt Ol",

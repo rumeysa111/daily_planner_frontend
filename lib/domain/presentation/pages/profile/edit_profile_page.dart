@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/colors.dart';
@@ -39,7 +41,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         backgroundColor: AppColors.cardBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primary),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -64,7 +66,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                           width: 2,
                         ),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.person,
                         size: 60,
                         color: AppColors.primary,
@@ -74,7 +76,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       bottom: 0,
                       right: 0,
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           shape: BoxShape.circle,
@@ -83,7 +85,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                             width: 2,
                           ),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.camera_alt,
                           size: 20,
                           color: Colors.white,
@@ -93,7 +95,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Form Fields
               Text(
@@ -103,10 +105,10 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.cardBackground,
                   borderRadius: BorderRadius.circular(12),
@@ -115,7 +117,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.05),
                       blurRadius: 10,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -126,7 +128,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       icon: Icons.person_outline,
                       controller: _nameController,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     CustomTextField(
                       hintText: 'E-posta',
                       icon: Icons.email_outlined,
@@ -135,7 +137,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Save Button
               CustomButton(
@@ -148,14 +150,14 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                   if (success) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Profil başarıyla güncellendi'),
                         backgroundColor: AppColors.success,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Profil güncellenirken bir hata oluştu'),
                         backgroundColor: AppColors.error,
                       ),

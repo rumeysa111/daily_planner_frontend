@@ -55,7 +55,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
 
   if (normalizedSelectedDay.isBefore(normalizedToday)) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Geçmiş tarihlere görev eklenemez!'),
         backgroundColor: AppColors.error,
       ),
@@ -87,7 +87,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
         title: "Takvim",
         actions: [
           IconButton(
-            icon: Icon(Icons.today, color: AppColors.primary),
+            icon: const Icon(Icons.today, color: AppColors.primary),
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime.now();
@@ -127,7 +127,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
       ),
       floatingActionButton: AnimatedScale(
         scale: 1.0,
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         child: FloatingActionButton.extended(
           onPressed: () => _showAddTaskPage(context, _focusedDay),
           label: Text(
@@ -147,7 +147,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
   }
 
   Widget _buildLoadingState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -191,7 +191,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
       },
       onDaySelected: _onDaySelected,
       enabledDayPredicate: (day) {
-        return day.isAfter(DateTime.now().subtract(Duration(days: 1)));
+        return day.isAfter(DateTime.now().subtract(const Duration(days: 1)));
       },
       calendarStyle: CalendarStyle(
         defaultTextStyle: TextStyle(
@@ -206,7 +206,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
           color: AppColors.textSecondary,
           fontSize: isSmallScreen ? 12 : 14,
         ),
-        selectedDecoration: BoxDecoration(
+        selectedDecoration: const BoxDecoration(
           color: AppColors.primary,
           shape: BoxShape.circle,
         ),
@@ -215,7 +215,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
           color: AppColors.primary.withOpacity(0.3),
           shape: BoxShape.circle,
         ),
-        markerDecoration: BoxDecoration(
+        markerDecoration: const BoxDecoration(
           color: AppColors.secondary,
           shape: BoxShape.circle,
         ),
@@ -265,9 +265,9 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
 
     if (isSameDay(selectedDate, now)) {
       dateText = 'Bugün';
-    } else if (isSameDay(selectedDate, now.add(Duration(days: 1)))) {
+    } else if (isSameDay(selectedDate, now.add(const Duration(days: 1)))) {
       dateText = 'Yarın';
-    } else if (isSameDay(selectedDate, now.subtract(Duration(days: 1)))) {
+    } else if (isSameDay(selectedDate, now.subtract(const Duration(days: 1)))) {
       dateText = 'Dün';
     } else {
       try {
@@ -283,7 +283,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
         horizontal: size.width * 0.04,
         vertical: size.height * 0.015,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.cardBackground,
         border: Border(
           bottom: BorderSide(color: AppColors.divider),
@@ -322,7 +322,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
 
   Widget _buildTaskList(List<TodoModel> tasks, CalendarViewModel viewModel) {
     if (viewModel.isLoading) {
-      return Center(
+      return const Center(
           child: CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
       ));
@@ -335,7 +335,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     return Expanded(
       // Add this wrapper
       child: ListView.builder(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           final task = tasks[index];
@@ -360,7 +360,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Görev güncellenirken bir hata oluştu'),
             backgroundColor: AppColors.error,
           ),
@@ -378,8 +378,8 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
         _loadTasks(task.dueDate ?? _focusedDay);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Görev başarıyla silindi'),
+            const SnackBar(
+              content: const Text('Görev başarıyla silindi'),
               backgroundColor: AppColors.success,
             ),
           );
@@ -388,7 +388,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Görev silinirken bir hata oluştu'),
             backgroundColor: AppColors.error,
           ),
@@ -401,7 +401,7 @@ void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
       BuildContext context, DateTime selectedDate) {
     return FloatingActionButton(
       onPressed: () => _showAddTaskPage(context, selectedDate),
-      child: Icon(Icons.add),
+      child: const Icon(Icons.add),
       backgroundColor: Colors.blue,
     );
   }

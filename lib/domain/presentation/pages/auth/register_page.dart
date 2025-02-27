@@ -28,7 +28,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1000),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
@@ -68,12 +68,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
                   child: Container(
-                    constraints: BoxConstraints(maxWidth: 400),
-                    padding: EdgeInsets.all(24),
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -81,7 +81,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
                           blurRadius: 20,
-                          offset: Offset(0, 10),
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
@@ -92,14 +92,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                         Container(
                           height: 80,
                           width: 80,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/logo/app_logo.png'),
+                              image: const AssetImage('assets/logo/app_logo.png'),
                               fit: BoxFit.contain,
                             ),
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Başlık
                         Text(
@@ -110,7 +110,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                             fontSize: 28,
                           ),
                         ),
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
 
                         // Form Alanları
                         Row(
@@ -122,7 +122,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                                 controller: nameController,
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: CustomTextField(
                                 hintText: "Soyad",
@@ -132,27 +132,27 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         CustomTextField(
                           hintText: "E-posta adresiniz",
                           icon: Icons.email_outlined,
                           controller: emailController,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         CustomTextField(
                           hintText: "Şifreniz",
                           icon: Icons.lock_outline,
                           controller: passwordController,
                           isPassword: true,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         CustomTextField(
                           hintText: "Şifrenizi tekrar giriniz",
                           icon: Icons.lock_outline,
                           controller: passwordControllerAgain,
                           isPassword: true,
                         ),
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
 
                         // Kayıt Ol Butonu
                         SizedBox(
@@ -193,7 +193,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                               elevation: 2,
                             ),
                             child: isLoading
-                                ? SizedBox(
+                                ? const SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: CircularProgressIndicator(
@@ -201,7 +201,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : Text(
+                                : const Text(
                                     "Kayıt Ol",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -211,13 +211,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                                   ),
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
                         // Giriş Yap Linki
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               "Hesabınız var mı?",
                               style: TextStyle(color: AppColors.textSecondary),
                             ),
@@ -228,7 +228,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> with SingleTickerPr
                               style: TextButton.styleFrom(
                                 foregroundColor: theme.colorScheme.primary,
                               ),
-                              child: Text(
+                              child: const Text(
                                 "Giriş Yap",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),

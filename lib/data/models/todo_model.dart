@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 
 import 'category_model.dart';
 
@@ -55,7 +54,7 @@ class TodoModel {
     return {
       "title": title,
       "category": categoryId, // Kategori ID olarak gönderilecek
-      "dueDate": dueDate?.toUtc()?.toIso8601String(), // UTC'ye çevirerek gönder
+      "dueDate": dueDate?.toUtc().toIso8601String(), // UTC'ye çevirerek gönder
       "time": time,
       "notes": notes,
       "isCompleted": isCompleted,
@@ -99,6 +98,6 @@ class TodoModel {
 
   @override
   String toString() {
-    return 'TodoModel(id: $id, title: $title, category: ${categoryId}, dueDate: $dueDate, notes: $notes, isCompleted: $isCompleted, userId: $userId, createdAt: $createdAt)';
+    return 'TodoModel(id: $id, title: $title, category: $categoryId, dueDate: $dueDate, notes: $notes, isCompleted: $isCompleted, userId: $userId, createdAt: $createdAt)';
   }
 }

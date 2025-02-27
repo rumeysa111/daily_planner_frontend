@@ -22,7 +22,7 @@ class ProfilePage extends ConsumerWidget {
         elevation: 0,
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         children: [
           _buildSettingsSection(
             context,
@@ -41,7 +41,7 @@ class ProfilePage extends ConsumerWidget {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // Add more sections here...
         ],
       ),
@@ -64,7 +64,7 @@ class ProfilePage extends ConsumerWidget {
           BoxShadow(
             color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -72,7 +72,7 @@ class ProfilePage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               title,
               style: theme.textTheme.titleMedium?.copyWith(
@@ -81,7 +81,7 @@ class ProfilePage extends ConsumerWidget {
               ),
             ),
           ),
-          Divider(color: AppColors.divider),
+          const Divider(color: AppColors.divider),
           ...items,
         ],
       ),
@@ -110,7 +110,7 @@ class SettingsItem extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: AppColors.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
@@ -134,7 +134,7 @@ class SettingsItem extends StatelessWidget {
           color: AppColors.textSecondary,
         ),
       ),
-      trailing: Icon(
+      trailing: const Icon(
         Icons.chevron_right,
         color: AppColors.primary,
         size: 24,

@@ -66,4 +66,41 @@ class AppTheme {
       ),
     ),
   );
+    static ThemeData get darkTheme => ThemeData(
+        primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: AppColors.darkBackground,
+        colorScheme: ColorScheme.dark(
+          primary: AppColors.primary,
+          secondary: AppColors.secondary,
+          background: AppColors.darkBackground,
+          error: AppColors.error,
+          surface: AppColors.darkCardBackground,
+          onSurface: AppColors.darkTextPrimary,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.darkCardBackground,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkTextPrimary,
+          ),
+        ),
+        cardTheme: CardTheme(
+          color: AppColors.darkCardBackground,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: AppColors.darkTextPrimary),
+          bodyMedium: TextStyle(color: AppColors.darkTextPrimary),
+          titleLarge: TextStyle(color: AppColors.darkTextPrimary),
+          titleMedium: TextStyle(color: AppColors.darkTextPrimary),
+        ),
+        iconTheme: IconThemeData(color: AppColors.darkIcon),
+        dividerTheme: DividerThemeData(color: AppColors.darkDivider),
+      );
 }

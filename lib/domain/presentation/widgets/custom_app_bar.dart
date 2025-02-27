@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_null_aware_operators
+
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 
@@ -24,7 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: showLeading,
       leading: showLeading 
           ? IconButton(
-              icon: Icon(Icons.arrow_back_ios, 
+              icon: const Icon(Icons.arrow_back_ios, 
                    size: 20,
                    color: AppColors.primary),
               onPressed: () => Navigator.pop(context),
@@ -53,8 +55,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             }).toList()
           : null,
       centerTitle: true,
-      shape: Border(
-        bottom: BorderSide(
+      shape: const Border(
+        bottom: const BorderSide(
           color: AppColors.divider,
           width: 1,
         ),
@@ -63,5 +65,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/colors.dart';
@@ -30,7 +32,7 @@ class DateTimePicker extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
@@ -56,7 +58,7 @@ class DateTimePicker extends StatelessWidget {
                   );
                   if (pickedDate != null) onDateSelected(pickedDate);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.calendar_today,
                   color: AppColors.primary,
                   size: 20,
@@ -71,15 +73,15 @@ class DateTimePicker extends StatelessWidget {
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.textPrimary,
-                  side: BorderSide(color: AppColors.divider),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  side: const BorderSide(color: AppColors.divider),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () async {
@@ -101,7 +103,7 @@ class DateTimePicker extends StatelessWidget {
                   );
                   onTimeSelected(pickedTime);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.access_time,
                   color: AppColors.primary,
                   size: 20,
@@ -116,8 +118,8 @@ class DateTimePicker extends StatelessWidget {
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.textPrimary,
-                  side: BorderSide(color: AppColors.divider),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  side: const BorderSide(color: AppColors.divider),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

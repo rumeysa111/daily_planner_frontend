@@ -23,14 +23,14 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: isSecondary ? AppColors.secondary : AppColors.primary,
         foregroundColor: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 2,
         shadowColor: (isSecondary ? AppColors.secondary : AppColors.primary)
             .withOpacity(0.3),
-        minimumSize: Size(double.infinity, 50),
+        minimumSize: const Size(double.infinity, 50),
       ).copyWith(
         overlayColor: MaterialStateProperty.resolveWith<Color?>(
           (states) {
@@ -43,7 +43,7 @@ class CustomButton extends StatelessWidget {
       ),
       onPressed: isLoading ? null : onPressed,
       child: isLoading
-          ? SizedBox(
+          ? const SizedBox(
               height: 20,
               width: 20,
               child: CircularProgressIndicator(

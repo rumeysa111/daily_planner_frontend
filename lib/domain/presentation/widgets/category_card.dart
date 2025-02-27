@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/models/category_model.dart';
@@ -21,8 +23,8 @@ class CategoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        padding: EdgeInsets.all(12),
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSelected 
               ? category.color.withOpacity(0.1)
@@ -36,7 +38,7 @@ class CategoryCard extends StatelessWidget {
             BoxShadow(
               color: AppColors.primary.withOpacity(0.05),
               blurRadius: 8,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -50,7 +52,7 @@ class CategoryCard extends StatelessWidget {
                 color: isSelected ? category.color : AppColors.icon,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               category.name,
               style: theme.textTheme.bodyMedium?.copyWith(

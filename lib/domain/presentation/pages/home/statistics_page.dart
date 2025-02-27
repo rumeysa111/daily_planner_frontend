@@ -48,7 +48,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
         error: (error, stack) => Center(
           child: Text(
             'Hata: $error',
-            style: TextStyle(color: AppColors.error),
+            style: const TextStyle(color: AppColors.error),
           ),
         ),
       ),
@@ -75,7 +75,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -84,7 +84,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             size: 64,
             color: AppColors.textSecondary,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             'Henüz istatistik gösterilecek görev bulunmuyor',
             style: TextStyle(
@@ -136,7 +136,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
             ),
@@ -194,7 +194,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     ];
 
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
@@ -203,14 +203,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             // ignore: deprecated_member_use
             color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Haftalık İlerleme",
             style: TextStyle(
               fontSize: 18,
@@ -218,7 +218,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           SizedBox(
             height: 200,
             child: BarChart(
@@ -236,7 +236,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                             padding: const EdgeInsets.only(right: 8),
                             child: Text(
                               '${(value * 100).toInt()}%',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: AppColors.textSecondary,
                               ),
                             ));
@@ -244,10 +244,10 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                       reservedSize: 40,
                     ),
                   ),
-                  rightTitles: AxisTitles(
+                  rightTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
-                  topTitles: AxisTitles(
+                  topTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
                   bottomTitles: AxisTitles(
@@ -274,7 +274,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                   drawVerticalLine: false,
                   horizontalInterval: 0.2,
                   getDrawingHorizontalLine: (value) {
-                    return FlLine(
+                    return const FlLine(
                       color: AppColors.divider,
                       strokeWidth: 1,
                     );
@@ -304,7 +304,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
 
   Widget _buildCategoryCompletionChart(TaskStatistics statistics) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
@@ -313,14 +313,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           BoxShadow(
             color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Kategori Bazlı Tamamlanma",
             style: TextStyle(
               fontSize: 18,
@@ -328,7 +328,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           AspectRatio(
             aspectRatio: 1.5,
             child: PieChart(
@@ -344,7 +344,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                     value: entry.value,
                     title: '', // Dilim üzerindeki yazıyı kaldır
                     radius: 80, // Daire boyutunu küçült
-                    titleStyle: TextStyle(
+                    titleStyle: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: AppColors.cardBackground,
@@ -356,7 +356,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // Kategori lejantlarını kaydırılabilir yap
           Container(
             height: 120,
@@ -394,11 +394,11 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                             shape: BoxShape.circle,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             '$categoryName (${entry.value.toStringAsFixed(1)}%)',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 12,
                             ),

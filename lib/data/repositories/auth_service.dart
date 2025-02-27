@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mytodo_app/constans/api_constans.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,7 +93,9 @@ class AuthService {
         return UserModel.fromMap(response.data);
       }
     } catch (e) {
-      print("Update profile error: $e");
+      if (kDebugMode) {
+        print("Update profile error: $e");
+      }
     }
     return null;
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
@@ -5,6 +7,7 @@ import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dar
 import '../../../data/models/category_model.dart';
 import 'category_edit_dialog.dart';
 
+// ignore: use_key_in_widget_constructors
 class CategoryManagementDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +18,7 @@ class CategoryManagementDialog extends ConsumerWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor: AppColors.cardBackground,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -30,15 +33,15 @@ class CategoryManagementDialog extends ConsumerWidget {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add_circle_outline, 
+                  icon: const Icon(Icons.add_circle_outline, 
                        color: AppColors.primary),
                   onPressed: () => _showAddCategory(context),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 300),
+              constraints: const BoxConstraints(maxHeight: 300),
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: categories.length,
@@ -47,7 +50,7 @@ class CategoryManagementDialog extends ConsumerWidget {
                   return Card(
                     elevation: 0,
                     color: AppColors.background,
-                    margin: EdgeInsets.symmetric(vertical: 4),
+                    margin: const EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
                       leading: Container(
                         width: 40,
@@ -58,7 +61,7 @@ class CategoryManagementDialog extends ConsumerWidget {
                         ),
                         child: Center(
                           child: Text(category.icon, 
-                               style: TextStyle(fontSize: 20)),
+                               style: const TextStyle(fontSize: 20)),
                         ),
                       ),
                       title: Text(
@@ -71,12 +74,12 @@ class CategoryManagementDialog extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit, 
+                            icon: const Icon(Icons.edit, 
                                  color: AppColors.primary),
                             onPressed: () => _editCategory(context, ref, category),
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete, 
+                            icon: const Icon(Icons.delete, 
                                  color: AppColors.error),
                             onPressed: () => _deleteCategory(context, ref, category),
                           ),
@@ -87,13 +90,13 @@ class CategoryManagementDialog extends ConsumerWidget {
                 },
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextButton(
               onPressed: () => Navigator.pop(context),
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.textSecondary,
               ),
-              child: Text('Kapat'),
+              child: const Text('Kapat'),
             ),
           ],
         ),
@@ -128,7 +131,7 @@ class CategoryManagementDialog extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: AppColors.textSecondary,
             ),
-            child: Text('İptal'),
+            child: const Text('İptal'),
           ),
           TextButton(
             onPressed: () async {
@@ -140,7 +143,7 @@ class CategoryManagementDialog extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: AppColors.error,
             ),
-            child: Text('Sil'),
+            child: const Text('Sil'),
           ),
         ],
       ),
@@ -150,7 +153,7 @@ class CategoryManagementDialog extends ConsumerWidget {
   void _showAddCategory(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CategoryEditDialog(),
+      builder: (context) => const CategoryEditDialog(),
     );
   }
 

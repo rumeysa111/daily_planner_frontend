@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/data/repositories/category_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,9 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
     String? userId = prefs.getString("userId");
 
     if (userId == null) {
-      print("🚨 Kullanıcı giriş yapmamış! Kategoriler yüklenemedi.");
+      if (kDebugMode) {
+        print("🚨 Kullanıcı giriş yapmamış! Kategoriler yüklenemedi.");
+      }
       return;
     }
     print("📢 Kullanıcının kategorileri yükleniyor: $userId"); // ✅ Debug
@@ -26,7 +29,9 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
     try {
       final categories = await _categoryService.fetchCategories(userId);
       state = categories; // ✅ Backend’den gelen kategorileri UI’a aktar
-      print("✅ ${categories.length} kategori yüklendi.");
+      if (kDebugMode) {
+        print("✅ ${categories.length} kategori yüklendi.");
+      }
     } catch (e) {
       print("🚨 Kategorileri çekerken hata oluştu: $e");
     }

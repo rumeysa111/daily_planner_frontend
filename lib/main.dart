@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart'; // 📌 Riverpod'u ekle
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mytodo_app/core/navigation/routes.dart';
 import 'package:mytodo_app/core/theme/app_theme.dart';
+import 'package:mytodo_app/domain/presentation/providers/theme_providers.dart';
 import 'package:mytodo_app/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'services/remote_config_service.dart';
 import 'domain/presentation/pages/auth/login_page.dart'; // 📌 Login sayfasını çağırıyoruz
 
 void main() async {
@@ -19,11 +19,7 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    final remoteConfig = RemoteConfigService();
-    await remoteConfig.initialize().catchError((error) {
-      print('Remote config error handled: $error');
-      // Hata olsa bile uygulamanın çalışmasına izin ver
-    });
+
 
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString("token");
@@ -44,15 +40,18 @@ void main() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   final bool isLoggenIn;
   MyApp({required this.isLoggenIn});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final isDarkMode=ref.watch(themeProvider);
     return MaterialApp(
       title: 'Todo App',
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_super_parameters
+
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 
@@ -11,8 +13,8 @@ class SearchBarWidget extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(12),
@@ -21,18 +23,18 @@ class SearchBarWidget extends StatelessWidget {
           BoxShadow(
             color: AppColors.primary.withOpacity(0.05),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.search,
             color: AppColors.primary,
             size: 22,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: TextField(
               onChanged: onSearch,
@@ -51,9 +53,9 @@ class SearchBarWidget extends StatelessWidget {
               cursorColor: AppColors.primary,
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               size: 20,
               color: AppColors.textSecondary,
@@ -64,7 +66,7 @@ class SearchBarWidget extends StatelessWidget {
             },
             splashRadius: 20,
             padding: EdgeInsets.zero,
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               minWidth: 32,
               minHeight: 32,
             ),

@@ -43,4 +43,11 @@ class AppColors {
     Color(0xFF9575CD),  // Deep Purple Light
     Color(0xFF7E57C2),  // Deep Purple
   ];
+    // Dark Theme Colors
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkCardBackground = Color(0xFF1E1E1E);
+  static const Color darkDivider = Color(0xFF2C2C2C);
+  static const Color darkTextPrimary = Color(0xFFE0E0E0);
+  static const Color darkTextSecondary = Color(0xFF9E9E9E);
+  static const Color darkIcon = Color(0xFF9E9E9E);
 }

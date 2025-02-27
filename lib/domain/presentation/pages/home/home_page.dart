@@ -8,7 +8,6 @@ import '../../../../data/models/todo_model.dart';
 import '../../viewmodels/todo_viewmodel.dart';
 import '../../widgets/task_item.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../providers/motivation_provider.dart';
 
 enum TaskFilter { today, week, month }
 
@@ -23,13 +22,13 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    
     final todoViewModel = ref.watch(todoProvider.notifier);
     final theme = Theme.of(context);
     final tasks = ref.watch(todoProvider); // Watch the tasks directly
     final selectedFilter = ref.watch(taskFilterProvider);
     final allTasks = todoViewModel.getFilteredTasks(selectedFilter);
     final selectedView = ref.watch(taskViewProvider); // Add view type provider
-    final motivationMessage = ref.watch(motivationProvider);
 
     // Add auto-refresh listener
     ref.listen<bool>(autoRefreshProvider, (previous, next) {
@@ -44,7 +43,7 @@ class HomePage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Ana Sayfa',
         showLeading: false,
       ),
@@ -56,7 +55,7 @@ class HomePage extends ConsumerWidget {
               children: [
                 _buildHeader(ref, selectedFilter),
                 if (todoViewModel.isLoading)
-                  Center(child: CircularProgressIndicator())
+                  const Center(child: CircularProgressIndicator())
                 else if (tasks.isEmpty)
                   _buildEmptyState("Henüz görev eklemediniz",
                       "Yeni görev eklemek için + butonuna tıklayın")
@@ -80,17 +79,17 @@ class HomePage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         child: FloatingActionButton.extended(
           onPressed: () => Navigator.pushNamed(context, AppRoutes.addtask),
-          label: Text(
+          label: const Text(
             'Yeni Görev',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
-          icon: Icon(Icons.add, color: Colors.white),
+          icon: const Icon(Icons.add, color: Colors.white),
           backgroundColor: AppColors.primary,
         ),
       ),
@@ -99,14 +98,14 @@ class HomePage extends ConsumerWidget {
 
   Widget _buildHeader(WidgetRef ref, TaskFilter selectedFilter) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: _buildFilterButtons(ref, selectedFilter),
     );
   }
 
   Widget _buildFilterButtons(WidgetRef ref, TaskFilter selectedFilter) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
@@ -154,7 +153,7 @@ class HomePage extends ConsumerWidget {
       child: GestureDetector(
         onTap: () => ref.read(taskFilterProvider.notifier).state = filter,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: isSelected
@@ -176,7 +175,7 @@ class HomePage extends ConsumerWidget {
                 color: isSelected ? Colors.white : AppColors.textSecondary,
                 size: 22,
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 label,
                 style: TextStyle(
@@ -195,7 +194,7 @@ class HomePage extends ConsumerWidget {
   Widget _buildViewSelector(WidgetRef ref) {
     final selectedView = ref.watch(taskViewProvider);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
         children: [
           _buildViewOption(
@@ -205,7 +204,7 @@ class HomePage extends ConsumerWidget {
             Icons.category_outlined,
             selectedView,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           _buildViewOption(
             ref,
             TaskView.all,
@@ -231,7 +230,7 @@ class HomePage extends ConsumerWidget {
         onTap: () => ref.read(taskViewProvider.notifier).state = view,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.primary.withOpacity(0.1)
@@ -250,7 +249,7 @@ class HomePage extends ConsumerWidget {
                 size: 20,
                 color: isSelected ? AppColors.primary : AppColors.textSecondary,
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 label,
                 style: TextStyle(
@@ -269,7 +268,7 @@ class HomePage extends ConsumerWidget {
   Widget _buildCategorizedView(List<TodoModel> ongoingTasks,
       List<TodoModel> completedTasks, WidgetRef ref) {
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         _buildSectionWithAnimation(
           "Devam Eden Görevler",
@@ -277,7 +276,7 @@ class HomePage extends ConsumerWidget {
           ref,
           "Devam eden görev bulunmuyor",
         ),
-        SizedBox(height: 24),
+        const SizedBox(height: 24),
         _buildSectionWithAnimation(
           "Tamamlanan Görevler",
           completedTasks,
@@ -290,7 +289,7 @@ class HomePage extends ConsumerWidget {
 
   Widget _buildAllTasksView(List<TodoModel> allTasks, WidgetRef ref) {
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         _buildSectionWithAnimation(
           "Tüm Görevler",
@@ -323,39 +322,39 @@ class HomePage extends ConsumerWidget {
   Widget _buildEmptyState([String message = "", String subtitle = ""]) {
     return Center(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: AppColors.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.task_outlined,
                 size: 48,
                 color: AppColors.primary,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
               ),
             ),
             if (subtitle.isNotEmpty) ...[
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 subtitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
@@ -374,22 +373,22 @@ class HomePage extends ConsumerWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               count.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,
               ),

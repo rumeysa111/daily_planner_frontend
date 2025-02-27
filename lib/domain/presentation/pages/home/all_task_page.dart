@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -23,12 +25,12 @@ class AllTasksPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: "Tüm Görevler",
         showLeading: true,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,11 +42,11 @@ class AllTasksPage extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Expanded(
                 child: _buildTaskList(overdueTasks, isOverdue: true),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             ],
             Text(
               "Tüm Görevler",
@@ -53,7 +55,7 @@ class AllTasksPage extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Expanded(child: _buildTaskList(allTasks)),
           ],
         ),
@@ -61,7 +63,8 @@ class AllTasksPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, AppRoutes.addtask),
         backgroundColor: AppColors.primary,
-        child: Icon(Icons.add, color: Colors.white),
+        // ignore: sort_child_properties_last
+        child: const Icon(Icons.add, color: Colors.white),
         elevation: 2,
       ),
     );
@@ -69,7 +72,7 @@ class AllTasksPage extends ConsumerWidget {
 
   Widget _buildTaskList(List<TodoModel> tasks, {bool isOverdue = false}) {
     if (tasks.isEmpty) {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -96,7 +99,7 @@ class AllTasksPage extends ConsumerWidget {
       itemBuilder: (context, index) {
         final task = tasks[index];
         return Container(
-          margin: EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
             borderRadius: BorderRadius.circular(12),
@@ -109,12 +112,12 @@ class AllTasksPage extends ConsumerWidget {
                     ? AppColors.error.withOpacity(0.05)
                     : AppColors.primary.withOpacity(0.05),
                 blurRadius: 8,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
           child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             leading: Transform.scale(
               scale: 1.1,
               child: Checkbox(
@@ -127,7 +130,7 @@ class AllTasksPage extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
-                side: BorderSide(
+                side: const BorderSide(
                   color: AppColors.divider,
                   width: 1.5,
                 ),
@@ -152,7 +155,7 @@ class AllTasksPage extends ConsumerWidget {
                   size: 14,
                   color: isOverdue ? AppColors.error : AppColors.primary,
                 ),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Text(
                   task.dueDate != null
                       ? DateFormat("EEE, d MMM yyyy").format(task.dueDate!)
@@ -165,7 +168,7 @@ class AllTasksPage extends ConsumerWidget {
               ],
             ),
             trailing: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.more_vert,
                 color: AppColors.textSecondary,
               ),

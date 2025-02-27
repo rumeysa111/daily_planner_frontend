@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
@@ -12,7 +14,7 @@ class TaskItem extends ConsumerWidget {
   final VoidCallback onComplete;
   final VoidCallback onDelete;
 
-  const TaskItem({
+  const TaskItem({super.key, 
     required this.task,
     required this.time,
     required this.onComplete,
@@ -37,8 +39,8 @@ class TaskItem extends ConsumerWidget {
     return GestureDetector(
       onTap: () => _showTaskDetail(context),
       child: Container(
-        margin: EdgeInsets.only(bottom: 12),
-        padding: EdgeInsets.all(12),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(12),
@@ -47,7 +49,7 @@ class TaskItem extends ConsumerWidget {
             BoxShadow(
               color: AppColors.primary.withOpacity(0.05),
               blurRadius: 8,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -61,17 +63,17 @@ class TaskItem extends ConsumerWidget {
                   Row(
                     children: [
                       Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: category.color.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           category.icon,
-                          style: TextStyle(fontSize: 20),
+                          style: const TextStyle(fontSize: 20),
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           task.title,
@@ -88,15 +90,15 @@ class TaskItem extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.calendar_today,
                         size: 16,
                         color: AppColors.primary,
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         task.dueDate != null
                             ? '${task.dueDate!.toLocal().day}/${task.dueDate!.toLocal().month}/${task.dueDate!.toLocal().year}'
@@ -105,13 +107,13 @@ class TaskItem extends ConsumerWidget {
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      SizedBox(width: 16),
-                      Icon(
+                      const SizedBox(width: 16),
+                      const Icon(
                         Icons.access_time,
                         size: 16,
                         color: AppColors.primary,
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         task.time ?? 'Saat belirtilmedi',
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -132,7 +134,7 @@ class TaskItem extends ConsumerWidget {
                     onChanged: (_) => onComplete(),
                     activeColor: AppColors.success,
                     checkColor: Colors.white,
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: AppColors.divider,
                       width: 1.5,
                     ),
@@ -142,7 +144,7 @@ class TaskItem extends ConsumerWidget {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.delete_outline,
                     color: AppColors.error,
                   ),

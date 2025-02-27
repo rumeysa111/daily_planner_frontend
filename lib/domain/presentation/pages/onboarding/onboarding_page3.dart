@@ -1,11 +1,15 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 
 class OnboardingPage3 extends StatelessWidget {
+  const OnboardingPage3({Key? key}) : super(key: key); // const constructor ekleyelim
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context); // Daha performanslı yöntem
     final isSmallScreen = size.width < 360;
 
     return Container(
@@ -26,19 +30,19 @@ class OnboardingPage3 extends StatelessWidget {
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.05),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset: const Offset(0, 10), // const ekledik
                 ),
               ],
             ),
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24), // const ekledik
             child: Image.asset(
               'assets/images/onboarding3.png',
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: size.height * 0.05),
+          const SizedBox(height: 20), // const ekledik
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24), // const ekledik
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(20),
@@ -46,7 +50,7 @@ class OnboardingPage3 extends StatelessWidget {
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.05),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset: const Offset(0, 10), // const ekledik
                 ),
               ],
             ),
@@ -61,7 +65,7 @@ class OnboardingPage3 extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16), // const ekledik
                 Text(
                   "Hatırlatıcılar sayesinde hiçbir görevi unutma ve zamanında tamamla.",
                   textAlign: TextAlign.center,
@@ -71,9 +75,9 @@ class OnboardingPage3 extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24), // const ekledik
                 Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16), // const ekledik
                   decoration: BoxDecoration(
                     color: AppColors.secondary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -86,19 +90,20 @@ class OnboardingPage3 extends StatelessWidget {
                         color: AppColors.primary,
                         size: isSmallScreen ? 24 : 28,
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12), // const ekledik
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Akıllı Hatırlatıcılar",
-                            style: TextStyle(
-                              color: AppColors.primary,
+                            style: const TextStyle( // const ekledik
                               fontWeight: FontWeight.bold,
+                            ).copyWith(
+                              color: AppColors.primary,
                               fontSize: isSmallScreen ? 14 : 16,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4), // const ekledik
                           Text(
                             "Zamanında bildirim al",
                             style: TextStyle(

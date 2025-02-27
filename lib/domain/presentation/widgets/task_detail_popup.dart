@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
@@ -66,7 +68,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
       backgroundColor: AppColors.cardBackground,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -74,8 +76,8 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
             children: [
               // Header
               Container(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(color: AppColors.divider),
                   ),
@@ -83,15 +85,15 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 child: Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: selectedCategory.color.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(selectedCategory.icon,
-                          style: TextStyle(fontSize: 24)),
+                          style: const TextStyle(fontSize: 24)),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Text(
                       'Görev Detayları',
                       style: theme.textTheme.titleLarge?.copyWith(
@@ -102,7 +104,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   ],
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
 
               // Title Field
               Text(
@@ -112,29 +114,29 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: 'Görev başlığını girin',
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  hintStyle: const TextStyle(color: AppColors.textSecondary),
                   filled: true,
                   fillColor: theme.colorScheme.background,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.divider),
+                    borderSide: const BorderSide(color: AppColors.divider),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.divider),
+                    borderSide: const BorderSide(color: AppColors.divider),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
 
               // Category Dropdown
               Text(
@@ -144,7 +146,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
                   color: theme.colorScheme.background,
@@ -153,7 +155,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 ),
                 child: DropdownButtonFormField<String>(
                   value: _selectedCategoryId,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     border: InputBorder.none,
                   ),
@@ -164,17 +166,17 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                       child: Row(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               color: category.color.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(category.icon),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text(
                             category.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontWeight: FontWeight.w500,
                             ),
@@ -188,17 +190,17 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   },
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
 
               // Date and Time Row
               Row(
                 children: [
                   _buildDateField(theme),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   _buildTimeField(theme),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
    // Notes Field
               Text(
                 'Notlar',
@@ -207,30 +209,30 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
                  TextField(
                 controller: _notesController,
                 maxLines: 3,
                 decoration: InputDecoration(
                   hintText: 'Ek notlarınızı buraya yazın...',
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  hintStyle: const TextStyle(color: AppColors.textSecondary),
                   filled: true,
                   fillColor: theme.colorScheme.background,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.divider),
+                    borderSide: const BorderSide(color: AppColors.divider),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.divider),
+                    borderSide: const BorderSide(color: AppColors.divider),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               // Task Status
               Container(
                 decoration: BoxDecoration(
@@ -243,7 +245,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   onChanged: (value) {
                     setState(() => _isCompleted = value!);
                   },
-                  title: Text(
+                  title: const Text(
                     'Tamamlanma Durumu',
                     style: TextStyle(
                       color: AppColors.textPrimary,
@@ -252,10 +254,10 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                   ),
                   activeColor: AppColors.primary,
                   checkColor: Colors.white,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Action Buttons
               Row(
@@ -266,21 +268,21 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.textSecondary,
                     ),
-                    child: Text('İptal'),
+                    child: const Text('İptal'),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   ElevatedButton(
                     onPressed: _saveChanges,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Kaydet',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -309,7 +311,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           InkWell(
             onTap: () async {
               final date = await showDatePicker(
@@ -320,7 +322,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 builder: (context, child) {
                   return Theme(
                     data: Theme.of(context).copyWith(
-                      colorScheme: ColorScheme.light(
+                      colorScheme: const ColorScheme.light(
                         primary: AppColors.primary,
                       ),
                     ),
@@ -333,7 +335,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               }
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: theme.colorScheme.background,
                 borderRadius: BorderRadius.circular(12),
@@ -341,14 +343,14 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.calendar_today,
+                  const Icon(Icons.calendar_today,
                       size: 20, color: AppColors.primary),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     _selectedDate == null
                         ? 'Tarih Seç'
                         : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                    style: TextStyle(color: AppColors.textPrimary),
+                    style: const TextStyle(color: AppColors.textPrimary),
                   ),
                 ],
               ),
@@ -372,7 +374,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           InkWell(
             onTap: () async {
               final time = await showTimePicker(
@@ -381,7 +383,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
                 builder: (context, child) {
                   return Theme(
                     data: Theme.of(context).copyWith(
-                      colorScheme: ColorScheme.light(
+                      colorScheme: const ColorScheme.light(
                         primary: AppColors.primary,
                       ),
                     ),
@@ -394,7 +396,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               }
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: theme.colorScheme.background,
                 borderRadius: BorderRadius.circular(12),
@@ -402,13 +404,13 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.access_time, size: 20, color: AppColors.primary),
-                  SizedBox(width: 8),
+                  const Icon(Icons.access_time, size: 20, color: AppColors.primary),
+                  const SizedBox(width: 8),
                   Text(
                     _selectedTime == null
                         ? 'Saat Seç'
                         : _selectedTime!.format(context),
-                    style: TextStyle(color: AppColors.textPrimary),
+                    style: const TextStyle(color: AppColors.textPrimary),
                   ),
                 ],
               ),
@@ -439,7 +441,7 @@ class _TaskDetailPopupState extends ConsumerState<TaskDetailPopup> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Görev güncellenirken bir hata oluştu'),
             backgroundColor: AppColors.error,
           ),

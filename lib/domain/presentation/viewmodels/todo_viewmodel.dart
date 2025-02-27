@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/domain/presentation/pages/home/home_page.dart';
@@ -6,7 +7,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:async'; // Add this import
 import '../../../data/models/todo_model.dart';
 import '../../../data/repositories/todo_service.dart';
-import '../../../services/remote_config_service.dart';
 
 class TodoViewModel extends StateNotifier<List<TodoModel>> {
   final TodoService _todoService;
@@ -16,7 +16,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
   List<TodoModel> allTodos = []; // 📌 Backend'den gelen tüm görevler
   bool isLoading = false;
 
-  final RemoteConfigService _remoteConfig = RemoteConfigService();
+
 
   TodoViewModel(this._todoService) : super([]) {
     fetchTodos();
@@ -25,7 +25,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
 
   void _startAutoRefresh() {
     _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(Duration(seconds: 30), (_) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       fetchTodos();
     });
   }
@@ -51,7 +51,9 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     isLoading = true;
     final token = await _getToken();
     if (token == null) {
-      print("🚨 Kullanıcı giriş yapmamış, token bulunamadı");
+      if (kDebugMode) {
+        print("🚨 Kullanıcı giriş yapmamış, token bulunamadı");
+      }
       state = [];
       isLoading = false;
       return;
@@ -60,9 +62,13 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
       final todos = await _todoService.fetchTodos(token, category: category);
       allTodos = todos;
       state = todos; // StateNotifier will automatically notify listeners
-      print("✅ Görevler güncellendi: ${todos.length} görev var.");
+      if (kDebugMode) {
+        print("✅ Görevler güncellendi: ${todos.length} görev var.");
+      }
     } catch (e) {
-      print("🚨 Görevleri çekerken hata oluştu: $e");
+      if (kDebugMode) {
+        print("🚨 Görevleri çekerken hata oluştu: $e");
+      }
       state = [];
     } finally {
       isLoading = false;
@@ -87,7 +93,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
     final now = DateTime.now();
     final startOfToday = DateTime(now.year, now.month, now.day);
     final endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
-    final endOfWeek = startOfToday.add(Duration(days: 7));
+    final endOfWeek = startOfToday.add(const Duration(days: 7));
     final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
 
     return state.where((task) {
@@ -103,10 +109,10 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
         case TaskFilter.today:
           return taskDate.isAtSameMomentAs(startOfToday);
         case TaskFilter.week:
-          return taskDate.isAfter(startOfToday.subtract(Duration(days: 1))) &&
+          return taskDate.isAfter(startOfToday.subtract(const Duration(days: 1))) &&
               taskDate.isBefore(endOfWeek);
         case TaskFilter.month:
-          return taskDate.isAfter(startOfToday.subtract(Duration(days: 1))) &&
+          return taskDate.isAfter(startOfToday.subtract(const Duration(days: 1))) &&
               taskDate.isBefore(endOfMonth);
       }
     }).toList();
@@ -165,7 +171,9 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
         ];
       }
     } catch (e) {
-      print("🚨 Görev güncellenirken hata: $e");
+      if (kDebugMode) {
+        print("🚨 Görev güncellenirken hata: $e");
+      }
       // Hata durumunda kullanıcıya bilgi verilebilir
     }
   }
@@ -173,28 +181,23 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
   Future<void> addTodo(TodoModel todo) async {
     final token = await _getToken();
     if (token == null) {
-      print("token bulunamadı");
+      if (kDebugMode) {
+        print("token bulunamadı");
+      }
       return;
     }
 
-    // ML service kısmını RemoteConfig kontrolü ile değiştiriyoruz
-    if (_remoteConfig.isEnabled) {
-      // RemoteConfig'den gelen genel kontrol
-      // Günlük görev limiti kontrolü
-      final todayTasks =
-          state.where((task) => task.dueDate?.day == DateTime.now().day).length;
-
-      if (todayTasks >= _remoteConfig.maxTasksPerDay) {
-        throw Exception('Günlük görev limitine ulaştınız!');
-      }
-    }
 
     try {
-      print("📌 Backend'e görev ekleniyor: ${todo.toJson()}");
+      if (kDebugMode) {
+        print("📌 Backend'e görev ekleniyor: ${todo.toJson()}");
+      }
       bool success = await _todoService.addTodo(token, todo);
 
       if (success) {
-        print("✅ Görev başarıyla eklendi");
+        if (kDebugMode) {
+          print("✅ Görev başarıyla eklendi");
+        }
         // Backend'den güncel listeyi al
         await fetchTodos();
 
@@ -203,10 +206,14 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
           filterTodos();
         }
       } else {
-        print("🚨 Görev ekleme başarısız!");
+        if (kDebugMode) {
+          print("🚨 Görev ekleme başarısız!");
+        }
       }
     } catch (e) {
-      print("🚨 Görev eklerken hata: $e");
+      if (kDebugMode) {
+        print("🚨 Görev eklerken hata: $e");
+      }
     }
   }
 
@@ -222,14 +229,24 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
         // Backend'den silme başarılı olduysa state'i güncelle
         state = List.from(state.where((task) => task.id != id));
         allTodos = List.from(allTodos.where((task) => task.id != id));
-        print("✅ Görev başarıyla silindi: $id");
+        if (kDebugMode) {
+          print("✅ Görev başarıyla silindi: $id");
+        }
         return true;
       } else {
-        print("🚨 Görev silme başarısız oldu!");
+        if (kDebugMode) {
+          if (kDebugMode) {
+            if (kDebugMode) {
+              print("🚨 Görev silme başarısız oldu!");
+            }
+          }
+        }
         return false;
       }
     } catch (e) {
-      print("🚨 Görev silinirken hata oluştu: $e");
+      if (kDebugMode) {
+        print("🚨 Görev silinirken hata oluştu: $e");
+      }
       return false;
     }
   }
@@ -258,9 +275,13 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
         return task;
       }).toList();
 
-      print("✅ Görev başarıyla güncellendi: $taskId");
+      if (kDebugMode) {
+        print("✅ Görev başarıyla güncellendi: $taskId");
+      }
     } catch (e) {
-      print("🚨 Görev güncellenirken hata: $e");
+      if (kDebugMode) {
+        print("🚨 Görev güncellenirken hata: $e");
+      }
       throw e; // Re-throw to handle in UI
     }
   }

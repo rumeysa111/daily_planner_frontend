@@ -34,7 +34,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         backgroundColor: AppColors.cardBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primary),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -51,9 +51,9 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.cardBackground,
                   borderRadius: BorderRadius.circular(12),
@@ -62,7 +62,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.05),
                       blurRadius: 10,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -76,7 +76,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                       label: 'Mevcut Şifre',
                       theme: theme,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     _buildPasswordField(
                       controller: _newPasswordController,
                       obscure: _obscureNewPassword,
@@ -85,7 +85,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                       label: 'Yeni Şifre',
                       theme: theme,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     _buildPasswordField(
                       controller: _confirmPasswordController,
                       obscure: _obscureConfirmPassword,
@@ -97,14 +97,14 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               CustomButton(
                 text: 'Şifreyi Değiştir',
                 onPressed: () async {
                   if (_newPasswordController.text != 
                       _confirmPasswordController.text) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Yeni şifreler eşleşmiyor'),
                         backgroundColor: AppColors.error,
                       ),
@@ -120,14 +120,14 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                   if (success) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Şifre başarıyla değiştirildi'),
                         backgroundColor: AppColors.success,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Şifre değiştirilirken bir hata oluştu'),
                         backgroundColor: AppColors.error,
                       ),
@@ -157,7 +157,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
       ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: AppColors.textSecondary),
+        labelStyle: const TextStyle(color: AppColors.textSecondary),
         suffixIcon: IconButton(
           icon: Icon(
             obscure ? Icons.visibility_off : Icons.visibility,
@@ -170,17 +170,17 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         fillColor: theme.colorScheme.background,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
+          borderSide: const BorderSide(color: AppColors.divider),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
+          borderSide: const BorderSide(color: AppColors.divider),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 2),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }

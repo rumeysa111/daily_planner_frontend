@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/models/todo_model.dart';
 import '../../../data/repositories/todo_service.dart';
@@ -54,10 +57,14 @@ class CalendarViewModel extends StateNotifier<List<TodoModel>> {
 
       state = todos;
       _selectedDate = normalizedDate;
-      print(
+      if (kDebugMode) {
+        print(
           "📅 Fetched ${todos.length} tasks for ${normalizedDate.toString().split(' ')[0]}");
+      }
     } catch (e) {
-      print("🚨 Calendar tasks fetch error: $e");
+      if (kDebugMode) {
+        print("🚨 Calendar tasks fetch error: $e");
+      }
       if (mounted) {
         state = [];
       }

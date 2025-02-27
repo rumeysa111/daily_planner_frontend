@@ -1,7 +1,11 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 
 class OnboardingPage2 extends StatelessWidget {
+      const OnboardingPage2({Key? key}) : super(key: key);  // const constructor ekleyelim
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -26,11 +30,11 @@ class OnboardingPage2 extends StatelessWidget {
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.05),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset: const Offset(0, 10),
                 ),
               ],
             ),
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Image.asset(
               'assets/images/onboarding2.png',
               fit: BoxFit.contain,
@@ -38,7 +42,7 @@ class OnboardingPage2 extends StatelessWidget {
           ),
           SizedBox(height: size.height * 0.05),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(20),
@@ -46,7 +50,7 @@ class OnboardingPage2 extends StatelessWidget {
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.05),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset: const Offset(0, 10),
                 ),
               ],
             ),
@@ -61,7 +65,7 @@ class OnboardingPage2 extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   "Kategorilere ayır, hatırlatıcılar ekle ve görevlerini zamanında tamamla",
                   textAlign: TextAlign.center,
@@ -71,7 +75,7 @@ class OnboardingPage2 extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -80,13 +84,13 @@ class OnboardingPage2 extends StatelessWidget {
                       text: "Kategoriler",
                       isSmallScreen: isSmallScreen,
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     _buildFeatureItem(
                       icon: Icons.notifications_outlined,
                       text: "Hatırlatıcılar",
                       isSmallScreen: isSmallScreen,
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     _buildFeatureItem(
                       icon: Icons.check_circle_outline,
                       text: "Tamamlama",
@@ -108,7 +112,7 @@ class OnboardingPage2 extends StatelessWidget {
     required bool isSmallScreen,
   }) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -120,7 +124,7 @@ class OnboardingPage2 extends StatelessWidget {
             color: AppColors.primary,
             size: isSmallScreen ? 20 : 24,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             text,
             style: TextStyle(

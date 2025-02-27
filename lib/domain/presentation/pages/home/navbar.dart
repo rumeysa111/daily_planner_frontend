@@ -17,8 +17,8 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   final List<Widget> _pages = [
     HomePage(),
     CalendarPage(),
-    AiAssistantPage(),
-    StatisticsPage(),
+    const AiAssistantPage(),
+    const StatisticsPage(),
         ProfilePage(),
 
   ];
@@ -27,7 +27,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
   }
@@ -48,40 +48,40 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: _pages[_currentIndex],
-      bottomNavigationBar: Container(
-        margin: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: bottomPadding + 12,
-          top: 12,
-        ),
-        height: isSmallScreen ? 65 : 75,
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: AppColors.divider),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.1),
-              blurRadius: 20,
-              offset: Offset(0, 10),
-              spreadRadius: 0,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16,vertical:8),
+          child: Container(
+          
+            height: isSmallScreen ? 65 : 75,
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: AppColors.divider),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                  spreadRadius: 0,
+                ),
+              ],
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home_rounded, "Ana Sayfa", 0, screenWidth),
-              _buildNavItem(
-                  Icons.calendar_today_rounded, "Takvim", 1, screenWidth),
-              _buildNavItem(
-                  Icons.smart_toy, "AI Asistan", 2, screenWidth), // Düzeltildi
-              _buildNavItem(Icons.bar_chart, "İstatistik", 3, screenWidth),
-              _buildNavItem(Icons.person_rounded, "Profil", 4, screenWidth),
-            ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildNavItem(Icons.home_rounded, "Ana Sayfa", 0, screenWidth),
+                  _buildNavItem(
+                      Icons.calendar_today_rounded, "Takvim", 1, screenWidth),
+                  _buildNavItem(
+                      Icons.smart_toy, "AI Asistan", 2, screenWidth), // Düzeltildi
+                  _buildNavItem(Icons.bar_chart, "İstatistik", 3, screenWidth),
+                  _buildNavItem(Icons.person_rounded, "Profil", 4, screenWidth),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -107,7 +107,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AnimatedContainer(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               padding: EdgeInsets.all(isSelected ? 12 : 8),
               decoration: BoxDecoration(
                 color: isSelected
@@ -122,10 +122,10 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
               ),
             ),
             if (isSelected) ...[
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.primary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/domain/presentation/pages/home/add_task_page.dart';
 import 'package:mytodo_app/domain/presentation/pages/home/all_task_page.dart';
-import 'package:mytodo_app/domain/presentation/pages/home/home_page.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/presentation/pages/auth/login_page.dart';
@@ -20,7 +19,7 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => const LoginPage());
       case register:
         return MaterialPageRoute(builder: (_) => RegisterPage());
       case alltask:
@@ -36,7 +35,7 @@ class AppRoutes {
             builder: (_) => AddTaskPage()); // 
       default:
         return MaterialPageRoute(
-          builder: (_) => Scaffold(
+          builder: (_) => const Scaffold(
             body: Center(child: Text("404 - Sayfa Bulunamadı")),
           ),
         );
@@ -48,9 +47,9 @@ static Widget _getHomePage(){
     future: _isLoggedIn(),
   builder: (context,snapshot){
       if(snapshot.connectionState==ConnectionState.waiting){
-        return Scaffold(body: Center(child: CircularProgressIndicator(),),);
+        return const Scaffold(body: Center(child: CircularProgressIndicator(),),);
       }else{
-        return snapshot.data==true?Navbar():LoginPage();
+        return snapshot.data==true?Navbar():const LoginPage();
       }
   });
 }
