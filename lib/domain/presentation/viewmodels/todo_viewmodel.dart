@@ -1,9 +1,9 @@
+// ignore_for_file: unused_local_variable, use_rethrow_when_possible
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/domain/presentation/pages/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'dart:async'; // Add this import
 import '../../../data/models/todo_model.dart';
 import '../../../data/repositories/todo_service.dart';
@@ -42,6 +42,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString("token");
     } catch (e) {
+      // ignore: avoid_print
       print("🚨 Token alınırken hata oluştu: $e");
       return null;
     }
@@ -126,6 +127,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
       state = [
         ...allTodos
             .where((todo) => todo.categoryId == selectedCategory)
+            // ignore: unnecessary_to_list_in_spreads
             .toList()
       ];
     }
@@ -287,7 +289,3 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
   }
 }
 
-final todoProvider =
-    StateNotifierProvider<TodoViewModel, List<TodoModel>>((ref) {
-  return TodoViewModel(TodoService());
-});

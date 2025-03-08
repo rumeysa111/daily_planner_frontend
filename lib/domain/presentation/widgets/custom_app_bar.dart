@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_null_aware_operators
+// ignore_for_file: prefer_null_aware_operators, unnecessary_const, deprecated_member_use, use_super_parameters
 
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';

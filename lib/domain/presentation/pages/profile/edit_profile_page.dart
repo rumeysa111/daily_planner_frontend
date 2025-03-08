@@ -1,7 +1,8 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_import, use_build_context_synchronously, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import '../../../../core/theme/colors.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../../widgets/custom_button.dart';

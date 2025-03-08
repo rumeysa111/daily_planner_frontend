@@ -1,9 +1,11 @@
+// ignore_for_file: unused_field, unused_local_variable, avoid_print, sort_child_properties_last, deprecated_member_use, unused_import, use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/data/repositories/ai_asistant_service.dart';
-import 'package:mytodo_app/data/repositories/local_storage_service.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/todo_viewmodel.dart';
 import 'package:mytodo_app/domain/presentation/widgets/custom_app_bar.dart';

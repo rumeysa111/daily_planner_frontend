@@ -83,7 +83,3 @@ class CalendarViewModel extends StateNotifier<List<TodoModel>> {
   }
 }
 
-final calendarProvider =
-    StateNotifierProvider<CalendarViewModel, List<TodoModel>>((ref) {
-  return CalendarViewModel(TodoService());
-});

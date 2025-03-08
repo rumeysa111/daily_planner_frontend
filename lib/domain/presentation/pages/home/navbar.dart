@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, library_private_types_in_public_api, deprecated_member_use, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/domain/presentation/pages/ai/ai_assistan_page.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/data/repositories/category_service.dart';
@@ -112,8 +114,3 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
   }
 }
 
-/// 📌 Riverpod Provider
-final categoryProvider =
-    StateNotifierProvider<CategoryViewModel, List<CategoryModel>>((ref) {
-  return CategoryViewModel(CategoryService());
-});

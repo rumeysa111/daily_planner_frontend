@@ -1,7 +1,10 @@
+// ignore_for_file: unused_import, unused_local_variable, deprecated_member_use, unnecessary_const, use_build_context_synchronously, library_private_types_in_public_api, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/navigation/routes.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 
 import '../../viewmodels/auth_viewmodel.dart';
 import '../../widgets/custom_button.dart';

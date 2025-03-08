@@ -1,8 +1,9 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_import, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import '../../../data/models/todo_model.dart';
 import '../../../data/models/category_model.dart';
 import '../viewmodels/category_viewmodel.dart';

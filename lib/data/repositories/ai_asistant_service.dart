@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, avoid_print
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';

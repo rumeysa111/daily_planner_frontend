@@ -1,9 +1,12 @@
+// ignore_for_file: unused_import, deprecated_member_use, sized_box_for_whitespace, use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
 import 'package:mytodo_app/data/models/category_model.dart';
 import 'package:mytodo_app/data/models/task_statistics.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/statistics_viewmodel.dart';
 import '../../widgets/custom_app_bar.dart';

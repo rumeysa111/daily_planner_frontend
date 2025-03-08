@@ -1,8 +1,10 @@
-// ignore_for_file: use_super_parameters, sized_box_for_whitespace, deprecated_member_use
+// ignore_for_file: use_super_parameters, sized_box_for_whitespace, deprecated_member_use, avoid_print, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
+// ignore: unused_import
 import 'package:mytodo_app/domain/presentation/viewmodels/category_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/models/category_model.dart';

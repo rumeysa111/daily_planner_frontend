@@ -14,8 +14,8 @@ class CustomTextField extends StatefulWidget {
     required this.icon,
     required this.controller,
     this.isPassword = false,
-    Key? key
-  }) : super(key: key);
+    super.key
+  });
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();

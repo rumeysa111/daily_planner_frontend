@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters
+// ignore_for_file: use_super_parameters, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';

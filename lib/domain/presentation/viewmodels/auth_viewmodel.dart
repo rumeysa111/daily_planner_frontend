@@ -1,10 +1,13 @@
 // 📌 Riverpod kütüphanesini içe aktarıyoruz (State management için gerekli)
+// ignore_for_file: unused_import, avoid_print
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 📌 Kullanıcı modelini içe aktarıyoruz (UserModel, giriş yapan kullanıcının bilgilerini saklar)
 
 // 📌 AuthService, backend ile iletişimi sağlayan servis (API isteklerini yönetir)
 import 'package:mytodo_app/data/repositories/auth_service.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/models/user_model.dart';
@@ -101,9 +104,3 @@ class AuthViewModel extends StateNotifier<UserModel?> {
   }
 }
 
-// 📌 Riverpod Provider tanımlaması
-// 📌 StateNotifierProvider, AuthViewModel'in durumunu yönetir ve UI ile bağlantıyı sağlar
-final authProvider = StateNotifierProvider<AuthViewModel, UserModel?>((ref) {
-  return AuthViewModel(
-      AuthService(), ref); // 📌 AuthViewModel'in bir örneğini oluşturuyoruz
-});

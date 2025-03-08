@@ -1,7 +1,10 @@
+// ignore_for_file: unused_import, use_build_context_synchronously, deprecated_member_use, library_private_types_in_public_api, use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import 'package:mytodo_app/domain/presentation/viewmodels/calendar_viewmodel.dart';
 import 'package:mytodo_app/domain/presentation/widgets/category_edit_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +18,7 @@ import '../../widgets/date_time_picker.dart'; // 📌 Yeni Widget'ı içeri akta
 class AddTaskPage extends ConsumerStatefulWidget {
   final DateTime? selectedDate; // 📌 Seçili tarih (Takvim sayfasından gelirse)
 
-  AddTaskPage({Key? key, this.selectedDate}) : super(key: key);
+  const AddTaskPage({Key? key, this.selectedDate}) : super(key: key);
 
   @override
   _AddTaskPageState createState() => _AddTaskPageState();

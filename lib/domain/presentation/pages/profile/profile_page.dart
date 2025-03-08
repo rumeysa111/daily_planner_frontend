@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_super_parameters, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/colors.dart';

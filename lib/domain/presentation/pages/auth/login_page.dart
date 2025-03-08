@@ -1,17 +1,20 @@
+// ignore_for_file: deprecated_member_use, unused_local_variable, curly_braces_in_flow_control_structures, avoid_print, use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/core/navigation/routes.dart';
+import 'package:mytodo_app/domain/presentation/providers/providers.dart';
 import '../../../../core/theme/colors.dart';
 
-import '../../viewmodels/auth_viewmodel.dart';
 import '../../widgets/custom_text_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -37,24 +40,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
     );
   }
 
-  void _handleLogin() async {
-    // eğer halihazırda bir debouncer aktifse yeni isteği Engelle(
-
-    if (_debouncer?.isActive ?? false) return;
-    //yeni bir debouncer
-    _debouncer = Timer(const Duration(microseconds: 500), () async {
-      try {
-        final success = await ref
-            .read(authProvider.notifier)
-            .login(emailController.text.trim(), passwordController.text)
-            .timeout(const Duration(seconds: 10), onTimeout: () {
-          throw TimeoutException("İstek zaman aşımına uğradı");
-        });
-      } catch (e) {
-        print(e);
-      }
-    });
-  }
 
   @override
   void dispose() {
@@ -243,7 +228,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                             // ignore: prefer_const_constructors
                             Text(
                               "Hesabınız yok mu?",
-                              style: TextStyle(color: AppColors.textSecondary),
+                              style: const TextStyle(color: AppColors.textSecondary),
                             ),
                             TextButton(
                               onPressed: () {

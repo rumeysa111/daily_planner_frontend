@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:dio/dio.dart';
 import 'package:mytodo_app/constans/api_constans.dart';
 import 'package:shared_preferences/shared_preferences.dart';

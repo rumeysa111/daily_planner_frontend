@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mytodo_app/data/models/task_statistics.dart';
 import 'package:mytodo_app/data/repositories/statistic_service.dart';
-import 'package:mytodo_app/domain/presentation/viewmodels/todo_viewmodel.dart';
 
 class StatisticsViewModel extends StateNotifier<AsyncValue<TaskStatistics?>> {
   final StatisticsService _statisticsService;
@@ -19,6 +18,3 @@ class StatisticsViewModel extends StateNotifier<AsyncValue<TaskStatistics?>> {
   }
 }
 
-final statisticsProvider = StateNotifierProvider<StatisticsViewModel, AsyncValue<TaskStatistics?>>((ref) {
-  return StatisticsViewModel(StatisticsService())..loadStatistics();
-});
