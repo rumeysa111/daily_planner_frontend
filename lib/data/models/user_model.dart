@@ -13,9 +13,9 @@ class UserModel {
     required this.id,
     required this.email,
     required this.name,
-    this.createdAt, // 📌 Null olabileceği için opsiyonel yaptık
+    this.createdAt, 
     required this.token,
-    this.updatedAt, // 📌 Null olabileceği için opsiyonel yaptık
+    this.updatedAt, 
   });
 
   UserModel copyWith({
@@ -41,7 +41,7 @@ class UserModel {
       'userID': id,
       'email': email,
       'name': name,
-      'createdAt': createdAt?.toIso8601String(), // 📌 createdAt opsiyonel olduğu için `?` ekledik
+      'createdAt': createdAt?.toIso8601String(), 
       'token': token,
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -49,10 +49,10 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['userId'] ?? "", // 📌 Eğer `null` gelirse boş string yap
+      id: map['userId'] ?? "", 
       email: map['email'] ?? '',
       name: map['name'] ?? '',
-      createdAt: map['createdAt'] != null ? DateTime.tryParse(map['createdAt']) : null, // 📌 `tryParse` ile hata önleme
+      createdAt: map['createdAt'] != null ? DateTime.tryParse(map['createdAt']) : null, 
       token: map['token'] ?? '',
       updatedAt: map['updatedAt'] != null ? DateTime.tryParse(map['updatedAt']) : null,
     );

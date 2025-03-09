@@ -282,7 +282,7 @@ class TodoViewModel extends StateNotifier<List<TodoModel>> {
       }
     } catch (e) {
       if (kDebugMode) {
-        print("🚨 Görev güncellenirken hata: $e");
+        print(" Görev güncellenirken hata: $e");
       }
       throw e; // Re-throw to handle in UI
     }

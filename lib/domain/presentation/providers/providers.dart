@@ -23,7 +23,7 @@ final authProvider = StateNotifierProvider<AuthViewModel, UserModel?>((ref) {
   final authService = ref.watch(authServiceProvider);
   return AuthViewModel(authService, ref);
 });
-/// 📌 Riverpod Provider
+///  Riverpod Provider
 final categoryProvider =
     StateNotifierProvider<CategoryViewModel, List<CategoryModel>>((ref) {
   return CategoryViewModel(CategoryService());

@@ -8,12 +8,12 @@ import '../models/todo_model.dart';
 class TodoService {
   final Dio _dio = Dio(BaseOptions(
           baseUrl:
-              ApiConstans.BASE_URL+"/todos") // 📌 Backend URL'ini ekledik
+              ApiConstans.BASE_URL+"/todos") //  Backend URL'ini ekledik
       );
 
   Future<List<TodoModel>> fetchTodos(String token, {String? category}) async {
     try {
-      print("📌 Backend'den görevler çekiliyor...");
+      print(" Backend'den görevler çekiliyor...");
 
       final response = await _dio.get(
         '',
@@ -33,7 +33,7 @@ class TodoService {
         return [];
       }
     } catch (e) {
-      print("🚨 Hata: $e");
+      print(" Hata: $e");
       return [];
     }
   }
@@ -70,7 +70,7 @@ class TodoService {
 
       return response.statusCode == 201;
     } catch (e) {
-      print("🚨 Backend'e görev ekleme hatası: $e");
+      print(" Backend'e görev ekleme hatası: $e");
       return false;
     }
   }

@@ -16,12 +16,12 @@ class AuthService {
       final response = await dio
           .post('/auth/login', data: {"email": email, "password": password});
       print(
-          "Login API Response: ${response.data}"); // 📌 API'den gelen yanıtı konsola yazdır
+          "Login API Response: ${response.data}"); //  API'den gelen yanıtı konsola yazdır
 
       if (response.statusCode == 200) {
         final user = UserModel.fromMap(response.data);
         print(
-            "✅ Backend'den Gelen Kullanıcı ID: ${user.id}"); // ✅ `userId`'yi kontrol edelim
+            " Backend'den Gelen Kullanıcı ID: ${user.id}"); 
 
         return user;
       }
@@ -41,7 +41,7 @@ class AuthService {
       };
 
       print(
-          "📢 Flutter Register API İsteği: $body"); //  İstek öncesinde veriyi logla
+          " Flutter Register API İsteği: $body"); //  İstek öncesinde veriyi logla
 
       final response = await dio.post('/auth/register', data: body);
 

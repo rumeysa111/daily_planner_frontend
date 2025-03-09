@@ -9,10 +9,9 @@ import '../models/category_model.dart';
 class CategoryService {
    final Dio _dio = Dio(BaseOptions(baseUrl: ApiConstans.BASE_URL + "/categories"));
 
-  /// **✅ Kullanıcının kategorilerini getir**
+  /// Kullanıcının kategorilerini getir**
   Future<List<CategoryModel>> fetchCategories(String userId) async {
     try {
-      // ✅ Debug
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token");
 
@@ -97,7 +96,7 @@ class CategoryService {
     }
   }
 
-  /// **✅ Kategori sil**
+  /// Kategori sil**
   Future<bool> deleteCategory(String categoryId) async {
     try {
       final prefs = await SharedPreferences.getInstance();

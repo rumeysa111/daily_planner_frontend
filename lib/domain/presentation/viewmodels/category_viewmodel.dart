@@ -15,18 +15,18 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
     fetchCategories();
   }
 
-  /// ✅ Kullanıcının kategorilerini çek
+  ///  Kullanıcının kategorilerini çek
   Future<void> fetchCategories() async {
     final prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString("userId");
 
     if (userId == null) {
       if (kDebugMode) {
-        print("🚨 Kullanıcı giriş yapmamış! Kategoriler yüklenemedi.");
+        print(" Kullanıcı giriş yapmamış! Kategoriler yüklenemedi.");
       }
       return;
     }
-    print("📢 Kullanıcının kategorileri yükleniyor: $userId"); // ✅ Debug
+    print(" Kullanıcının kategorileri yükleniyor: $userId"); // ✅ Debug
 
     try {
       final categories = await _categoryService.fetchCategories(userId);
@@ -35,7 +35,7 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
         print("✅ ${categories.length} kategori yüklendi.");
       }
     } catch (e) {
-      print("🚨 Kategorileri çekerken hata oluştu: $e");
+      print(" Kategorileri çekerken hata oluştu: $e");
     }
   }
 
@@ -43,7 +43,7 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
     fetchCategories(); // ✅ Kullanıcı değişirse yeniden yükle
   }
 
-  /// ✅ Yeni kategori ekle
+  ///  Yeni kategori ekle
   Future<bool> addCategory(CategoryModel category) async {
     try {
       // SharedPreferences'dan userId'yi al
@@ -72,12 +72,12 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
       }
       return false;
     } catch (e) {
-      print("🚨 Kategori ekleme hatası: $e");
+      print(" Kategori ekleme hatası: $e");
       return false;
     }
   }
 
-  /// ✅ Kategori güncelle
+  ///  Kategori güncelle
   Future<bool> updateCategory(
       String categoryId, CategoryModel updatedCategory) async {
     try {
@@ -89,12 +89,12 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
       }
       return false;
     } catch (e) {
-      print("🚨 Kategori güncelleme hatası: $e");
+      print(" Kategori güncelleme hatası: $e");
       return false;
     }
   }
 
-  /// ✅ Kategori sil
+  ///  Kategori sil
   Future<void> deleteCategory(String categoryId) async {
     bool success = await _categoryService.deleteCategory(categoryId);
     if (success) {
@@ -102,12 +102,12 @@ class CategoryViewModel extends StateNotifier<List<CategoryModel>> {
     }
   }
 
-  /// **📌 Kullanıcı çıkış yaptığında kategorileri temizle**
+  ///  Kullanıcı çıkış yaptığında kategorileri temizle**
   void clearCategories() {
     state = [];
   }
 
-  /// ✅ Seçili kategoriyi ayarla
+  /// Seçili kategoriyi ayarla
   void setCategory(String categoryId) {
     selectedCategoryId = categoryId;
     state = [...state]; // UI güncellemek için state değiştirme

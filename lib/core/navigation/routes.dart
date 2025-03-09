@@ -56,7 +56,6 @@ static Widget _getHomePage(){
   });
 }
 //kullanıcı giriş yapmış mı kontrol eden fonksiyon
-  // 📌 Kullanıcı giriş yapmış mı kontrol eden fonksiyon
   static Future<bool> _isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("token") != null;

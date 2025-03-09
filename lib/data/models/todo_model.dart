@@ -27,7 +27,7 @@ class TodoModel {
     required this.createdAt,
   });
 
-  // 📌 JSON'dan `TodoModel` Nesnesine Çevirme
+  // JSON'dan `TodoModel` Nesnesine Çevirme
   factory TodoModel.fromJson(Map<String, dynamic> json) {
     var categoryData = json['category'];
     return TodoModel(
@@ -49,7 +49,7 @@ class TodoModel {
     );
   }
 
-// 📌 `TodoModel` Nesnesini JSON'a Çevirme
+//  `TodoModel` Nesnesini JSON'a Çevirme
   Map<String, dynamic> toJson() {
     return {
       "title": title,
@@ -63,13 +63,13 @@ class TodoModel {
     };
   }
 
-  // 📌 JSON Listesini `List<TodoModel>` Nesnesine Çevirme
+  //  JSON Listesini `List<TodoModel>` Nesnesine Çevirme
   static List<TodoModel> fromJsonList(String jsonString) {
     final List<dynamic> data = json.decode(jsonString);
     return data.map((todoJson) => TodoModel.fromJson(todoJson)).toList();
   }
 
-  // 📌 `copyWith()` Metodu (Immutable Güncelleme İçin)
+  // `copyWith()` Metodu (Immutable Güncelleme İçin)
   TodoModel copyWith({
     String? id,
     String? title,
