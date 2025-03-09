@@ -3,7 +3,7 @@
 **Daily Planner**, kullanıcıların günlük işlerini organize etmelerini sağlayan bir **görev yönetimi uygulamasıdır**.\
 MVVM mimarisiyle geliştirilmiş olup, **Riverpod state management** kullanılmıştır.
 
-## 🔍 Uygulama Özellikleri (Detaylı)
+## 🔍 Uygulama Özellikleri 
 
 ### 📝 Görev Yönetimi
 - **Görev Oluşturma:** Başlık, açıklama, kategori, tarih ve öncelik belirleyerek yeni görevler ekleyin
