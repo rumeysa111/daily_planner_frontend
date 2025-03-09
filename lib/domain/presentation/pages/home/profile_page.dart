@@ -20,11 +20,6 @@ class ProfilePage extends ConsumerWidget {
     final user = ref.watch(authProvider);
     final todos = ref.watch(todoProvider);
 
-    // İstatistikleri hesapla
-    final completedTasks = todos.where((todo) => todo.isCompleted).length;
-    final pendingTasks = todos.where((todo) => !todo.isCompleted).length;
-    final successRate =
-        todos.isEmpty ? 0 : (completedTasks / todos.length * 100).round();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -37,8 +32,6 @@ class ProfilePage extends ConsumerWidget {
         child: Column(
           children: [
             _buildProfileHeader(user?.name ?? "Kullanıcı", user?.email ?? ""),
-            const SizedBox(height: 20),
-            _buildStatisticsSection(completedTasks, pendingTasks, successRate),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -171,36 +164,6 @@ class ProfilePage extends ConsumerWidget {
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatisticsSection(int completed, int pending, int successRate) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: AppColors.primary.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildStatItem(
-              "$completed", "Tamamlanan\nGörevler", AppColors.success),
-          _buildStatDivider(),
-          _buildStatItem("$pending", "Bekleyen\nGörevler", AppColors.warning),
-          _buildStatDivider(),
-          _buildStatItem("$successRate%", "Başarı\nOranı", AppColors.primary),
         ],
       ),
     );

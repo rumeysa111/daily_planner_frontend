@@ -185,17 +185,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     );
   }
 
-  Widget _buildWeeklyProgressChart(TaskStatistics statistics) {
-    final List<String> weekDays = [
-      'Pzt',
-      'Sal',
-      'Çar',
-      'Per',
-      'Cum',
-      'Cmt',
-      'Paz'
-    ];
+ Widget _buildWeeklyProgressChart(TaskStatistics statistics) {
+  final List<String> weekDays = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
+  // 🔹 Debug: Haftalık ilerleme verisini terminale yazdır
+  print("Weekly Progress Data: ${statistics.weeklyProgress}");
+
+  if (statistics.weeklyProgress.isEmpty ||
+      statistics.weeklyProgress.every((element) => element == 0)) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -203,7 +200,37 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
+            color: AppColors.primary.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Haftalık İlerleme",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Center(child: Text("Bu hafta için tamamlanan görev yok")),
+        ],
+      ),
+    );
+  } else {
+    // 🔹 Eğer `weeklyProgress` doluysa grafik gösterilecek!
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
             color: AppColors.primary.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
@@ -227,22 +254,23 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
-                maxY: 1,
+                maxY: statistics.weeklyProgress.isEmpty
+                    ? 1
+                    : statistics.weeklyProgress.reduce((a, b) => a > b ? a : b) + 0.1,
                 barTouchData: BarTouchData(enabled: false),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 0.2, // Eksenin aralık değerini belirle
+                      interval: 0.2,
                       getTitlesWidget: (value, meta) {
                         return Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text(
-                              '${(value * 100).toInt()}%',
-                              style: const TextStyle(
-                                color: AppColors.textSecondary,
-                              ),
-                            ));
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Text(
+                            '${(value * 100).toInt()}%',
+                            style: const TextStyle(color: AppColors.textSecondary),
+                          ),
+                        );
                       },
                       reservedSize: 40,
                     ),
@@ -258,9 +286,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         return Text(
-                          weekDays[value.toInt()], // Haftalık günleri yazdır
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 12),
+                          weekDays[value.toInt()],
+                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
                         );
                       },
                     ),
@@ -283,8 +310,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                     );
                   },
                 ),
-                barGroups:
-                    statistics.weeklyProgress.asMap().entries.map((entry) {
+                barGroups: statistics.weeklyProgress.asMap().entries.map((entry) {
                   return BarChartGroupData(
                     x: entry.key,
                     barRods: [
@@ -304,6 +330,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
       ),
     );
   }
+}
 
   Widget _buildCategoryCompletionChart(TaskStatistics statistics) {
     return Container(

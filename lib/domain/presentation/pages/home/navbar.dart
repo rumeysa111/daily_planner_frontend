@@ -1,8 +1,6 @@
-// ignore_for_file: unused_local_variable, library_private_types_in_public_api, deprecated_member_use, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
-import 'package:mytodo_app/domain/presentation/pages/ai/ai_assistan_page.dart';
 import 'package:mytodo_app/domain/presentation/pages/home/statistics_page.dart';
 import 'home_page.dart';
 import 'calendar_page.dart';
@@ -19,7 +17,6 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   final List<Widget> _pages = [
     HomePage(),
     CalendarPage(),
-    const AiAssistantPage(),
     const StatisticsPage(),
         ProfilePage(),
 
@@ -77,10 +74,9 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
                   _buildNavItem(Icons.home_rounded, "Ana Sayfa", 0, screenWidth),
                   _buildNavItem(
                       Icons.calendar_today_rounded, "Takvim", 1, screenWidth),
-                  _buildNavItem(
-                      Icons.smart_toy, "AI Asistan", 2, screenWidth), // Düzeltildi
-                  _buildNavItem(Icons.bar_chart, "İstatistik", 3, screenWidth),
-                  _buildNavItem(Icons.person_rounded, "Profil", 4, screenWidth),
+                 
+                  _buildNavItem(Icons.bar_chart, "İstatistik", 2, screenWidth),
+                  _buildNavItem(Icons.person_rounded, "Profil", 3, screenWidth),
                 ],
               ),
             ),
@@ -93,7 +89,7 @@ class _NavbarState extends State<Navbar> with SingleTickerProviderStateMixin {
   Widget _buildNavItem(
       IconData icon, String label, int index, double screenWidth) {
     final isSelected = _currentIndex == index;
-    final itemWidth = (screenWidth - 32) / 5;
+    final itemWidth = (screenWidth - 32) / 4;
 
     return GestureDetector(
       onTap: () {
