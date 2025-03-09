@@ -6,7 +6,6 @@ import 'package:mytodo_app/core/theme/colors.dart';
 import 'onboarding_page1.dart';
 import 'onboarding_page2.dart';
 import 'onboarding_page3.dart';
-import 'onboarding_page4.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -78,7 +77,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   OnboardingPage1(),
                   OnboardingPage2(),
                   OnboardingPage3(),
-                  OnboardingPage4(),
                 ],
               ),
             ),
@@ -139,7 +137,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           Text(
                             _currentPage == 0
                                 ? "Başla"
-                                : (_currentPage == 3 ? "Tamamla" : "Devam Et"),
+                                : (_currentPage == 2 ? "Tamamla" : "Devam Et"),
                             style: theme.textTheme.titleLarge?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

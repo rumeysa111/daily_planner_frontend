@@ -51,14 +51,14 @@ class TodoService {
           .map<TodoModel>((json) => TodoModel.fromJson(json))
           .toList();
     } catch (e) {
-      print("seçili tarig için görevleri çekerken hata oluştur $e");
+      print("seçili tarih için görevleri çekerken hata oluştur $e");
       return [];
     }
   }
 
   Future<bool> addTodo(String token, TodoModel todo) async {
     try {
-      print("📌 Flutter'dan Backend'e Gönderilen JSON: ${todo.toJson()}");
+      print(" Flutter'dan Backend'e Gönderilen JSON: ${todo.toJson()}");
 
       final response = await _dio.post(
         '/',
@@ -66,7 +66,7 @@ class TodoService {
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 
-      print("✅ Backend'den dönen yanıt: ${response.data}");
+      print(" Backend'den dönen yanıt: ${response.data}");
 
       return response.statusCode == 201;
     } catch (e) {

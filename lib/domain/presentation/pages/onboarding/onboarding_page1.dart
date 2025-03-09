@@ -59,7 +59,7 @@ class OnboardingPage1 extends StatelessWidget {
                 ),
              const    SizedBox(height: 16),
                 Text(
-                  "Tüm görevlerini, hatırlatıcılarını ve etkinliklerini tek bir yerden yönet.",
+                  "Tüm görevlerini ve etkinliklerini tek bir yerden yönet.",
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,

@@ -28,8 +28,6 @@ void main() async {
       ),
     );
   } catch (e) {
-    print('Firebase initialization error: $e');
-    // Firebase başlatılamazsa bile uygulamayı çalıştır
     runApp(
       const ProviderScope(
         child: const MyApp(isLoggenIn: false),
