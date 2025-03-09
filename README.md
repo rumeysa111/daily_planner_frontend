@@ -32,14 +32,13 @@ MVVM mimarisiyle geliştirilmiş olup, **Riverpod state management** kullanılm�
   <img src="screenshots/Screenshot_1741523212.png" width="160" />
   <img src="screenshots/Screenshot_1741523142.png" width="160" />
 <img src="screenshots/Screenshot_1741523154.png" width="160" />
-  <img src="screenshots/Screenshot_1741523158.png" width="160" />
+  
 <img src="screenshots/Screenshot_1741523168.png" width="160" />
   <img src="screenshots/Screenshot_1741523176.png" width="160" />
-  <img src="screenshots/Screenshot_1741523179.png" width="160" />
+ 
   <img src="screenshots/Screenshot_1741523183.png" width="160" />
-  <img src="screenshots/Screenshot_1741523193.png" width="160" />
-  <img src="screenshots/Screenshot_1741523198.png" width="160" />
-  <img src="screenshots/Screenshot_1741523202.png" width="160" />
+ 
+  
 
 </div>
 
