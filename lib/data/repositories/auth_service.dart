@@ -41,12 +41,12 @@ class AuthService {
       };
 
       print(
-          "📢 Flutter Register API İsteği: $body"); // 🔍 İstek öncesinde veriyi logla
+          "📢 Flutter Register API İsteği: $body"); //  İstek öncesinde veriyi logla
 
       final response = await dio.post('/auth/register', data: body);
 
       print(
-          "✅ Register API Yanıtı: ${response.data}"); // 🔍 Backend’den gelen yanıtı logla
+          " Register API Yanıtı: ${response.data}"); //  Backend’den gelen yanıtı logla
 
       if (response.statusCode == 201) {
         final userId = response.data["userId"];
@@ -56,15 +56,15 @@ class AuthService {
         await prefs.setString("userId", userId);
         await prefs.setString("categories", categories.toString());
 
-        return true; // ✅ Başarılı kayıt döndür
+        return true; //  Başarılı kayıt döndür
       }
     } catch (e) {
-      print("❌ Register error: $e");
+      print(" Register error: $e");
     }
-    return false; // ❌ Kayıt başarısızsa false döndür
+    return false; //  Kayıt başarısızsa false döndür
   }
 
-  // 📌 Token ile kullanıcı bilgilerini çekme fonksiyonu (Eksik olan metod!)
+  //  Token ile kullanıcı bilgilerini çekme fonksiyonu 
   Future<UserModel?> getUser(String token) async {
     try {
       final response = await dio.get('/auth/user',

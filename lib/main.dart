@@ -9,7 +9,7 @@ import 'package:mytodo_app/core/navigation/routes.dart';
 import 'package:mytodo_app/core/theme/app_theme.dart';
 import 'package:mytodo_app/domain/presentation/providers/theme_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'domain/presentation/pages/auth/login_page.dart'; // 📌 Login sayfasını çağırıyoruz
+import 'domain/presentation/views/auth/login_page.dart'; // 📌 Login sayfasını çağırıyoruz
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

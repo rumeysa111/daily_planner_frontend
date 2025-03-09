@@ -35,7 +35,7 @@ class CategoryService {
     }
   }
 
-  /// **✅ Yeni kategori ekle**
+  /// Yeni kategori ekle**
   Future<bool> addCategory(CategoryModel category) async {
     try {
       // Debug log
@@ -79,7 +79,7 @@ class CategoryService {
     }
   }
 
-  /// **✅ Kategori güncelle**
+  ///  Kategori güncelle**
   Future<bool> updateCategory(String categoryId, CategoryModel category) async {
     try {
       final prefs = await SharedPreferences.getInstance();

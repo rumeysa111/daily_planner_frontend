@@ -1,14 +1,14 @@
 // ignore_for_file: unused_element, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:mytodo_app/domain/presentation/pages/home/add_task_page.dart';
-import 'package:mytodo_app/domain/presentation/pages/home/all_task_page.dart';
+import 'package:mytodo_app/domain/presentation/views/home/add_task_page.dart';
+import 'package:mytodo_app/domain/presentation/views/home/all_task_page.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../domain/presentation/pages/auth/login_page.dart';
-import '../../domain/presentation/pages/auth/register_page.dart';
-import '../../domain/presentation/pages/home/navbar.dart';
-import '../../domain/presentation/pages/onboarding/onboarding_screen.dart';
+import '../../domain/presentation/views/auth/login_page.dart';
+import '../../domain/presentation/views/auth/register_page.dart';
+import '../../domain/presentation/views/home/navbar.dart';
+import '../../domain/presentation/views/onboarding/onboarding_screen.dart';
 
 class AppRoutes {
   static const String login = "/login";

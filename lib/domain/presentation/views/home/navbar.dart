@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo_app/core/theme/colors.dart';
-import 'package:mytodo_app/domain/presentation/pages/home/statistics_page.dart';
+import 'package:mytodo_app/domain/presentation/views/home/statistics_page.dart';
 import 'home_page.dart';
 import 'calendar_page.dart';
 import 'profile_page.dart';

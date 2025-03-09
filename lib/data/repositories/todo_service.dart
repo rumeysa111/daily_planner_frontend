@@ -43,7 +43,7 @@ class TodoService {
       String token, DateTime selectedDate) async {
     try {
       final response = await _dio.get(
-        '/by-date', //yeni endpoint
+        '/by-date', 
         options: Options(headers: {"Authorization": "Bearer $token"}),
         queryParameters: {"date": selectedDate.toIso8601String().split("T")[0]},
       );

@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mytodo_app/domain/presentation/pages/home/home_page.dart';
+import 'package:mytodo_app/domain/presentation/views/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async'; // Add this import
 import '../../../data/models/todo_model.dart';
