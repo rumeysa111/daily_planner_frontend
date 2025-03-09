@@ -24,7 +24,24 @@ MVVM mimarisiyle geliştirilmiş olup, **Riverpod state management** kullanılm�
 
 ## 🖼️ Ekran Görüntüleri
 
-*(Buraya uygulamanın ekran görüntülerini ekleyebilirsiniz.)*
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center">
+ <img src="screenshots/Screenshot_1741523407.png" width="160" />
+  <img src="screenshots/Screenshot_1741523410.png" width="160" />
+  <img src="screenshots/Screenshot_1741523417.png" width="160" />
+  <img src="screenshots/Screenshot_1741523209.png" width="160" />
+  <img src="screenshots/Screenshot_1741523212.png" width="160" />
+  <img src="screenshots/Screenshot_1741523142.png" width="160" />
+<img src="screenshots/Screenshot_1741523154.png" width="160" />
+  <img src="screenshots/Screenshot_1741523158.png" width="160" />
+<img src="screenshots/Screenshot_1741523168.png" width="160" />
+  <img src="screenshots/Screenshot_1741523176.png" width="160" />
+  <img src="screenshots/Screenshot_1741523179.png" width="160" />
+  <img src="screenshots/Screenshot_1741523183.png" width="160" />
+  <img src="screenshots/Screenshot_1741523193.png" width="160" />
+  <img src="screenshots/Screenshot_1741523198.png" width="160" />
+  <img src="screenshots/Screenshot_1741523202.png" width="160" />
+
+</div>
 
 ---
 
@@ -149,8 +166,8 @@ lib/
 ### **1️⃣ Projeyi Klonlayın**
 
 ```bash
-git clone https://github.com/rumeysa111/mytodo_frontend.git
-cd mytodo_frontend
+git clone https://github.com/rumeysa111/daily_planner_frontend.git
+
 ```
 
 ### **2️⃣ Bağımlılıkları Yükleyin**
@@ -182,25 +199,23 @@ flutter run
 - Tüm şifreler hashlenmiş şekilde saklanır
 - Veriler MongoDB veritabanında güvenle depolanır
 - API istekleri için HTTPS protokolü kullanılır
-## 📡 API Dokümantasyonu
 
-*(Tüm backend API endpoint'leri yukarıda listelenmiştir.)*
 
 🔗 **Backend Repository:**  
-[Daily Planner - Backend](https://github.com/rumeysa111/mytodo_backend)
+[Daily Planner - Backend](https://github.com/rumeysa111/daily_planner_backend)
 
 
 ## 📝 Lisans
 
-*(Buraya tercih ettiğiniz lisansı ekleyin, örneğin MIT, Apache 2.0, GPL gibi.)*
+*MIT License*
 
 ---
 
 ## 📩 İletisim
 
-**Rumeysa** - [GitHub](https://github.com/rumeysa111)
+**Rumeysa Semiz** - [GitHub](https://github.com/rumeysa111)
 
-📌 **Proje Linki:** [Daily Planner - GitHub](https://github.com/rumeysa111/mytodo_frontend)
+📌 **Proje Linki:** [Daily Planner - GitHub](https://github.com/rumeysa111/daily_planner_frontend)
 
 ```
 
