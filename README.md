@@ -197,7 +197,7 @@ flutter run
 - Kullanıcı kimlik doğrulaması için JWT (JSON Web Token) kullanılmaktadır
 - Tüm şifreler hashlenmiş şekilde saklanır
 - Veriler MongoDB veritabanında güvenle depolanır
-- API istekleri için HTTPS protokolü kullanılır
+
 
 
 🔗 **Backend Repository:**  
